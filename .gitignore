@@ -1,0 +1,17 @@
+*.pyc
+out.png
+venv*/
+.idea/
+dist/
+build/
+.eggs
+Research/wxglade/*/*~
+.coverage
+htmlcov/
+src/tests/logs/
+Research/wx doco/drag-button.spec
+.python-version
+*.snap
+junk*.py
+*.egg-info
+.flatpak-builder/

@@ -40,10 +40,6 @@ def get_commits_for_branch(branch):
         print(f"Error fetching commits for branch '{branch}'")
         return []
 
-def extract_fields_OLD(output):
-    date, author, comment = output.split(' ', 2)
-    return date,author,comment
-
 def extract_fields(commit_info):
     print('commit_info', commit_info)
     match = re.match(r'(?P<date>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}) (?P<author>.*) (?P<comment>.*)', commit_info)
@@ -312,22 +308,6 @@ class LeftPanel(wx.Panel):
         sizer.Add(file_tree_panel, proportion=2, flag=wx.EXPAND)
         self.SetSizer(sizer)
 
-class MainPanel(wx.Panel):
-    def __init__(self, parent):
-        super().__init__(parent, style=wx.SIMPLE_BORDER)
-
-        # Create the LeftPanel and FileContentsPanel sub-panels
-        left_panel = LeftPanel(self)
-        file_contents_panel = FileContentsPanel(self)
-
-        # Split the main panel horizontally to show the two sub-panels
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(left_panel, proportion=1, flag=wx.EXPAND)
-        sizer.Add(file_contents_panel, proportion=2, flag=wx.EXPAND)
-        self.SetSizer(sizer)
-
-
-
 class MyFrame(wx.Frame):
     def __init__(self, parent):
         super().__init__(parent, title="Git Repo Time Machine")
@@ -352,24 +332,11 @@ class MyFrame(wx.Frame):
         accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CMD, ord('Q'), wx.ID_EXIT)])
         self.SetAcceleratorTable(accel_tbl)
 
-        # self.layout_ui()
-        self.layout_ui_2()
+        self.layout_ui()
 
         self.Show()
 
     def layout_ui(self):
-        splitterWindow = wx.SplitterWindow(self, -1, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
-
-        # Create the BranchesPanel and MainPanel sub-panels
-        branches_panel = BranchesPanel(splitterWindow)
-        main_panel = MainPanel(splitterWindow)
-
-        splitterWindow.SplitVertically(branches_panel, main_panel, 200)
-        splitterWindow.SetSashPosition(200, True)
-        splitterWindow.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.OnSashChanging)
-
-
-    def layout_ui_2(self):
         outer_area = wx.SplitterWindow(self, -1, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
 
         left_area = MultiSplitterWindow(outer_area, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)

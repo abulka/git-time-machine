@@ -183,14 +183,6 @@ class FileTreePanel(wx.Panel):
         sizer.Add(self.tree, 1, wx.EXPAND)
         self.SetSizer(sizer)
 
-        # self.tree.SetBackgroundColour(wx.Colour(0, 0, 0))
-        # set to wx red
-        # self.tree.SetForegroundColour(wx.RED)
-        # Set the color of the focus item when the tree widget loses focus to grey
-        # self.tree.SetItemTextColour(self.tree.GetSelection(), wx.Colour(128, 128, 128))
-        # Set the HideSelection property of the treeview to False
-        # self.tree.HideSelection = False
-
         self.rebuild_tree()
 
     def rebuild_tree(self):
@@ -199,7 +191,19 @@ class FileTreePanel(wx.Panel):
         item_text = ''
         if item:
             item_text = self.tree.GetItemText(item)
-            
+
+        # remember the expanded items
+        expanded_items = []
+        def get_expanded_items(item):
+            if self.tree.IsExpanded(item):
+                expanded_items.append(self.tree.GetItemText(item))
+                child, cookie = self.tree.GetFirstChild(item)
+                while child:
+                    get_expanded_items(child)
+                    child, cookie = self.tree.GetNextChild(item, cookie)
+        if self.tree.GetCount():
+            get_expanded_items(self.tree.GetRootItem())        
+
         # Clear the treeview
         self.tree.DeleteAllItems()
 
@@ -231,8 +235,22 @@ class FileTreePanel(wx.Panel):
             if item.IsOk():
                 self.tree.SelectItem(item)
 
-        # Expand the tree to show all items
-        self.tree.ExpandAll()
+        # Expand the items that were expanded before
+        def expand_items(item):
+            if item != self.tree.GetRootItem() and self.tree.GetItemText(item) in expanded_items:
+                self.tree.Expand(item)
+            child, cookie = self.tree.GetFirstChild(item)
+            while child:
+                expand_items(child)
+                child, cookie = self.tree.GetNextChild(item, cookie)
+
+        if expanded_items:
+            expand_items(self.tree.GetRootItem())
+        else:
+            # self.tree.ExpandAll()
+            self.tree.CollapseAll()
+
+
 
     def get_item_by_label(self, tree, search_text, root_item):
         item, cookie = tree.GetFirstChild (root_item)

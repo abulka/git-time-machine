@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 import wx
@@ -14,6 +15,7 @@ class Commit:
         self.author = author
         self.comment = comment
 
+current_repo_path = '.'
 current_branch = 'main'
 current_commit = 'HEAD'
 
@@ -69,17 +71,23 @@ class BranchesPanel(wx.Panel):
         # create a listbox to display the branches
         self.branches_list = wx.ListBox(self, wx.ID_ANY, style=wx.LB_SINGLE)
         sizer.Add(self.branches_list, proportion=1, flag=wx.EXPAND|wx.ALL, border=10)
+
+        # bind the selection event to a method
+        self.Bind(wx.EVT_LISTBOX, self.on_branch_selected, self.branches_list)
         
+        # subscribe to 'repo-changed' message
+        pub.subscribe(self.rebuild_branches, 'repo-changed')
+
+        self.rebuild_branches()
+        
+        # set the panel sizer
+        self.SetSizer(sizer)
+    
+    def rebuild_branches(self):
         # get the list of branches using the git command
         git_command = ['git', 'branch']
         branches = subprocess.check_output(git_command, universal_newlines=True).splitlines()
         self.branches_list.Set(branches)
-        
-        # bind the selection event to a method
-        self.Bind(wx.EVT_LISTBOX, self.on_branch_selected, self.branches_list)
-        
-        # set the panel sizer
-        self.SetSizer(sizer)
     
     def on_branch_selected(self, event):
         global current_branch
@@ -135,7 +143,6 @@ class CommitsPanel(wx.Panel):
         # set the selected item to the item with the current commit
         found = False
         for index in range(self.list_ctrl.GetItemCount()):
-            print('index', index, self.list_ctrl.GetItemText(index))
             if self.list_ctrl.GetItemText(index) == current_commit:
                 self.list_ctrl.Select(index)
                 self.list_ctrl.Focus(index)
@@ -338,6 +345,9 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_quit, id=wx.ID_EXIT)
         self.Bind(wx.EVT_MENU, self.on_quit, id=wx.ID_CLOSE)
         menu_bar.Append(file_menu, 'File')
+        file_menu.Append(wx.ID_OPEN, 'Open Git Repo\tCtrl+O', 'Open a git repo')
+        self.Bind(wx.EVT_MENU, self.on_open, id=wx.ID_OPEN)
+
 
         # Set the menu bar
         self.SetMenuBar(menu_bar)
@@ -373,6 +383,16 @@ class MyFrame(wx.Frame):
 
     def on_quit(self, event):
         self.Close()
+
+    def on_open(self, event):
+        global current_repo_path
+        path = wx.DirSelector('Select a git repo')
+        if path:
+            current_repo_path = path
+            os.chdir(path)
+            self.SetTitle(f"Git Repo Time Machine - {path}")
+            pub.sendMessage('repo-changed')
+
 
 if __name__ == '__main__':
     app = wx.App()

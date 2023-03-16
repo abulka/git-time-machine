@@ -132,6 +132,9 @@ class CommitsPanel(wx.Panel):
             self.list_ctrl.SetItem(index, 2, commit.author)
             self.list_ctrl.SetItem(index, 3, commit.comment)
 
+        # set the selected item to the first
+        self.list_ctrl.Select(0)
+        
     def on_commit_selected(self, event):
         # Update the global variable current_commit with the SHA of the selected commit
         selected_item = self.list_ctrl.GetFirstSelected()

@@ -170,6 +170,9 @@ class MyFrame(wx.Frame):
     def __init__(self, parent):
         super().__init__(parent, title="My App")
         
+        # Set the size of the frame
+        self.SetSize(wx.Size(1000, 600))
+
         # Create the BranchesPanel and MainPanel sub-panels
         branches_panel = BranchesPanel(self)
         main_panel = MainPanel(self)

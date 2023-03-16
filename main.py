@@ -15,7 +15,7 @@ class Commit:
         self.author = author
         self.comment = comment
 
-current_repo_path = '.'
+current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
 
@@ -331,7 +331,7 @@ class LeftPanel(wx.Panel):
 
 class MyFrame(wx.Frame):
     def __init__(self, parent):
-        super().__init__(parent, title="Git Repo Time Machine")
+        super().__init__(parent, title=self.title)
         
         # Set the size of the frame
         self.SetSize(wx.Size(1000, 600))
@@ -390,9 +390,12 @@ class MyFrame(wx.Frame):
         if path:
             current_repo_path = path
             os.chdir(path)
-            self.SetTitle(f"Git Repo Time Machine - {path}")
+            self.SetTitle(self.title)
             pub.sendMessage('repo-changed')
 
+    @property
+    def title(self):
+        return f"Git Repo Time Machine - {current_repo_path}"
 
 if __name__ == '__main__':
     app = wx.App()

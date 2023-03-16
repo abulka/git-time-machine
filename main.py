@@ -40,6 +40,9 @@ def get_commits_for_branch(branch):
         print(f"Error fetching commits for branch '{branch}'")
         return []
 
+import wx
+import subprocess
+
 class BranchesPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
@@ -47,7 +50,28 @@ class BranchesPanel(wx.Panel):
         # Set the background color to blue
         self.SetBackgroundColour(wx.BLUE)
         
-        # TODO: Add code to create the Branches panel UI
+        # create a box sizer for the panel
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        # create a listbox to display the branches
+        self.branches_list = wx.ListBox(self, wx.ID_ANY, style=wx.LB_SINGLE)
+        sizer.Add(self.branches_list, proportion=1, flag=wx.EXPAND|wx.ALL, border=10)
+        
+        # get the list of branches using the git command
+        git_command = ['git', 'branch']
+        branches = subprocess.check_output(git_command, universal_newlines=True).splitlines()
+        self.branches_list.Set(branches)
+        
+        # bind the selection event to a method
+        self.Bind(wx.EVT_LISTBOX, self.on_branch_selected, self.branches_list)
+        
+        # set the panel sizer
+        self.SetSizer(sizer)
+    
+    def on_branch_selected(self, event):
+        # get the selected branch and do something with it
+        selected_branch = self.branches_list.GetStringSelection()
+        print(f'Selected branch: {selected_branch}')
 
 class CommitsPanel(wx.Panel):
     def __init__(self, parent):

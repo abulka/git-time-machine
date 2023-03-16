@@ -3,8 +3,10 @@ import sys
 import wx
 import subprocess
 import wx.lib.newevent
-import wx.html
+import wx.html # old, doesn't support css and javascript
+import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
+
 from pubsub import pub  # pip install pypubsub
 
 class Commit:
@@ -257,7 +259,9 @@ class FileContentsPanel(wx.Panel):
         # self.SetBackgroundColour(wx.RED)
 
         # Create an html window to display the file contents
-        self.html = wx.html.HtmlWindow(self, style=wx.SIMPLE_BORDER)
+        # self.html = wx.html.HtmlWindow(self, style=wx.SIMPLE_BORDER)
+        self.html = wx.html2.WebView.New(self)
+
         # set background color to dark gray
         dark_grey = wx.Colour(47, 47, 47)
         self.html.SetBackgroundColour(dark_grey)
@@ -272,7 +276,7 @@ class FileContentsPanel(wx.Panel):
         file_contents = contents
 
         # Get the current scroll position
-        scroll_pos = self.html.GetViewStart()[1]
+        # scroll_pos = self.html.GetViewStart()[1]
 
         # add line numbers
         lines = file_contents.split('\n')
@@ -281,11 +285,12 @@ class FileContentsPanel(wx.Panel):
             file_contents += f'<font color="silver">{i+1:4}</font> <font color="white" size="4">{line}</font>\n'
 
         html_str = f"""<html><body bgcolor='dark gray'><pre>{file_contents}</p></pre></html>"""
-        self.html.SetPage(html_str)
+        self.html.SetPage(html_str, "")
         print(html_str)
 
         # Set the scroll position to the same value
-        self.html.Scroll(0, scroll_pos)
+        # self.html.Scroll(0, scroll_pos)
+        self.html.RunScript('scrollTo(%d, %d)' % (0, 100))
 
 class LeftPanel(wx.Panel):
     def __init__(self, parent):

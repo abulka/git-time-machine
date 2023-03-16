@@ -239,8 +239,6 @@ class FileContentsPanel(wx.Panel):
         # Set the scroll position to the same value
         self.html.Scroll(0, scroll_pos)
 
-
-
 class LowerPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
@@ -276,6 +274,24 @@ class MyFrame(wx.Frame):
         # Set the size of the frame
         self.SetSize(wx.Size(1000, 600))
 
+        # Create a menu bar
+        menu_bar = wx.MenuBar()
+
+        # Create a file menu
+        file_menu = wx.Menu()
+        file_menu.Append(wx.ID_EXIT, 'Quit\tCtrl+Q', 'Quit the application')
+        self.Bind(wx.EVT_MENU, self.on_quit, id=wx.ID_EXIT)
+        self.Bind(wx.EVT_MENU, self.on_quit, id=wx.ID_CLOSE)
+        menu_bar.Append(file_menu, 'File')
+
+        # Set the menu bar
+        self.SetMenuBar(menu_bar)
+
+        # Register the keyboard shortcut
+        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CMD, ord('Q'), wx.ID_EXIT)])
+        self.SetAcceleratorTable(accel_tbl)
+
+
         # Create the BranchesPanel and MainPanel sub-panels
         branches_panel = BranchesPanel(self)
         main_panel = MainPanel(self)
@@ -287,6 +303,9 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer)
 
         self.Show()
+
+    def on_quit(self, event):
+        self.Close()
 
 if __name__ == '__main__':
     app = wx.App()

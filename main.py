@@ -264,6 +264,7 @@ class MainPanel(wx.Panel):
         self.SetSizer(sizer)
 
 
+
 class MyFrame(wx.Frame):
     def __init__(self, parent):
         super().__init__(parent, title="My App")
@@ -288,18 +289,20 @@ class MyFrame(wx.Frame):
         accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CMD, ord('Q'), wx.ID_EXIT)])
         self.SetAcceleratorTable(accel_tbl)
 
+        splitterWindow = wx.SplitterWindow(self, -1, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
 
         # Create the BranchesPanel and MainPanel sub-panels
-        branches_panel = BranchesPanel(self)
-        main_panel = MainPanel(self)
-        
-        # Add the sub-panels to the main frame
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(branches_panel, proportion=1, flag=wx.EXPAND)
-        sizer.Add(main_panel, proportion=2, flag=wx.EXPAND)
-        self.SetSizer(sizer)
+        branches_panel = BranchesPanel(splitterWindow)
+        main_panel = MainPanel(splitterWindow)
+
+        splitterWindow.SplitVertically(branches_panel, main_panel, 200)
+        splitterWindow.SetSashPosition(200, True)
+        splitterWindow.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.OnSashChanging)
 
         self.Show()
+
+    def OnSashChanging(self, event):
+        event.Skip()
 
     def on_quit(self, event):
         self.Close()

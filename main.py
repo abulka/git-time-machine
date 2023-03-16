@@ -117,6 +117,13 @@ class FileTreePanel(wx.Panel):
         self.rebuild_tree()
 
     def rebuild_tree(self):
+        # remember the selected item, if any
+        item = self.tree.GetSelection() # Could be None
+        item_text = ''
+        if item:
+            item_text = self.tree.GetItemText(item)
+            print('remembering', item_text)
+            
         # Clear the treeview
         self.tree.DeleteAllItems()
 
@@ -129,7 +136,6 @@ class FileTreePanel(wx.Panel):
         for file_path in files:
             path_parts = file_path.split('/')
             parent = self.tree.GetRootItem()
-            print('parent', parent, self.tree.GetItemText(parent))
             for part in path_parts[:-1]:
                 item, cookie = self.tree.GetFirstChild(parent)
                 while item:
@@ -143,9 +149,28 @@ class FileTreePanel(wx.Panel):
 
             self.tree.AppendItem(parent, path_parts[-1])
 
+        # Restore the selection, if possible, using self.get_item_by_label
+        if item_text:
+            item = self.get_item_by_label(self.tree, item_text, root)
+            if item.IsOk():
+                self.tree.SelectItem(item)
+                print('restoring', item_text)
+
         # Expand the tree to show all items
         self.tree.ExpandAll()
 
+    def get_item_by_label(self, tree, search_text, root_item):
+        item, cookie = tree.GetFirstChild (root_item)
+        while item.IsOk ():
+            text = tree.GetItemText (item)
+            if text.lower () == search_text.lower ():
+                return item
+            if tree.ItemHasChildren (item):
+                match = self.get_item_by_label (tree, search_text, item)
+                if match.IsOk ():
+                    return match
+            item, cookie = tree.GetNextChild (root_item, cookie)
+        return wx.TreeItemId ()
 
     def on_tree_sel_changed(self, event):
         # Get the selected file path

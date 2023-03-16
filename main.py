@@ -14,6 +14,7 @@ class Commit:
         self.author = author
         self.comment = comment
 
+current_branch = 'main'
 current_commit = 'HEAD'
 
 def get_files_in_repo(commit):
@@ -85,9 +86,11 @@ class BranchesPanel(wx.Panel):
         self.SetSizer(sizer)
     
     def on_branch_selected(self, event):
-        # get the selected branch and do something with it
-        selected_branch = self.branches_list.GetStringSelection()
-        print(f'Selected branch: {selected_branch}')
+        global current_branch
+        current_branch = self.branches_list.GetStringSelection().strip('* ')
+
+        # Publish a message to notify the CommitsPanel that the branch has changed
+        pub.sendMessage('branch_changed')
 
 class CommitsPanel(wx.Panel):
     def __init__(self, parent):
@@ -112,8 +115,19 @@ class CommitsPanel(wx.Panel):
         # Bind the list control selection event to on_commit_selected
         self.list_ctrl.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_commit_selected)
 
+        pub.subscribe(self.rebuild_commits, 'branch_changed')
+
+        self.rebuild_commits()
+
+        # Set the sizer for the panel
+        self.SetSizer(sizer)
+
+    def rebuild_commits(self):
         # Fetch the commits for the current branch
-        commits = get_commits_for_branch("main")  # Replace "master" with current branch name
+        commits = get_commits_for_branch(current_branch)
+
+        # Clear the list control
+        self.list_ctrl.DeleteAllItems()
 
         # Add the commits to the list control
         for commit in commits:
@@ -121,9 +135,6 @@ class CommitsPanel(wx.Panel):
             self.list_ctrl.SetItem(index, 1, commit.date)
             self.list_ctrl.SetItem(index, 2, commit.author)
             self.list_ctrl.SetItem(index, 3, commit.comment)
-
-        # Set the sizer for the panel
-        self.SetSizer(sizer)
 
     def on_commit_selected(self, event):
         # Update the global variable current_commit with the SHA of the selected commit

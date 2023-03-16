@@ -2,6 +2,7 @@ import sys
 import wx
 import subprocess
 import wx.lib.newevent
+import wx.html
 from pubsub import pub  # pip install pypubsub
 
 class Commit:
@@ -212,22 +213,28 @@ class FileContentsPanel(wx.Panel):
         # Set the background color to red
         self.SetBackgroundColour(wx.RED)
 
-        # Create a text control to display the file contents
-        self.text_ctrl = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        # Create an html window to display the file contents
+        self.html = wx.html.HtmlWindow(self, style=wx.SIMPLE_BORDER)
 
-        # Use a box sizer to layout the text control
+        # Use a box sizer to layout the html window
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.text_ctrl, proportion=1, flag=wx.EXPAND)
+        sizer.Add(self.html, proportion=1, flag=wx.EXPAND)
         self.SetSizer(sizer)
         self.Layout()
 
     def on_file_selected(self, contents):
         file_contents = contents
 
-        # Set the file text display without changing the scroll value
-        self.text_ctrl.Freeze()
-        self.text_ctrl.SetValue(file_contents)
-        self.text_ctrl.Thaw()
+        # Get the current scroll position
+        scroll_pos = self.html.GetViewStart()[1]
+
+        html_str = f"""<html><body><pre>{file_contents}</p></pre></html>"""
+        self.html.SetPage(html_str)
+
+        # Set the scroll position to the same value
+        self.html.Scroll(0, scroll_pos)
+
+
 
 class LowerPanel(wx.Panel):
     def __init__(self, parent):

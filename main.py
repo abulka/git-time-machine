@@ -9,16 +9,12 @@ class Commit:
         self.author = author
         self.comment = comment
 
-# wx.EVT_COMMAND_COMMIT_SELECTED = wx.NewEventType()
-# wx.EVT_COMMIT_SELECTED = wx.PyEventBinder(wx.EVT_COMMAND_COMMIT_SELECTED.typeId, 1)
+current_commit = 'HEAD'
 
-# class CommitSelectionEvent(wx.PyCommandEvent):
-#     """Custom event to signal when a commit has been selected."""
-#     def __init__(self, commit):
-#         super().__init__(wx.EVT_COMMAND_COMMIT_SELECTED.typeId)
-#         self.commit = commit
-
-
+def get_files_in_repo(commit):
+    command = ['git', 'ls-tree', '-r', '--name-only', commit]
+    output = subprocess.check_output(command).decode().strip()
+    return output.splitlines()
 
 def get_commits_for_branch(branch):
     try:
@@ -72,6 +68,9 @@ class CommitsPanel(wx.Panel):
         # Add the list control to the sizer
         sizer.Add(self.list_ctrl, 1, wx.EXPAND)
 
+        # Bind the list control selection event to on_commit_selected
+        self.list_ctrl.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_commit_selected)
+
         # Fetch the commits for the current branch
         commits = get_commits_for_branch("main")  # Replace "master" with current branch name
 
@@ -85,9 +84,15 @@ class CommitsPanel(wx.Panel):
         # Set the sizer for the panel
         self.SetSizer(sizer)
 
+    def on_commit_selected(self, event):
+        # Update the global variable current_commit with the SHA of the selected commit
+        selected_item = self.list_ctrl.GetFirstSelected()
+        if selected_item != -1:
+            global current_commit
+            current_commit = self.list_ctrl.GetItemText(selected_item)
 
 class FileTreePanel(wx.Panel):
-    def __init__(self, parent, commit):
+    def __init__(self, parent):
         super().__init__(parent)
 
         # Set panel background color
@@ -96,14 +101,19 @@ class FileTreePanel(wx.Panel):
         # Create a tree control to display the file tree
         self.tree = wx.TreeCtrl(self, style=wx.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT)
 
-        # Fetch the file tree for the specified commit
-        command = ['git', 'ls-tree', '-r', '--name-only', commit]
-        output = subprocess.check_output(command).decode().strip()
+        # Bind the tree control to the EVT_TREE_SEL_CHANGED event
+        self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_sel_changed)
+       
+        # Fetch the file tree for the current commit
+        files = get_files_in_repo(current_commit)
+
+        root = self.tree.AddRoot("My Root Item")
 
         # Add each file in the tree to the tree control
-        for line in output.splitlines():
-            path_parts = line.split('/')
+        for file_path in files:
+            path_parts = file_path.split('/')
             parent = self.tree.GetRootItem()
+            print('parent', parent, self.tree.GetItemText(parent))
             for part in path_parts[:-1]:
                 item, cookie = self.tree.GetFirstChild(parent)
                 while item:
@@ -125,6 +135,39 @@ class FileTreePanel(wx.Panel):
         sizer.Add(self.tree, 1, wx.EXPAND)
         self.SetSizer(sizer)
 
+    def on_tree_sel_changed(self, event):
+        # Get the selected file path
+        item = event.GetItem()
+
+        item = event.GetItem()
+        if item:
+            # Get the full path of the selected file
+            path = self.tree.GetItemText(item)
+            parent = self.tree.GetItemParent(item)
+            while parent:
+                print(self.tree.GetItemText(parent))
+                path = self.tree.GetItemText(parent) + '/' + path
+                parent = self.tree.GetItemParent(parent)
+
+            # Remove the root item from the path
+            path = path.replace('My Root Item/', '')
+            
+            # Do something with the path, e.g. display the file contents
+            print(path)
+        event.Skip()
+
+        # Get the contents of the selected file at the current commit
+        contents = self.get_file_contents(current_commit, path)
+        print(contents)
+
+        # Display the contents in the file contents panel
+        # pub.sendMessage("file_contents_changed", contents=contents)
+
+    def get_file_contents(self, commit, file_path):
+        # get the git command to get the contents of the file at the given commit
+        command = ['git', 'show', f'{commit}:{file_path}']
+        # run the command and return the output
+        return subprocess.check_output(command).decode()
 
 
 class FileContentsPanel(wx.Panel):
@@ -142,7 +185,7 @@ class LowerPanel(wx.Panel):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
         
         # Create the FileTreePanel and FileContentsPanel sub-panels
-        file_tree_panel = FileTreePanel(self, "main")
+        file_tree_panel = FileTreePanel(self)
         file_contents_panel = FileContentsPanel(self)
         
         # Split the lower panel horizontally to show the two sub-panels

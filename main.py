@@ -226,7 +226,14 @@ class FileContentsPanel(wx.Panel):
         # Get the current scroll position
         scroll_pos = self.html.GetViewStart()[1]
 
+        # add line numbers
+        lines = file_contents.split('\n')
+        file_contents = ''
+        for i, line in enumerate(lines):
+            file_contents += f'{i+1:4} {line}\n'
+
         html_str = f"""<html><body><pre>{file_contents}</p></pre></html>"""
+        print(html_str)
         self.html.SetPage(html_str)
 
         # Set the scroll position to the same value

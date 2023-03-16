@@ -41,9 +41,6 @@ def get_commits_for_branch(branch):
         print(f"Error fetching commits for branch '{branch}'")
         return []
 
-import wx
-import subprocess
-
 class BranchesPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
@@ -243,6 +240,9 @@ class FileContentsPanel(wx.Panel):
 
         # Create an html window to display the file contents
         self.html = wx.html.HtmlWindow(self, style=wx.SIMPLE_BORDER)
+        # set background color to dark gray
+        dark_grey = wx.Colour(47, 47, 47)
+        self.html.SetBackgroundColour(dark_grey)
 
         # Use a box sizer to layout the html window
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -260,10 +260,11 @@ class FileContentsPanel(wx.Panel):
         lines = file_contents.split('\n')
         file_contents = ''
         for i, line in enumerate(lines):
-            file_contents += f'{i+1:4} {line}\n'
+            file_contents += f'<font color="silver">{i+1:4}</font> <font color="white" size="4">{line}</font>\n'
 
-        html_str = f"""<html><body><pre>{file_contents}</p></pre></html>"""
+        html_str = f"""<html><body bgcolor='dark gray'><pre>{file_contents}</p></pre></html>"""
         self.html.SetPage(html_str)
+        print(html_str)
 
         # Set the scroll position to the same value
         self.html.Scroll(0, scroll_pos)

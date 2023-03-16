@@ -91,6 +91,9 @@ class CommitsPanel(wx.Panel):
             global current_commit
             current_commit = self.list_ctrl.GetItemText(selected_item)
 
+            # Publish a message to notify the FileTreePanel that the commit has changed
+            pub.sendMessage('commit_changed')
+
 class FileTreePanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -104,6 +107,19 @@ class FileTreePanel(wx.Panel):
         # Bind the tree control to the EVT_TREE_SEL_CHANGED event
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_sel_changed)
        
+        pub.subscribe(self.rebuild_tree, 'commit_changed')
+
+        # Use a box sizer to layout the controls
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.tree, 1, wx.EXPAND)
+        self.SetSizer(sizer)
+
+        self.rebuild_tree()
+
+    def rebuild_tree(self):
+        # Clear the treeview
+        self.tree.DeleteAllItems()
+
         # Fetch the file tree for the current commit
         files = get_files_in_repo(current_commit)
 
@@ -130,10 +146,6 @@ class FileTreePanel(wx.Panel):
         # Expand the tree to show all items
         self.tree.ExpandAll()
 
-        # Use a box sizer to layout the controls
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.tree, 1, wx.EXPAND)
-        self.SetSizer(sizer)
 
     def on_tree_sel_changed(self, event):
         # Get the selected file path

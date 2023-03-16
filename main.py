@@ -39,7 +39,6 @@ def get_commits_for_branch(branch):
         print(f"Error fetching commits for branch '{branch}'")
         return []
 
-
 class BranchesPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
@@ -48,7 +47,6 @@ class BranchesPanel(wx.Panel):
         self.SetBackgroundColour(wx.BLUE)
         
         # TODO: Add code to create the Branches panel UI
-
 
 class CommitsPanel(wx.Panel):
     def __init__(self, parent):
@@ -168,7 +166,6 @@ class FileTreePanel(wx.Panel):
         # run the command and return the output
         return subprocess.check_output(command).decode()
 
-
 class FileContentsPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
@@ -194,7 +191,6 @@ class FileContentsPanel(wx.Panel):
         self.text_ctrl.Freeze()
         self.text_ctrl.SetValue(file_contents)
         self.text_ctrl.Thaw()
-
 
 class LowerPanel(wx.Panel):
     def __init__(self, parent):
@@ -224,7 +220,6 @@ class MainPanel(wx.Panel):
         sizer.Add(lower_panel, proportion=2, flag=wx.EXPAND)
         self.SetSizer(sizer)
 
-
 class MyFrame(wx.Frame):
     def __init__(self, parent):
         super().__init__(parent, title="My App")
@@ -239,11 +234,10 @@ class MyFrame(wx.Frame):
         # Add the sub-panels to the main frame
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(branches_panel, proportion=1, flag=wx.EXPAND)
-        sizer.Add(main_panel, proportion=3, flag=wx.EXPAND)
+        sizer.Add(main_panel, proportion=5, flag=wx.EXPAND)
         self.SetSizer(sizer)
 
         self.Show()
-
 
 if __name__ == '__main__':
     app = wx.App()

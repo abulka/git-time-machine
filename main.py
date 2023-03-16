@@ -291,7 +291,7 @@ class MainPanel(wx.Panel):
 
 class MyFrame(wx.Frame):
     def __init__(self, parent):
-        super().__init__(parent, title="My App")
+        super().__init__(parent, title="Git Repo Time Machine")
         
         # Set the size of the frame
         self.SetSize(wx.Size(1000, 600))

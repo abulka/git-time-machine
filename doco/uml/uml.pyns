@@ -1,0 +1,39 @@
+# PynSource Version 1.2
+{'type':'meta', 'info1':'Lorem ipsum dolor sit amet, consectetur adipiscing elit is latin. Comments are saved.'}
+{'type':'umlshape', 'id':'Commit', 'x':66, 'y':145, 'width':60, 'height':104, 'attrs': 'author|comment|date|sha', 'meths': '__init__'}
+{'type':'umlshape', 'id':'FileSelectedEvent', 'x':383, 'y':75, 'width':153, 'height':74, 'attrs': 'filecontents', 'meths': '__init__'}
+{'type':'umlshape', 'id':'BranchesPanel', 'x':143, 'y':80, 'width':119, 'height':54, 'attrs': '', 'meths': '__init__'}
+{'type':'umlshape', 'id':'CommitsPanel', 'x':142, 'y':418, 'width':118, 'height':84, 'attrs': 'list_ctrl', 'meths': '__init__|on_commit_selected'}
+{'type':'umlshape', 'id':'FileTreePanel', 'x':566, 'y':150, 'width':124, 'height':104, 'attrs': 'tree', 'meths': '__init__|get_file_contents|on_file_selected|on_tree_sel_changed'}
+{'type':'umlshape', 'id':'FileContentsPanel', 'x':261, 'y':176, 'width':153, 'height':64, 'attrs': '', 'meths': '__init__|display_file_contents'}
+{'type':'umlshape', 'id':'LowerPanel', 'x':40, 'y':290, 'width':94, 'height':54, 'attrs': '', 'meths': '__init__'}
+{'type':'umlshape', 'id':'MainPanel', 'x':286, 'y':471, 'width':86, 'height':54, 'attrs': '', 'meths': '__init__'}
+{'type':'umlshape', 'id':'MyFrame', 'x':698, 'y':552, 'width':69, 'height':54, 'attrs': '', 'meths': '__init__'}
+{'type':'umlshape', 'id':'main.py', 'x':421, 'y':297, 'width':160, 'height':124, 'attrs': 'EVT_FILE_SELECTED|EVT_FILE_SELECTED_CHANGED|app|current_commit|frame', 'meths': 'get_commits_for_branch|get_files_in_repo'}
+{'type':'umlshape', 'id':'wx.NewEventType', 'x':18, 'y':361, 'width':136, 'height':24, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'wx.PyEventBinder', 'x':668, 'y':347, 'width':144, 'height':24, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'wx.App', 'x':402, 'y':487, 'width':60, 'height':24, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'wx.PyCommandEvent', 'x':441, 'y':10, 'width':153, 'height':24, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'wx.Frame', 'x':693, 'y':460, 'width':77, 'height':24, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'wx.ListCtrl', 'x':22, 'y':538, 'width':102, 'height':24, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'wx.TreeCtrl', 'x':741, 'y':259, 'width':102, 'height':24, 'attrs': '', 'meths': ''}
+{'type':'comment', 'id':'C3425', 'x':629, 'y':14, 'width':354, 'height':95, 'comment': 'c2VsZi5vbl90cmVlX3NlbF9jaGFuZ2VkKCkKY2FsbGVkIHdoZW4gdHJlZSBzZWxlY3Rpb24gY2hhbmdlcwp3aGljaCBnZXRfZmlsZV9jb250ZW50cygpIGFuZCBicm9hZGNhc3RzIApFVlRfRklMRV9TRUxFQ1RFRA=='}
+{'type':'edge', 'id':'FileSelectedEvent_to_wx.PyCommandEvent', 'source':'FileSelectedEvent', 'target':'wx.PyCommandEvent', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'MyFrame_to_wx.Frame', 'source':'MyFrame', 'target':'wx.Frame', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'wx.PyEventBinder_to_main.py', 'source':'wx.PyEventBinder', 'target':'main.py', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Commit_to_main.py', 'source':'Commit', 'target':'main.py', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'wx.ListCtrl_to_CommitsPanel', 'source':'wx.ListCtrl', 'target':'CommitsPanel', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'wx.NewEventType_to_main.py', 'source':'wx.NewEventType', 'target':'main.py', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'wx.App_to_main.py', 'source':'wx.App', 'target':'main.py', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'MyFrame_to_main.py', 'source':'MyFrame', 'target':'main.py', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'wx.TreeCtrl_to_FileTreePanel', 'source':'wx.TreeCtrl', 'target':'FileTreePanel', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'CommitsPanel_to_main.py', 'source':'CommitsPanel', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'LowerPanel_to_main.py', 'source':'LowerPanel', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'Commit_to_main.py', 'source':'Commit', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'MainPanel_to_main.py', 'source':'MainPanel', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'BranchesPanel_to_main.py', 'source':'BranchesPanel', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'MyFrame_to_main.py', 'source':'MyFrame', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'FileTreePanel_to_main.py', 'source':'FileTreePanel', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'FileSelectedEvent_to_main.py', 'source':'FileSelectedEvent', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'FileContentsPanel_to_main.py', 'source':'FileContentsPanel', 'target':'main.py', 'uml_edge_type': 'association'}
+{'type':'edge', 'id':'C3425_to_FileTreePanel', 'source':'C3425', 'target':'FileTreePanel', 'uml_edge_type': 'association'}

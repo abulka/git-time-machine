@@ -49,7 +49,7 @@ class BranchesPanel(wx.Panel):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
         
         # Set the background color to blue
-        self.SetBackgroundColour(wx.BLUE)
+        # self.SetBackgroundColour(wx.BLUE)
         
         # create a box sizer for the panel
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -79,7 +79,7 @@ class CommitsPanel(wx.Panel):
         super().__init__(parent)
 
         # Set panel background color
-        self.SetBackgroundColour(wx.Colour(200, 255, 255))
+        # self.SetBackgroundColour(wx.Colour(200, 255, 255))
 
         # Create a box sizer to contain the list control
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -125,7 +125,7 @@ class FileTreePanel(wx.Panel):
         super().__init__(parent)
 
         # Set panel background color
-        self.SetBackgroundColour(wx.Colour(255, 255, 200))
+        # self.SetBackgroundColour(wx.Colour(255, 255, 200))
 
         # Create a tree control to display the file tree
         self.tree = wx.TreeCtrl(self, style=wx.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT)
@@ -139,6 +139,14 @@ class FileTreePanel(wx.Panel):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.tree, 1, wx.EXPAND)
         self.SetSizer(sizer)
+
+        # self.tree.SetBackgroundColour(wx.Colour(0, 0, 0))
+        # set to wx red
+        # self.tree.SetForegroundColour(wx.RED)
+        # Set the color of the focus item when the tree widget loses focus to grey
+        # self.tree.SetItemTextColour(self.tree.GetSelection(), wx.Colour(128, 128, 128))
+        # Set the HideSelection property of the treeview to False
+        # self.tree.HideSelection = False
 
         self.rebuild_tree()
 
@@ -199,8 +207,6 @@ class FileTreePanel(wx.Panel):
     def on_tree_sel_changed(self, event):
         # Get the selected file path
         item = event.GetItem()
-
-        item = event.GetItem()
         if item:
             # Get the full path of the selected file
             path = self.tree.GetItemText(item)
@@ -211,6 +217,8 @@ class FileTreePanel(wx.Panel):
 
             # Remove the root item from the path
             path = path.replace('My Root Item/', '')
+
+            # self.tree.SetItemBackgroundColour(item, wx.Colour(255, 0, 0)) # set the background color to red
 
         event.Skip()
 
@@ -231,7 +239,7 @@ class FileContentsPanel(wx.Panel):
         pub.subscribe(self.on_file_selected, 'EVT_FILE_SELECTED_CHANGED')
 
         # Set the background color to red
-        self.SetBackgroundColour(wx.RED)
+        # self.SetBackgroundColour(wx.RED)
 
         # Create an html window to display the file contents
         self.html = wx.html.HtmlWindow(self, style=wx.SIMPLE_BORDER)

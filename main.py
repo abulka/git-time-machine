@@ -3,6 +3,7 @@ import wx
 import subprocess
 import wx.lib.newevent
 import wx.html
+from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
 
 class Commit:
@@ -313,6 +314,12 @@ class MyFrame(wx.Frame):
         accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CMD, ord('Q'), wx.ID_EXIT)])
         self.SetAcceleratorTable(accel_tbl)
 
+        # self.layout_ui()
+        self.layout_ui_2()
+
+        self.Show()
+
+    def layout_ui(self):
         splitterWindow = wx.SplitterWindow(self, -1, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
 
         # Create the BranchesPanel and MainPanel sub-panels
@@ -323,7 +330,24 @@ class MyFrame(wx.Frame):
         splitterWindow.SetSashPosition(200, True)
         splitterWindow.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.OnSashChanging)
 
-        self.Show()
+
+    def layout_ui_2(self):
+        outer_area = wx.SplitterWindow(self, -1, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
+
+        left_area = MultiSplitterWindow(outer_area, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
+        left_area.SetOrientation(wx.VERTICAL)
+        left_area.AppendWindow(BranchesPanel(left_area))
+        left_area.AppendWindow(CommitsPanel(left_area))
+        left_area.AppendWindow(FileTreePanel(left_area))
+
+        right_area = FileContentsPanel(outer_area)
+
+        outer_area.SplitVertically(left_area, right_area)
+        outer_area.SetSashGravity(0.5)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(outer_area, 1, wx.EXPAND)
+        self.SetSizer(sizer)
 
     def OnSashChanging(self, event):
         event.Skip()

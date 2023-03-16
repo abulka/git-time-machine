@@ -123,7 +123,6 @@ class FileTreePanel(wx.Panel):
         item_text = ''
         if item:
             item_text = self.tree.GetItemText(item)
-            print('remembering', item_text)
             
         # Clear the treeview
         self.tree.DeleteAllItems()
@@ -155,7 +154,6 @@ class FileTreePanel(wx.Panel):
             item = self.get_item_by_label(self.tree, item_text, root)
             if item.IsOk():
                 self.tree.SelectItem(item)
-                print('restoring', item_text)
 
         # Expand the tree to show all items
         self.tree.ExpandAll()

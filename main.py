@@ -273,29 +273,23 @@ class FileContentsPanel(wx.Panel):
         # Set the background color to red
         self.SetBackgroundColour(wx.RED)
 
+        # Create a text control to display the file contents
+        self.text_ctrl = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
+
+        # Use a box sizer to layout the text control
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.text_ctrl, proportion=1, flag=wx.EXPAND)
+        self.SetSizer(sizer)
+        self.Layout()
+
     def on_file_selected(self, contents):
         print('on_file_selected: got event')
         file_contents = contents
 
-        # Display the contents of the selected file in the FileContentsPanel
-        # (assuming the parent window has a reference to the FileContentsPanel)
-        # print('self.GetParent().file_contents_panel', self.GetParent().file_contents_panel)
-        # self.GetParent().file_contents_panel.display_file_contents(file_contents)
-        self.display_file_contents(file_contents)
-
-    def display_file_contents(self, file_contents):
-        # Clear the current contents of the panel
-        self.DestroyChildren()        
-
-        # Create a text control to display the file contents
-        text_ctrl = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        text_ctrl.SetValue(file_contents)
-
-        # Use a box sizer to layout the text control
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(text_ctrl, proportion=1, flag=wx.EXPAND)
-        self.SetSizer(sizer)
-        self.Layout()
+        # Set the file text display without changing the scroll value
+        self.text_ctrl.Freeze()
+        self.text_ctrl.SetValue(file_contents)
+        self.text_ctrl.Thaw()
 
 
 class LowerPanel(wx.Panel):

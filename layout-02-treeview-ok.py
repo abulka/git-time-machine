@@ -52,32 +52,6 @@ class BranchesPanel(wx.Panel):
         # TODO: Add code to create the Branches panel UI
 
 
-# class CommitsPanel(wx.Panel):
-#     def __init__(self, parent):
-#         super().__init__(parent, style=wx.SIMPLE_BORDER)
-        
-#         # Set the background color to green
-#         self.SetBackgroundColour(wx.GREEN)
-        
-#         # Create the UI elements for the Commits panel
-#         title = wx.StaticText(self, label="Commits")
-#         commit_list = wx.ListBox(self)
-        
-#         # Fetch the list of commits for the current branch
-#         # (Assuming you have some function or library that can do this)
-#         commits = get_commits_for_branch("main")  # Replace "master" with current branch name
-        
-#         # Add the commit information to the commit list
-#         for commit in commits:
-#             commit_str = f"{commit.sha} - {commit.date} - {commit.author} - {commit.comment}"
-#             commit_list.Append(commit_str)
-        
-#         # Add the UI elements to the Commits panel
-#         sizer = wx.BoxSizer(wx.VERTICAL)
-#         sizer.Add(title, flag=wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, border=10)
-#         sizer.Add(commit_list, proportion=1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, border=10)
-#         self.SetSizer(sizer)
-
 class CommitsPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -85,12 +59,18 @@ class CommitsPanel(wx.Panel):
         # Set panel background color
         self.SetBackgroundColour(wx.Colour(200, 255, 255))
 
+        # Create a box sizer to contain the list control
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
         # Create a list control to display the commits
         self.list_ctrl = wx.ListCtrl(self, style=wx.LC_REPORT)
         self.list_ctrl.InsertColumn(0, "SHA")
         self.list_ctrl.InsertColumn(1, "Date")
         self.list_ctrl.InsertColumn(2, "Author")
         self.list_ctrl.InsertColumn(3, "Comment", width=300)
+
+        # Add the list control to the sizer
+        sizer.Add(self.list_ctrl, 1, wx.EXPAND)
 
         # Fetch the commits for the current branch
         commits = get_commits_for_branch("main")  # Replace "master" with current branch name
@@ -101,6 +81,9 @@ class CommitsPanel(wx.Panel):
             self.list_ctrl.SetItem(index, 1, commit.date)
             self.list_ctrl.SetItem(index, 2, commit.author)
             self.list_ctrl.SetItem(index, 3, commit.comment)
+
+        # Set the sizer for the panel
+        self.SetSizer(sizer)
 
 
 class FileTreePanel(wx.Panel):

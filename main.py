@@ -187,13 +187,10 @@ class FileTreePanel(wx.Panel):
             # Remove the root item from the path
             path = path.replace('My Root Item/', '')
 
-            # Do something with the path, e.g. display the file contents
-            print(path)
         event.Skip()
 
         # Get the contents of the selected file at the current commit
         contents = self.get_file_contents(current_commit, path)
-        # print(contents)
         pub.sendMessage('EVT_FILE_SELECTED_CHANGED', contents=contents)
 
     def get_file_contents(self, commit, file_path):
@@ -233,39 +230,39 @@ class FileContentsPanel(wx.Panel):
             file_contents += f'{i+1:4} {line}\n'
 
         html_str = f"""<html><body><pre>{file_contents}</p></pre></html>"""
-        print(html_str)
         self.html.SetPage(html_str)
 
         # Set the scroll position to the same value
         self.html.Scroll(0, scroll_pos)
 
-class LowerPanel(wx.Panel):
+class LeftPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
-        
-        # Create the FileTreePanel and FileContentsPanel sub-panels
+
+        # Create the CommitsPanel and FileTreePanel sub-panels vertically
+        commits_panel = CommitsPanel(self)
         file_tree_panel = FileTreePanel(self)
-        file_contents_panel = FileContentsPanel(self)
-        
-        # Split the lower panel horizontally to show the two sub-panels
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(file_tree_panel, proportion=1, flag=wx.EXPAND)
-        sizer.Add(file_contents_panel, proportion=1, flag=wx.EXPAND)
+
+        # Split the left panel vertically to show the two sub-panels
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(commits_panel, proportion=1, flag=wx.EXPAND)
+        sizer.Add(file_tree_panel, proportion=2, flag=wx.EXPAND)
         self.SetSizer(sizer)
 
 class MainPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
-        
-        # Create the CommitsPanel and LowerPanel sub-panels
-        commits_panel = CommitsPanel(self)
-        lower_panel = LowerPanel(self)
-        
-        # Add the sub-panels to the MainPanel
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(commits_panel, proportion=1, flag=wx.EXPAND)
-        sizer.Add(lower_panel, proportion=2, flag=wx.EXPAND)
+
+        # Create the LeftPanel and FileContentsPanel sub-panels
+        left_panel = LeftPanel(self)
+        file_contents_panel = FileContentsPanel(self)
+
+        # Split the main panel horizontally to show the two sub-panels
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(left_panel, proportion=1, flag=wx.EXPAND)
+        sizer.Add(file_contents_panel, proportion=2, flag=wx.EXPAND)
         self.SetSizer(sizer)
+
 
 class MyFrame(wx.Frame):
     def __init__(self, parent):
@@ -299,7 +296,7 @@ class MyFrame(wx.Frame):
         # Add the sub-panels to the main frame
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(branches_panel, proportion=1, flag=wx.EXPAND)
-        sizer.Add(main_panel, proportion=5, flag=wx.EXPAND)
+        sizer.Add(main_panel, proportion=2, flag=wx.EXPAND)
         self.SetSizer(sizer)
 
         self.Show()

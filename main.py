@@ -1,3 +1,4 @@
+import re
 import sys
 import wx
 import subprocess
@@ -23,23 +24,40 @@ def get_files_in_repo(commit):
 def get_commits_for_branch(branch):
     try:
         # Fetch the commit hashes for the specified branch
-        command = ['git', 'log', f'{branch}', '--format=%H']
-        commit_hashes = subprocess.check_output(command).splitlines()
+        command = ['git', 'log', f'{branch}', '--format=%H///%cd///%an///%s']
+        commit_info = subprocess.check_output(command).splitlines()
 
-        # Fetch the commit information for each hash
         commits = []
-        for commit_hash in commit_hashes:
-            command = ['git', 'log', f'{commit_hash.decode()}', '-n', '1', '--pretty=format:%ci %cn %s']
-            output = subprocess.check_output(command).decode().strip()
-            date, author, comment = output.split(' ', 2)
-            commits.append(Commit(commit_hash.decode(), date, author, comment))
-
+        for info in commit_info:
+            # split on '///' and get the sha, date, author, and comment
+            sha, date, author, comment = info.decode('utf-8').split('///')
+            commits.append(Commit(sha, date, author, comment))
         return commits
 
     except subprocess.CalledProcessError:
         # Handle Git errors by returning an empty list
         print(f"Error fetching commits for branch '{branch}'")
         return []
+
+def extract_fields_OLD(output):
+    date, author, comment = output.split(' ', 2)
+    return date,author,comment
+
+def extract_fields(commit_info):
+    print('commit_info', commit_info)
+    match = re.match(r'(?P<date>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}) (?P<author>.*) (?P<comment>.*)', commit_info)
+
+    if match:
+        # sha = match.group('sha')
+        date = match.group('date')
+        author = match.group('author')
+        comment = match.group('comment')
+        print(f'date: {date}, author: {author}, comment: {comment}')
+    else:
+        # old dogy technique
+        date, author, comment = commit_info.split(' ', 2)
+
+    return date,author,comment
 
 class BranchesPanel(wx.Panel):
     def __init__(self, parent):

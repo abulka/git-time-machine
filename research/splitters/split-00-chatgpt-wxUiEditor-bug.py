@@ -17,7 +17,16 @@ class MyPanelBase(wx.Panel):
         self.splitter.SetSashPosition(200)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.splitter, 1, wx.EXPAND)
+
+        # Raised an issue about this - see https://github.com/KeyWorksRW/wxUiEditor/issues/955 
+        # ------------
+        sizer.Add(self.splitter, 1, wx.EXPAND) # works
+        # sizer.Add(self.splitter, wx.SizerFlags().Expand().Border(wx.ALL)) # bullshit wxUiEditor code
+        # ------------
+
+        print('wx.EXPAND', wx.EXPAND)
+        print('wx.SizerFlags().Expand()', wx.SizerFlags().Expand())
+
         self.SetSizer(sizer)
 
 class MyApp(wx.App):

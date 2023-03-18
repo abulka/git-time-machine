@@ -4,10 +4,16 @@ from wxasync import AsyncBind, WxAsyncApp
 import aiohttp
 from aiohttp import web
 import wxasync
+import wx.html2 # modern supports css and javascript
+
+import wx
+import wx.html2
 
 class TestFrame(wx.Frame):
     def __init__(self, parent=None):
         super().__init__(parent, title="Async Server Example")
+        # make the frame big enough to see the browser
+        self.SetSize((800, 600))
         
         # create a panel and sizer
         panel = wx.Panel(self)
@@ -25,6 +31,17 @@ class TestFrame(wx.Frame):
         # create a text control to display the results
         self.text_ctrl = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
         sizer.Add(self.text_ctrl, 1, wx.EXPAND | wx.ALL, 5)
+        
+        # add web browser
+        self.html = wx.html2.WebView.New(panel)
+        sizer.Add(self.html, 1, wx.EXPAND | wx.ALL, 5)
+        
+        # set the sizer for the panel
+        panel.SetSizer(sizer)
+        
+        # make the browser the same size as the TextCtrl
+        self.html.SetSize(self.text_ctrl.GetSize())
+
         
         # bind the button click event to a coroutine
         wxasync.AsyncBind(wx.EVT_BUTTON, self.on_button_click, self.button)

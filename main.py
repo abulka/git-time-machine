@@ -4,7 +4,8 @@ import sys
 import wx
 import subprocess
 import wx.lib.newevent
-import wx.html
+import wx.html # old, doesn't support css and javascript
+import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
 
@@ -285,7 +286,7 @@ class FileTreePanel(wx.Panel):
 
         # Get the contents of the selected file at the current commit
         contents = self.get_file_contents(current_commit, path)
-        pub.sendMessage('EVT_FILE_SELECTED_CHANGED', contents=contents)
+        pub.sendMessage('EVT_FILE_SELECTED_CHANGED', path=path, contents=contents)
 
     def get_file_contents(self, commit, file_path):
         # get the git command to get the contents of the file at the given commit
@@ -303,7 +304,9 @@ class FileContentsPanel(wx.Panel):
         # self.SetBackgroundColour(wx.RED)
 
         # Create an html window to display the file contents
-        self.html = wx.html.HtmlWindow(self, style=wx.SIMPLE_BORDER)
+        # self.html = wx.html.HtmlWindow(self, style=wx.SIMPLE_BORDER)
+        self.html = wx.html2.WebView.New(self)
+
         # set background color to dark gray
         dark_grey = wx.Colour(47, 47, 47)
         self.html.SetBackgroundColour(dark_grey)
@@ -314,7 +317,11 @@ class FileContentsPanel(wx.Panel):
         self.SetSizer(sizer)
         self.Layout()
 
-    def on_file_selected(self, contents):
+    def on_file_selected(self, path, contents):
+        html_str = self.generate_html(path, contents)
+        self.html.SetPage(html_str, "")
+
+    def on_file_selected_OLD(self, contents):
         file_contents = contents
 
         # Get the current scroll position
@@ -332,6 +339,40 @@ class FileContentsPanel(wx.Panel):
 
         # Set the scroll position to the same value
         self.html.Scroll(0, scroll_pos)
+
+    def generate_html(self, path, source_file_contents):
+        _, file_ext = os.path.splitext(path)
+        lang_map = {
+            '.html': 'html',
+            '.css': 'css',
+            '.js': 'javascript',
+            '.py': 'python',
+            '.java': 'java'
+            # Add more mappings for other file types as needed
+        }
+        lang = lang_map.get(file_ext, 'auto') # Use "auto" if extension is not recognized
+        template = f'''
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>Code Highlighting Example</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-{lang}.min.js"></script>
+          </head>
+          <body>
+            <pre><code class="language-{lang} line-numbers">{source_file_contents}</code></pre>
+          </body>
+        </html>
+        '''
+        return template
+
+
+
+
 
 class LeftPanel(wx.Panel):
     def __init__(self, parent):

@@ -334,7 +334,8 @@ class FileContentsPanel(wx.Panel):
         self.html.SetPage(html_str, "")
 
     def on_page_loaded(self, event):
-        print("Page loaded")
+        pass
+        # print("Page loaded")
         # unfortunately, this doesn't work, the value of saved is blown away by the time the page is loaded
         # self.html.RunScript("window.scrollTo(0, saved)")
 
@@ -350,24 +351,12 @@ class FileContentsPanel(wx.Panel):
             # Add more mappings for other file types as needed
         }
         lang = lang_map.get(file_ext, 'auto') # Use "auto" if extension is not recognized
-        template = f'''
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="UTF-8">
-            <title>Code Highlighting Example</title>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.css">
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-{lang}.min.js"></script>
-          </head>
-          <body>
-            <pre><code class="language-{lang} line-numbers">{source_file_contents}</code></pre>
-          </body>
-        </html>
-        '''
-        return template
+
+        template_path = os.path.join(os.path.dirname(__file__), 'template.html')
+        with open(template_path, 'r') as f:
+            template = f.read()        
+        # use the template as a f string and substitue the values
+        return template.format(lang=lang, source_file_contents=source_file_contents)
 
 class LeftPanel(wx.Panel):
     def __init__(self, parent):

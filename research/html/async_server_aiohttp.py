@@ -12,6 +12,7 @@ import wx.html2  # modern supports css and javascript
 import wx
 import wx.html2
 
+scroll_pos = 0
 
 def generate_sentence():
     words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo",
@@ -82,6 +83,9 @@ class TestFrame(wx.Frame):
         wxasync.AsyncBind(
             wx.EVT_BUTTON, self.on_button_click_randhtml, self.button_randhtml)
 
+        # be notified of the wxEVT_WEBVIEW_LOADED event
+        self.html.Bind(wx.html2.EVT_WEBVIEW_LOADED, self.on_page_loaded)
+
     async def on_button_click(self, event):
         # use aiohttp to fetch some JSON data
         async with aiohttp.ClientSession() as session:
@@ -109,7 +113,17 @@ class TestFrame(wx.Frame):
         self.html.LoadURL(url)
 
     async def on_button_click_randhtml(self, event):
+        # check if self.html is empty
+        if self.html.GetPageText():
+            print('sending a request to the page to get the scroll position')
+            self.html.RunScript("sendScrollPos();") # call the JS function, result is sent to the server
         self.html.LoadURL("http://localhost:8080/randhtml?num_paragraphs=5")
+
+    def on_page_loaded(self, event):        
+        print('page loaded')
+        # restore the scroll position
+        self.html.RunScript(f"scrollToPos({scroll_pos});")
+
 
 
 async def main():
@@ -120,15 +134,46 @@ async def main():
         return web.Response(text=text)
 
     async def randhtml(request):
+        head = """
+        <head>
+            <title>Scroll Position</title>
+            <script>
+                function sendScrollPos() {
+                    var scrollPos = window.scrollY;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/reportscrollpos', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(JSON.stringify({ 'scrollPos': scrollPos }));
+                }
+
+                window.addEventListener('scroll', sendScrollPos);
+
+                function scrollToPos(scrollPos) {
+                    window.scrollTo(0, scrollPos);
+                }
+
+            </script>
+        </head>        
+        """
         num_paragraphs = int(request.query.get('num_paragraphs', 1))
-        html = "<html><body>"
+        html = f"<html>{head}<body>"
         for i in range(num_paragraphs):
             html += f"<p> {i} " + lorem_paragraph() + "</p>"
         html += "</body></html>"
         return web.Response(text=html, content_type='text/html')
 
+    # write reportscrollpos POST method which receives the scroll position
+    async def reportscrollpos(request):
+
+        data = await request.json()
+        # print(data, type(data), data.get('scrollPos'))
+        global scroll_pos
+        scroll_pos = data.get('scrollPos')
+        return web.Response(text="OK")
+
     app = web.Application()
     app.add_routes([
+        web.post('/reportscrollpos', reportscrollpos),
         web.get('/randhtml', randhtml),
         web.get('/', handle),
         web.get('/{name}', handle),

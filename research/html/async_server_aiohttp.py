@@ -1,3 +1,6 @@
+import string
+import random
+import urllib.parse
 import wx
 import asyncio
 from wxasync import AsyncBind, WxAsyncApp
@@ -32,13 +35,16 @@ class TestFrame(wx.Frame):
         self.button_html = wx.Button(panel, label="Load HTML")
         sizer.Add(self.button_html, 0, wx.ALL | wx.CENTER, 5)
         
+        sizer2 = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(sizer2, 1, wx.EXPAND)
+
         # create a text control to display the results
         self.text_ctrl = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
-        sizer.Add(self.text_ctrl, 1, wx.EXPAND | wx.ALL, 5)
+        sizer2.Add(self.text_ctrl, 1, wx.EXPAND | wx.ALL, 5)
         
         # add web browser
         self.html = wx.html2.WebView.New(panel)
-        sizer.Add(self.html, 1, wx.EXPAND | wx.ALL, 5)
+        sizer2.Add(self.html, 1, wx.EXPAND | wx.ALL, 5)
         
         # set the sizer for the panel
         panel.SetSizer(sizer)
@@ -72,7 +78,12 @@ class TestFrame(wx.Frame):
         
     async def on_button_click_html(self, event):
         # load a dummy HTML page
-        self.html.LoadURL("https://www.example.com")
+        # self.html.LoadURL("https://www.example.com")
+
+        rand_word = ''.join(random.choices(string.ascii_lowercase, k=5))
+        url = f"https://www.google.com/search?q={rand_word}"
+        self.html.LoadURL(url)
+
 
 async def main():
     # start the aiohttp server

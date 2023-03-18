@@ -26,7 +26,7 @@ def lorem_paragraph():
     paragraph = ""
     for i in range(random.randint(3, 10)):
         paragraph += generate_sentence() + " "
-    return "<p>" + paragraph[:-1] + "</p>"
+    return paragraph[:-1]
 
 
 class TestFrame(wx.Frame):
@@ -123,7 +123,7 @@ async def main():
         num_paragraphs = int(request.query.get('num_paragraphs', 1))
         html = "<html><body>"
         for i in range(num_paragraphs):
-            html += "<p>" + lorem_paragraph() + "</p>"
+            html += f"<p> {i} " + lorem_paragraph() + "</p>"
         html += "</body></html>"
         return web.Response(text=html, content_type='text/html')
 

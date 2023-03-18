@@ -17,7 +17,7 @@ class TestFrame(wx.Frame):
         
         # create a panel and sizer
         panel = wx.Panel(self)
-        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
         panel.SetSizer(sizer)
         
         # create a button
@@ -27,6 +27,10 @@ class TestFrame(wx.Frame):
         # create a button
         self.button_hello = wx.Button(panel, label="/hello")
         sizer.Add(self.button_hello, 0, wx.ALL | wx.CENTER, 5)
+        
+        # create an additional button
+        self.button_html = wx.Button(panel, label="Load HTML")
+        sizer.Add(self.button_html, 0, wx.ALL | wx.CENTER, 5)
         
         # create a text control to display the results
         self.text_ctrl = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
@@ -46,6 +50,7 @@ class TestFrame(wx.Frame):
         # bind the button click event to a coroutine
         wxasync.AsyncBind(wx.EVT_BUTTON, self.on_button_click, self.button)
         wxasync.AsyncBind(wx.EVT_BUTTON, self.on_button_click_hello, self.button_hello)
+        wxasync.AsyncBind(wx.EVT_BUTTON, self.on_button_click_html, self.button_html)
 
     async def on_button_click(self, event):
         # use aiohttp to fetch some JSON data
@@ -64,6 +69,10 @@ class TestFrame(wx.Frame):
                 
         # update the text control with the data
         self.text_ctrl.SetValue(str(data))
+        
+    async def on_button_click_html(self, event):
+        # load a dummy HTML page
+        self.html.LoadURL("https://www.example.com")
 
 async def main():
     # start the aiohttp server

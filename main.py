@@ -316,29 +316,27 @@ class FileContentsPanel(wx.Panel):
         sizer.Add(self.html, proportion=1, flag=wx.EXPAND)
         self.SetSizer(sizer)
         self.Layout()
+        
+        self.html.Bind(wx.html2.EVT_WEBVIEW_NAVIGATED, self.on_page_loaded)
 
     def on_file_selected(self, path, contents):
+
+        # Get the current scroll position before replacing the page content
+        """
+        This is the javascript that is run to get and set the scroll position
+        let saved = document.documentElement.scrollTop
+        window.scrollTo(0, saved)
+        """
+        self.html.RunScript("saved = document.documentElement.scrollTop")
+
+        # Set the HTML content and restore the scroll position
         html_str = self.generate_html(path, contents)
         self.html.SetPage(html_str, "")
 
-    def on_file_selected_OLD(self, contents):
-        file_contents = contents
-
-        # Get the current scroll position
-        scroll_pos = self.html.GetViewStart()[1]
-
-        # add line numbers
-        lines = file_contents.split('\n')
-        file_contents = ''
-        for i, line in enumerate(lines):
-            file_contents += f'<font color="silver">{i+1:4}</font> <font color="white" size="4">{line}</font>\n'
-
-        html_str = f"""<html><body bgcolor='dark gray'><pre>{file_contents}</p></pre></html>"""
-        self.html.SetPage(html_str)
-        print(html_str)
-
-        # Set the scroll position to the same value
-        self.html.Scroll(0, scroll_pos)
+    def on_page_loaded(self, event):
+        print("Page loaded")
+        # unfortunately, this doesn't work, the value of saved is blown away by the time the page is loaded
+        # self.html.RunScript("window.scrollTo(0, saved)")
 
     def generate_html(self, path, source_file_contents):
         _, file_ext = os.path.splitext(path)
@@ -347,7 +345,8 @@ class FileContentsPanel(wx.Panel):
             '.css': 'css',
             '.js': 'javascript',
             '.py': 'python',
-            '.java': 'java'
+            '.java': 'java',
+            '.md': 'markdown',
             # Add more mappings for other file types as needed
         }
         lang = lang_map.get(file_ext, 'auto') # Use "auto" if extension is not recognized
@@ -369,10 +368,6 @@ class FileContentsPanel(wx.Panel):
         </html>
         '''
         return template
-
-
-
-
 
 class LeftPanel(wx.Panel):
     def __init__(self, parent):

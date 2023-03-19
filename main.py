@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import sys
@@ -360,6 +361,12 @@ class FileContentsPanel(wx.Panel):
 
     def on_script_message_received(self, event):
         print("Script message received", event.GetString())
+        # if first char of message is '{' then it is JSON containing our scroll position
+        if event.GetString()[0] == '{':
+            scroll_pos_data = json.loads(event.GetString())
+            print("Scroll pos extracted as", scroll_pos_data['scrollPos'])
+            global scroll_pos
+            scroll_pos = scroll_pos_data['scrollPos']
 
     def generate_html(self, path, source_file_contents):
         _, file_ext = os.path.splitext(path)

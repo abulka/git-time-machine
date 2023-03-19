@@ -15,3 +15,5 @@ Research/wx doco/drag-button.spec
 junk*.py
 *.egg-info
 .flatpak-builder/
+
+junk*.html

@@ -324,13 +324,10 @@ class FileContentsPanel(wx.Panel):
         self.html.Bind(wx.html2.EVT_WEBVIEW_ERROR, self.on_page_error) # only seems to work for loadURL pages
 
 
-        # Install message handler with the name wx_msg
+        # Install message handler with the name wx_msg, this just listens for messages from the page
         self.html.AddScriptMessageHandler('wx_msg')
         # Bind an event handler to receive those messages
         self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
-
-        # Another technique
-        # EVT_WEBVIEW_SCRIPT_RESULT
 
     def on_file_selected(self, path, contents):
 
@@ -346,8 +343,8 @@ class FileContentsPanel(wx.Panel):
         html_str = self.generate_html(path, contents)
 
         # write html to file junk.html
-        with open('junk.html', 'w') as f:
-            f.write(html_str)
+        # with open('junk.html', 'w') as f:
+        #     f.write(html_str)
 
         self.html.SetPage(html_str, "")
 
@@ -360,6 +357,8 @@ class FileContentsPanel(wx.Panel):
         print("Page loaded")
         # this works but causes the page to jump from the top to the specified scroll position - yuk
         # self.html.RunScript(f"window.scrollTo(0, {scroll_pos})")
+
+        self.html.RunScript("window.wx_msg.postMessage('info is ' + window.scrollY);")
 
     def on_page_error(self, event):
         print("Page error")

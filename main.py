@@ -20,6 +20,7 @@ class Commit:
 current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
+previous_commit = 'HEAD'
 scroll_pos = 0
 
 def get_files_in_repo(commit):
@@ -160,7 +161,8 @@ class CommitsPanel(wx.Panel):
         # Update the global variable current_commit with the SHA of the selected commit
         selected_item = self.list_ctrl.GetFirstSelected()
         if selected_item != -1:
-            global current_commit
+            global current_commit, previous_commit
+            previous_commit = current_commit
             current_commit = self.list_ctrl.GetItemText(selected_item)
 
             # Publish a message to notify the FileTreePanel that the commit has changed
@@ -385,7 +387,31 @@ class FileContentsPanel(wx.Panel):
         #     f.write(html_str)
 
         return html_str
-        
+
+
+class DiffPanel(wx.Panel):
+    def __init__(self, parent):
+        super().__init__(parent, style=wx.SIMPLE_BORDER)
+
+        # Create an html window to display the diff
+        self.html = wx.html2.WebView.New(self)
+
+        # Use a box sizer to layout the html window
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.html, proportion=1, flag=wx.EXPAND)
+        self.SetSizer(sizer)
+        self.Layout()
+
+        pub.subscribe(self.on_show_diff, 'commit_changed')
+
+        self.html.SetPage("diffs go here", "")
+
+    def on_show_diff(self):
+        diff = f"{previous_commit} -> {current_commit}"
+        # Set the HTML content
+        self.html.SetPage(diff, "")
+
+
 class LeftPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
@@ -439,8 +465,19 @@ class MyFrame(wx.Frame):
         left_area.AppendWindow(BranchesPanel(left_area))
         left_area.AppendWindow(CommitsPanel(left_area))
         left_area.AppendWindow(FileTreePanel(left_area))
+        left_area.AppendWindow(DiffPanel(left_area))
 
         right_area = FileContentsPanel(outer_area)
+
+        # right_area = wx.SplitterWindow(outer_area, -1, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
+        # # add FileContentsPanel and DiffPanel vertically in splitter
+        # self.file_contents_area = FileContentsPanel(right_area)
+        # self.diff_area = DiffPanel(right_area)
+        # right_area.SplitVertically(self.file_contents_area, self.diff_area)
+        # right_area.SetSashGravity(0.5)
+        # right_area.SetSashPosition(300)
+        # # right_sizer = wx.BoxSizer(wx.VERTICAL)
+        # # right_sizer.Add(right_area, 1, wx.EXPAND)
 
         outer_area.SplitVertically(left_area, right_area)
         outer_area.SetSashGravity(0.5)

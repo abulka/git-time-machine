@@ -408,9 +408,42 @@ class DiffPanel(wx.Panel):
 
     def on_show_diff(self):
         diff = f"{previous_commit} -> {current_commit}"
+        # call git to get the diff between the two commits
+        diff = self.get_diff(previous_commit, current_commit)
+        # wrap in a pre and html
+        diff = f"""<html>
+        <head>
+        <style>
+        pre {{
+            background-color: #2f2f2f;
+            color: #ffffff;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }}
+        </style>
+        </head>
+        <body>
+        <pre>{diff}</pre>
+        </body>
+        </html>
+        """
+        
+
         # Set the HTML content
         self.html.SetPage(diff, "")
 
+    def get_diff(self, previous_commit, current_commit):
+        # construct the git command to get the diff between the two commits
+        git_command = ['git', 'diff', previous_commit, current_commit]
+        
+        # call git to get the diff between the two commits
+        git_output = subprocess.check_output(git_command)
+        
+        # decode the output from bytes to a string and return it
+        return git_output.decode('utf-8')
+        
+        
 
 class LeftPanel(wx.Panel):
     def __init__(self, parent):

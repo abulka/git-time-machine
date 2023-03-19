@@ -344,6 +344,11 @@ class FileContentsPanel(wx.Panel):
 
         # Set the HTML content and restore the scroll position
         html_str = self.generate_html(path, contents)
+
+        # write html to file junk.html
+        with open('junk.html', 'w') as f:
+            f.write(html_str)
+
         self.html.SetPage(html_str, "")
 
     def on_page_navigated(self, event):
@@ -353,10 +358,8 @@ class FileContentsPanel(wx.Panel):
     def on_page_loaded(self, event):
         pass
         print("Page loaded")
-        # unfortunately, this doesn't work, the value of saved is blown away by the time the page is loaded
-        # self.html.RunScript("window.scrollTo(0, saved)")
-
-        self.html.RunScript(f"window.scrollTo(0, {scroll_pos})")
+        # this works but causes the page to jump from the top to the specified scroll position - yuk
+        # self.html.RunScript(f"window.scrollTo(0, {scroll_pos})")
 
     def on_page_error(self, event):
         print("Page error")
@@ -391,6 +394,7 @@ class FileContentsPanel(wx.Panel):
         js_file_contents = os.path.join(os.path.dirname(__file__), 'template.js')
         with open(js_file_contents, 'r') as f:
             js_file_contents = f.read()
+        js_file_contents = js_file_contents.replace('9999', str(scroll_pos))
 
         # use the template as a f string and substitue the values
         return template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)

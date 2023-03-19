@@ -10,6 +10,11 @@ function sendScrollPos() {
 
 window.addEventListener('scroll', sendScrollPos);
 
-function scrollToPos(scrollPos) {
+function scrollToPos(scrollPos) { // not used
     window.scrollTo(0, scrollPos);
 }
+
+window.onload = function() {
+    // Scroll to the position with x=0 and y=500
+    window.scrollTo(0, 9999);  // 9999 will be replaced by the scrollPos by python
+  };

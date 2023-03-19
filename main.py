@@ -21,7 +21,6 @@ class Commit:
 current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
-previous_commit = 'HEAD'
 scroll_pos = 0
 
 def get_files_in_repo(commit):
@@ -162,8 +161,7 @@ class CommitsPanel(wx.Panel):
         # Update the global variable current_commit with the SHA of the selected commit
         selected_item = self.list_ctrl.GetFirstSelected()
         if selected_item != -1:
-            global current_commit, previous_commit
-            previous_commit = current_commit
+            global current_commit
             current_commit = self.list_ctrl.GetItemText(selected_item)
 
             # Publish a message to notify the FileTreePanel that the commit has changed
@@ -407,8 +405,30 @@ class DiffPanel(wx.Panel):
 
         self.html.SetPage("diffs go here", "")
 
+    def get_previous_commit(self, current_commit):
+        # construct the git command to get the previous commit in history
+        git_command = ['git', 'rev-list', current_commit]
+
+        # call git to get the list of commits
+        git_output = subprocess.check_output(git_command)
+
+        # decode the output from bytes to a string and split it into a list of commits
+        commits = git_output.decode('utf-8').splitlines()
+
+        # return the previous commit in the list (i.e., the commit before current_commit)
+        if len(commits) > 1:
+            return commits[1]
+        elif len(commits) == 1:
+            return None
+        else:
+            raise Exception("No commits found in repository")
+
+    
     def on_show_diff(self):
-        diff = f"{previous_commit} -> {current_commit}"
+        # call git to find the sha of the previous commit to current_commit sha
+        previous_commit = self.get_previous_commit(current_commit)
+        print("previous commitof ", current_commit, 'is', previous_commit)
+
         # call git to get the diff between the two commits
         diff = self.get_diff(previous_commit, current_commit)
         # wrap in a pre and html
@@ -449,12 +469,12 @@ class DiffPanel(wx.Panel):
         highlighted_lines = []
         for line in git_output.split("\n"):
             if len(line) >= 1 and line[0] in ['+', '-']:
-                if len(line) == 1 or (len(line) > 1 and line[1] not in ['+', '-']):
+                if len(line) > 1 and line[1] in ['+', '-']:
+                    pass
+                else:
                     line_color = "green" if line[0] == "+" else "red"
                     highlighted_line = f'<span style="color:{line_color}">{line}</span>'
                     highlighted_lines.append(highlighted_line)
-                else:
-                    highlighted_lines.append(line)
             else:
                 highlighted_lines.append(line)
 
@@ -463,6 +483,7 @@ class DiffPanel(wx.Panel):
 
         # return the diff with highlighted lines
         return git_output
+
 
 
 

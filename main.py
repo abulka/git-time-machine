@@ -20,6 +20,7 @@ class Commit:
 current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
+scroll_pos = 0
 
 def get_files_in_repo(commit):
     command = ['git', 'ls-tree', '-r', '--name-only', commit]
@@ -354,6 +355,8 @@ class FileContentsPanel(wx.Panel):
         print("Page loaded")
         # unfortunately, this doesn't work, the value of saved is blown away by the time the page is loaded
         # self.html.RunScript("window.scrollTo(0, saved)")
+
+        self.html.RunScript(f"window.scrollTo(0, {scroll_pos})")
 
     def on_page_error(self, event):
         print("Page error")

@@ -319,13 +319,16 @@ class FileContentsPanel(wx.Panel):
         
         self.html.Bind(wx.html2.EVT_WEBVIEW_NAVIGATED, self.on_page_navigated)
         self.html.Bind(wx.html2.EVT_WEBVIEW_LOADED, self.on_page_loaded)
-        self.html.Bind(wx.html2.EVT_WEBVIEW_ERROR, self.on_page_error)
-        self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
+        self.html.Bind(wx.html2.EVT_WEBVIEW_ERROR, self.on_page_error) # only seems to work for loadURL pages
+
 
         # Install message handler with the name wx_msg
         self.html.AddScriptMessageHandler('wx_msg')
         # Bind an event handler to receive those messages
-        self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.handleMessage)
+        self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
+
+        # Another technique
+        # EVT_WEBVIEW_SCRIPT_RESULT
 
     def on_file_selected(self, path, contents):
 
@@ -335,7 +338,7 @@ class FileContentsPanel(wx.Panel):
         let saved = document.documentElement.scrollTop
         window.scrollTo(0, saved)
         """
-        self.html.RunScript("saved = document.documentElement.scrollTop")
+        # self.html.RunScript("saved = document.documentElement.scrollTop")
 
         # Set the HTML content and restore the scroll position
         html_str = self.generate_html(path, contents)
@@ -353,14 +356,10 @@ class FileContentsPanel(wx.Panel):
 
     def on_page_error(self, event):
         print("Page error")
-        print(event.GetError())
+        print(event.GetString())
 
     def on_script_message_received(self, event):
-        print("Script message received")
-        print(event.GetMessage())
-
-    def handleMessage(self, event):
-        print("handleMessage", event.String)
+        print("Script message received", event.GetString())
 
     def generate_html(self, path, source_file_contents):
         _, file_ext = os.path.splitext(path)

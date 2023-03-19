@@ -18,8 +18,9 @@ This would output:
     <a href="javascript:jumpTo('main.py', 434)">main.py @@ -434,6 +434,7 @@</a>
 
 """
+
 def add_filename_to_link(link_text):
-    match = re.match(r'<a href="javascript:jumpTo\(\'(\w+\.\w+)\'\s*,\s*(\d+)\)">@@\s*-(\d+),(\d+)\s*\+\d+,\d+\s*@@</a>', link_text)
+    match = re.match(r'<a href="javascript:jumpTo\(\'(.+?)\'\s*,\s*(\d+)\)">@@\s*-(\d+),(\d+)\s*\+\d+,\d+\s*@@</a>', link_text)
     if match:
         filename = match.group(1)
         start_line = match.group(3)
@@ -28,4 +29,5 @@ def add_filename_to_link(link_text):
         return new_link_text
     else:
         return link_text
+
     

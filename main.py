@@ -8,11 +8,6 @@ import wx.html # old, doesn't support css and javascript
 import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
-import asyncio
-from wxasync import AsyncBind, WxAsyncApp
-import aiohttp
-from aiohttp import web
-import wxasync
 
 class Commit:
     def __init__(self, sha, date, author, comment):
@@ -24,7 +19,6 @@ class Commit:
 current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
-scroll_pos = 0
 
 def get_files_in_repo(commit):
     command = ['git', 'ls-tree', '-r', '--name-only', commit]
@@ -323,7 +317,15 @@ class FileContentsPanel(wx.Panel):
         self.SetSizer(sizer)
         self.Layout()
         
-        self.html.Bind(wx.html2.EVT_WEBVIEW_NAVIGATED, self.on_page_loaded)
+        self.html.Bind(wx.html2.EVT_WEBVIEW_NAVIGATED, self.on_page_navigated)
+        self.html.Bind(wx.html2.EVT_WEBVIEW_LOADED, self.on_page_loaded)
+        self.html.Bind(wx.html2.EVT_WEBVIEW_ERROR, self.on_page_error)
+        self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
+
+        # Install message handler with the name wx_msg
+        self.html.AddScriptMessageHandler('wx_msg')
+        # Bind an event handler to receive those messages
+        self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.handleMessage)
 
     def on_file_selected(self, path, contents):
 
@@ -339,11 +341,26 @@ class FileContentsPanel(wx.Panel):
         html_str = self.generate_html(path, contents)
         self.html.SetPage(html_str, "")
 
+    def on_page_navigated(self, event):
+        print("Page navigated")
+        # event.Skip()
+
     def on_page_loaded(self, event):
         pass
-        # print("Page loaded")
+        print("Page loaded")
         # unfortunately, this doesn't work, the value of saved is blown away by the time the page is loaded
         # self.html.RunScript("window.scrollTo(0, saved)")
+
+    def on_page_error(self, event):
+        print("Page error")
+        print(event.GetError())
+
+    def on_script_message_received(self, event):
+        print("Script message received")
+        print(event.GetMessage())
+
+    def handleMessage(self, event):
+        print("handleMessage", event.String)
 
     def generate_html(self, path, source_file_contents):
         _, file_ext = os.path.splitext(path)
@@ -446,75 +463,7 @@ class MyFrame(wx.Frame):
     def title(self):
         return f"Git Repo Time Machine - {current_repo_path}"
 
-async def main():
-    # start the aiohttp server
-    async def handle(request):
-        name = request.match_info.get('name', "Anonymous")
-        text = "Hello, " + name
-        return web.Response(text=text)
-
-    async def randhtml(request):
-        head = """
-        <head>
-            <title>Scroll Position</title>
-            <script>
-                function sendScrollPos() {
-                    var scrollPos = window.scrollY;
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', '/reportscrollpos', true);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(JSON.stringify({ 'scrollPos': scrollPos }));
-                }
-
-                window.addEventListener('scroll', sendScrollPos);
-
-                function scrollToPos(scrollPos) {
-                    window.scrollTo(0, scrollPos);
-                }
-
-            </script>
-        </head>        
-        """
-        num_paragraphs = int(request.query.get('num_paragraphs', 1))
-        html = f"<html>{head}<body>"
-        for i in range(num_paragraphs):
-            html += f"<p> {i} " + "JUNK" + "</p>"
-        html += "</body></html>"
-        return web.Response(text=html, content_type='text/html')
-
-    # write reportscrollpos POST method which receives the scroll position
-    async def reportscrollpos(request):
-
-        data = await request.json()
-        # print(data, type(data), data.get('scrollPos'))
-        global scroll_pos
-        scroll_pos = data.get('scrollPos')
-        return web.Response(text="OK")
-
-    app = web.Application()
-    app.add_routes([
-        web.post('/reportscrollpos', reportscrollpos),
-        web.get('/randhtml', randhtml),
-        web.get('/', handle),
-        web.get('/{name}', handle),
-    ]
-    )
-
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, 'localhost', 8080)
-    await site.start()
-
-    # start the wxPython app
-    app = WxAsyncApp()
-    frame = MyFrame(None)
-    frame.Show()
-    app.SetTopWindow(frame)
-    await app.MainLoop()
-
-    # shutdown the server
-    await runner.cleanup()
-
-
 if __name__ == '__main__':
-    asyncio.run(main())
+    app = wx.App()
+    frame = MyFrame(None)
+    app.MainLoop()

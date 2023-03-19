@@ -10,6 +10,7 @@ import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
 from difflib import HtmlDiff
+from util import add_filename_to_link
 
 class Commit:
     def __init__(self, sha, date, author, comment):
@@ -431,8 +432,15 @@ class DiffPanel(wx.Panel):
         # call git to get the diff between the two commits
         diff = self.get_diff(previous_commit, current_commit)
 
-        hyperlinks = self.process_git_diff_output(diff)
+        hyperlinks = self.extract_hyperlinks(diff)
         diff = self.inject_hyperlinks(diff, hyperlinks)
+
+        links = '<ul>'
+        for hyperlink in hyperlinks:
+            hyperlink = add_filename_to_link(hyperlink)
+            print("new hyperlink", hyperlink)
+            links += f'<li>{hyperlink}</li>'
+        links += '</ul>'
 
         # wrap in a pre and html
         diff = f"""<html>
@@ -451,7 +459,7 @@ class DiffPanel(wx.Panel):
         </style>
         </head>
         <body>
-        {hyperlinks}<br>
+        {links}<br>
         <pre>{diff}</pre>
         </body>
         </html>
@@ -462,7 +470,7 @@ class DiffPanel(wx.Panel):
         self.html.SetPage(diff, "")
 
 
-    def process_git_diff_output(self, diff_output):
+    def extract_hyperlinks(self, diff_output):
         # Initialize variables to hold filename and line numbers
         filename = None
         start_line = None

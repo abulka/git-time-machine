@@ -434,6 +434,7 @@ class DiffPanel(wx.Panel):
         # Set the HTML content
         self.html.SetPage(diff, "")
 
+
     def get_diff(self, previous_commit, current_commit):
         # construct the git command to get the diff between the two commits
         git_command = ['git', 'diff', previous_commit, current_commit]
@@ -441,8 +442,30 @@ class DiffPanel(wx.Panel):
         # call git to get the diff between the two commits
         git_output = subprocess.check_output(git_command)
         
-        # decode the output from bytes to a string and return it
-        return git_output.decode('utf-8')
+        # decode the output from bytes to a string
+        git_output = git_output.decode('utf-8')
+
+        # add span tags for highlighting "-" and "+" lines
+        highlighted_lines = []
+        for line in git_output.split("\n"):
+            if len(line) >= 1 and line[0] in ['+', '-']:
+                if len(line) == 1 or (len(line) > 1 and line[1] not in ['+', '-']):
+                    line_color = "green" if line[0] == "+" else "red"
+                    highlighted_line = f'<span style="color:{line_color}">{line}</span>'
+                    highlighted_lines.append(highlighted_line)
+                else:
+                    highlighted_lines.append(line)
+            else:
+                highlighted_lines.append(line)
+
+        # join the lines back into a string with newline separators
+        git_output = "\n".join(highlighted_lines)
+
+        # return the diff with highlighted lines
+        return git_output
+
+
+
     
 
 class LeftPanel(wx.Panel):

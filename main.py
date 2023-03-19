@@ -288,7 +288,7 @@ class FileTreePanel(wx.Panel):
 
         # Get the contents of the selected file at the current commit
         contents = self.get_file_contents(current_commit, path)
-        pub.sendMessage('EVT_FILE_SELECTED_CHANGED', path=path, contents=contents)
+        pub.sendMessage('file_selected', path=path, contents=contents)
 
     def get_file_contents(self, commit, file_path):
         # get the git command to get the contents of the file at the given commit
@@ -300,13 +300,9 @@ class FileContentsPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
 
-        pub.subscribe(self.on_file_selected, 'EVT_FILE_SELECTED_CHANGED')
-
-        # Set the background color to red
-        # self.SetBackgroundColour(wx.RED)
+        pub.subscribe(self.on_file_selected, 'file_selected')
 
         # Create an html window to display the file contents
-        # self.html = wx.html.HtmlWindow(self, style=wx.SIMPLE_BORDER)
         self.html = wx.html2.WebView.New(self)
 
         # set background color to dark gray
@@ -323,54 +319,40 @@ class FileContentsPanel(wx.Panel):
         self.html.Bind(wx.html2.EVT_WEBVIEW_LOADED, self.on_page_loaded)
         self.html.Bind(wx.html2.EVT_WEBVIEW_ERROR, self.on_page_error) # only seems to work for loadURL pages
 
-
         # Install message handler with the name wx_msg, this just listens for messages from the page
-        self.html.AddScriptMessageHandler('wx_msg')
         # Bind an event handler to receive those messages
+        self.html.AddScriptMessageHandler('wx_msg')
         self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
 
     def on_file_selected(self, path, contents):
-
-        # Get the current scroll position before replacing the page content
-        """
-        This is the javascript that is run to get and set the scroll position
-        let saved = document.documentElement.scrollTop
-        window.scrollTo(0, saved)
-        """
-        # self.html.RunScript("saved = document.documentElement.scrollTop")
-
         # Set the HTML content and restore the scroll position
         html_str = self.generate_html(path, contents)
-
-        # write html to file junk.html
-        # with open('junk.html', 'w') as f:
-        #     f.write(html_str)
-
         self.html.SetPage(html_str, "")
 
     def on_page_navigated(self, event):
-        print("Page navigated")
-        # event.Skip()
+        # print("Page navigated")
+        event.Skip()
 
     def on_page_loaded(self, event):
-        pass
-        print("Page loaded")
-        # this works but causes the page to jump from the top to the specified scroll position - yuk
-        # self.html.RunScript(f"window.scrollTo(0, {scroll_pos})")
+        # print("Page loaded")
 
-        self.html.RunScript("window.wx_msg.postMessage('info is ' + window.scrollY);")
+        # This works but causes the page to jump from the top to the specified scroll position - yuk
+        # so now we embed the scroll position in the html via the 9999 placeholder
+        # self.html.RunScript(f"window.scrollTo(0, {scroll_pos})")
+        pass
 
     def on_page_error(self, event):
         print("Page error")
         print(event.GetString())
 
     def on_script_message_received(self, event):
-        print("Script message received", event.GetString())
+        global scroll_pos
+        # print("Script message received", event.GetString())
+
         # if first char of message is '{' then it is JSON containing our scroll position
         if event.GetString()[0] == '{':
             scroll_pos_data = json.loads(event.GetString())
-            print("Scroll pos extracted as", scroll_pos_data['scrollPos'])
-            global scroll_pos
+            # print("Scroll pos extracted as", scroll_pos_data['scrollPos'])
             scroll_pos = scroll_pos_data['scrollPos']
 
     def generate_html(self, path, source_file_contents):
@@ -393,11 +375,17 @@ class FileContentsPanel(wx.Panel):
         js_file_contents = os.path.join(os.path.dirname(__file__), 'template.js')
         with open(js_file_contents, 'r') as f:
             js_file_contents = f.read()
-        js_file_contents = js_file_contents.replace('9999', str(scroll_pos))
+        js_file_contents = js_file_contents.replace('9999', str(scroll_pos)) # wish there was a nicer way to do this
 
         # use the template as a f string and substitue the values
-        return template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
-            
+        html_str = template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
+
+        # write html to file junk.html
+        # with open('junk.html', 'w') as f:
+        #     f.write(html_str)
+
+        return html_str
+        
 class LeftPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)

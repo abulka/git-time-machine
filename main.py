@@ -376,10 +376,15 @@ class FileContentsPanel(wx.Panel):
 
         template_path = os.path.join(os.path.dirname(__file__), 'template.html')
         with open(template_path, 'r') as f:
-            template = f.read()        
-        # use the template as a f string and substitue the values
-        return template.format(lang=lang, source_file_contents=source_file_contents)
+            template = f.read()
 
+        js_file_contents = os.path.join(os.path.dirname(__file__), 'template.js')
+        with open(js_file_contents, 'r') as f:
+            js_file_contents = f.read()
+
+        # use the template as a f string and substitue the values
+        return template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
+            
 class LeftPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)

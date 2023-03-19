@@ -427,10 +427,13 @@ class DiffPanel(wx.Panel):
     def on_show_diff(self):
         # call git to find the sha of the previous commit to current_commit sha
         previous_commit = self.get_previous_commit(current_commit)
-        print("previous commitof ", current_commit, 'is', previous_commit)
 
         # call git to get the diff between the two commits
         diff = self.get_diff(previous_commit, current_commit)
+
+        hyperlinks = self.process_git_diff_output(diff)
+        diff = self.inject_hyperlinks(diff, hyperlinks)
+
         # wrap in a pre and html
         diff = f"""<html>
         <head>
@@ -442,9 +445,13 @@ class DiffPanel(wx.Panel):
             white-space: pre-wrap;
             word-wrap: break-word;
         }}
+        .white {{
+            color: #ffffff;
+        }}
         </style>
         </head>
         <body>
+        {hyperlinks}<br>
         <pre>{diff}</pre>
         </body>
         </html>
@@ -454,6 +461,48 @@ class DiffPanel(wx.Panel):
         # Set the HTML content
         self.html.SetPage(diff, "")
 
+
+    def process_git_diff_output(self, diff_output):
+        # Initialize variables to hold filename and line numbers
+        filename = None
+        start_line = None
+        end_line = None
+        hyperinks = []
+
+        # Define regular expressions to match lines of interest
+        filename_regex = r'^diff --git a/(.+?) b/\1'
+        line_numbers_regex = r'^@@ -(\d+),(\d+) \+(\d+),(\d+) @@'
+        
+        # Loop over the lines of the diff output
+        for line in diff_output.split('\n'):
+            # Check if the line contains a filename
+            match = re.match(filename_regex, line)
+            if match:
+                # Extract the filename from the match object
+                filename = match.group(1)
+            
+            # Check if the line contains line numbers
+            match = re.match(line_numbers_regex, line)
+            if match:
+                whole_line = match.group(0)
+
+                # Extract the line numbers from the match object
+                start_line = int(match.group(3))
+                end_line = start_line + int(match.group(4))
+                
+                # Construct the hyperlink and print it
+                hyperlink = f'<a href="javascript:jumpTo(\'{filename}\', {abs(start_line)})">{whole_line}</a>'
+                print(hyperlink)
+                hyperinks.append(hyperlink)
+        return hyperinks
+
+    def inject_hyperlinks(self, diff, hyperlinks):
+        for hyperlink in hyperlinks:
+            # add the class white to the hyperlink
+            hyperlink_new = hyperlink.replace('>', ' class="white">')
+            diff = diff.replace(hyperlink.split('>')[1].split('<')[0], hyperlink_new)
+        return diff
+    
 
     def get_diff(self, previous_commit, current_commit):
         # construct the git command to get the diff between the two commits
@@ -470,7 +519,7 @@ class DiffPanel(wx.Panel):
         for line in git_output.split("\n"):
             if len(line) >= 1 and line[0] in ['+', '-']:
                 if len(line) > 1 and line[1] in ['+', '-']:
-                    pass
+                    highlighted_lines.append(line)
                 else:
                     line_color = "green" if line[0] == "+" else "red"
                     highlighted_line = f'<span style="color:{line_color}">{line}</span>'
@@ -482,7 +531,7 @@ class DiffPanel(wx.Panel):
         git_output = "\n".join(highlighted_lines)
 
         # return the diff with highlighted lines
-        return git_output
+        return " ".join(git_command) + '\n\n' + git_output
 
 
 

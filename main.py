@@ -321,9 +321,13 @@ class FileContentsPanel(wx.Panel):
         self.html.AddScriptMessageHandler('wx_msg')
         self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
 
-    def on_file_selected(self, path, contents):
+    def on_file_selected(self, path, contents, lineNum=0):
+        if lineNum:
+            scroll_to = lineNum
+        else:
+            scroll_to = scroll_pos
         # Set the HTML content and restore the scroll position
-        html_str = self.generate_html(path, contents)
+        html_str = self.generate_html(path, contents, scroll_to)
         self.html.SetPage(html_str, "")
 
     def on_page_navigated(self, event):
@@ -352,7 +356,7 @@ class FileContentsPanel(wx.Panel):
             # print("Scroll pos extracted as", scroll_pos_data['scrollPos'])
             scroll_pos = scroll_pos_data['scrollPos']
 
-    def generate_html(self, path, source_file_contents):
+    def generate_html(self, path, source_file_contents, scroll_to):
         _, file_ext = os.path.splitext(path)
         lang_map = {
             '.html': 'html',
@@ -372,7 +376,7 @@ class FileContentsPanel(wx.Panel):
         js_file_contents = os.path.join(os.path.dirname(__file__), 'template.js')
         with open(js_file_contents, 'r') as f:
             js_file_contents = f.read()
-        js_file_contents = js_file_contents.replace('9999', str(scroll_pos)) # wish there was a nicer way to do this
+        js_file_contents = js_file_contents.replace('9999', str(scroll_to)) # wish there was a nicer way to do this
 
         # use the template as a f string and substitue the values
         html_str = template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
@@ -414,7 +418,7 @@ class DiffPanel(wx.Panel):
 
                 # Bit of a hack for now - no line number and no selection of treeview item
                 contents = get_file_contents(current_commit, filePath)
-                pub.sendMessage('file_selected', path=filePath, contents=contents)
+                pub.sendMessage('file_selected', path=filePath, contents=contents, lineNum=lineNum)
 
 
     def get_previous_commit(self, current_commit):

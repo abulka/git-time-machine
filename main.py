@@ -410,7 +410,13 @@ class DiffPanel(wx.Panel):
 
     def on_script_message_received(self, event):
         print("Script message received (Diff Panel)", event.GetString())
-        pass
+        if event.GetString()[0] == '{':
+            command_obj = json.loads(event.GetString())
+            if command_obj['command'] == 'jump_to_file':
+                filePath = command_obj['filePath']
+                lineNum = command_obj['lineNum']
+                print("Jump to file command received", filePath, lineNum)
+                # pub.sendMessage('open_file', path=command_obj['path'])
 
     def get_previous_commit(self, current_commit):
         # construct the git command to get the previous commit in history

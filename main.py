@@ -388,7 +388,6 @@ class FileContentsPanel(wx.Panel):
 
         return html_str
 
-
 class DiffPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent, style=wx.SIMPLE_BORDER)
@@ -402,9 +401,16 @@ class DiffPanel(wx.Panel):
         self.SetSizer(sizer)
         self.Layout()
 
+        self.html.AddScriptMessageHandler('wx_msg')
+        self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
+
         pub.subscribe(self.on_show_diff, 'commit_changed')
 
         self.html.SetPage("diffs go here", "")
+
+    def on_script_message_received(self, event):
+        print("Script message received (Diff Panel)", event.GetString())
+        pass
 
     def get_previous_commit(self, current_commit):
         # construct the git command to get the previous commit in history
@@ -423,52 +429,36 @@ class DiffPanel(wx.Panel):
             return None
         else:
             raise Exception("No commits found in repository")
-
     
     def on_show_diff(self):
         # call git to find the sha of the previous commit to current_commit sha
         previous_commit = self.get_previous_commit(current_commit)
 
         # call git to get the diff between the two commits
-        diff = self.get_diff(previous_commit, current_commit)
+        diff_body = self.get_diff(previous_commit, current_commit)
 
-        hyperlinks = self.extract_hyperlinks(diff)
-        diff = self.inject_hyperlinks(diff, hyperlinks)
+        hyperlinks = self.extract_hyperlinks(diff_body)
+        diff_body = self.inject_hyperlinks(diff_body, hyperlinks)
 
-        links = '<ul>'
+        toc_links = '<ul>'
         for hyperlink in hyperlinks:
             hyperlink = add_filename_to_link(hyperlink)
-            print("new hyperlink", hyperlink)
-            links += f'<li>{hyperlink}</li>'
-        links += '</ul>'
+            toc_links += f'<li>{hyperlink}</li>'
+        toc_links += '</ul>'
 
-        # wrap in a pre and html
-        diff = f"""<html>
-        <head>
-        <style>
-        pre {{
-            background-color: #2f2f2f;
-            color: #ffffff;
-            font-family: monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }}
-        .white {{
-            color: #ffffff;
-        }}
-        </style>
-        </head>
-        <body>
-        {links}<br>
-        <pre>{diff}</pre>
-        </body>
-        </html>
-        """
+        template_path = os.path.join(os.path.dirname(__file__), 'template-diff.html')
+        with open(template_path, 'r') as f:
+            html_template = f.read()
 
+        js_file_contents = os.path.join(os.path.dirname(__file__), 'template-diff.js')
+        with open(js_file_contents, 'r') as f:
+            js_file_contents = f.read()
+
+        # use the template as a f string and substitue the values
+        html_str = html_template.format(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)
 
         # Set the HTML content
-        self.html.SetPage(diff, "")
-
+        self.html.SetPage(html_str, "")
 
     def extract_hyperlinks(self, diff_output):
         # Initialize variables to hold filename and line numbers
@@ -500,7 +490,6 @@ class DiffPanel(wx.Panel):
                 
                 # Construct the hyperlink and print it
                 hyperlink = f'<a href="javascript:jumpTo(\'{filename}\', {abs(start_line)})">{whole_line}</a>'
-                print(hyperlink)
                 hyperinks.append(hyperlink)
         return hyperinks
 
@@ -511,7 +500,6 @@ class DiffPanel(wx.Panel):
             diff = diff.replace(hyperlink.split('>')[1].split('<')[0], hyperlink_new)
         return diff
     
-
     def get_diff(self, previous_commit, current_commit):
         # construct the git command to get the diff between the two commits
         git_command = ['git', 'diff', previous_commit, current_commit]
@@ -540,11 +528,6 @@ class DiffPanel(wx.Panel):
 
         # return the diff with highlighted lines
         return " ".join(git_command) + '\n\n' + git_output
-
-
-
-
-    
 
 class LeftPanel(wx.Panel):
     def __init__(self, parent):

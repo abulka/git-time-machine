@@ -10,7 +10,7 @@ import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
 from difflib import HtmlDiff
-from util import add_filename_to_link
+from util import add_filename_to_link, get_file_contents
 
 class Commit:
     def __init__(self, sha, date, author, comment):
@@ -289,14 +289,9 @@ class FileTreePanel(wx.Panel):
         event.Skip()
 
         # Get the contents of the selected file at the current commit
-        contents = self.get_file_contents(current_commit, path)
+        contents = get_file_contents(current_commit, path)
         pub.sendMessage('file_selected', path=path, contents=contents)
 
-    def get_file_contents(self, commit, file_path):
-        # get the git command to get the contents of the file at the given commit
-        command = ['git', 'show', f'{commit}:{file_path}']
-        # run the command and return the output
-        return subprocess.check_output(command).decode()
 
 class FileContentsPanel(wx.Panel):
     def __init__(self, parent):
@@ -416,7 +411,11 @@ class DiffPanel(wx.Panel):
                 filePath = command_obj['filePath']
                 lineNum = command_obj['lineNum']
                 print("Jump to file command received", filePath, lineNum)
-                # pub.sendMessage('open_file', path=command_obj['path'])
+
+                # Bit of a hack for now - no line number and no selection of treeview item
+                contents = get_file_contents(current_commit, filePath)
+                pub.sendMessage('file_selected', path=filePath, contents=contents)
+
 
     def get_previous_commit(self, current_commit):
         # construct the git command to get the previous commit in history

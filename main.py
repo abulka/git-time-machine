@@ -203,7 +203,7 @@ class FileTreePanel(wx.Panel):
                 child, cookie = self.tree.GetNextChild(item, cookie)
 
         # self.tree.SelectItem(item) # will trigger wx.EVT_TREE_SEL_CHANGED 
-        
+
         # Avoid raising the event twice by selecting the item without triggering the event
 
         # Disconnect the event handler
@@ -440,13 +440,13 @@ class DiffPanel(wx.Panel):
         self.html.SetPage("diffs go here", "")
 
     def on_script_message_received(self, event):
-        print("Script message received (Diff Panel)", event.GetString())
+        # print("Script message received (Diff Panel)", event.GetString())
         if event.GetString()[0] == '{':
             command_obj = json.loads(event.GetString())
             if command_obj['command'] == 'jump_to_file':
                 filePath = command_obj['filePath']
                 lineNum = command_obj['lineNum']
-                print("Jump to file command received", filePath, lineNum)
+                # print("Jump to file command received", filePath, lineNum)
 
                 # Load the file contents into the content view and jump to the specified line
                 contents = get_file_contents(current_commit, filePath)

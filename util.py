@@ -37,3 +37,29 @@ def get_file_contents(commit, file_path):
     command = ['git', 'show', f'{commit}:{file_path}']
     # run the command and return the output
     return subprocess.check_output(command).decode()
+
+
+"""
+You can use this function by passing the contents of a source file as a string to the wrap_lines_with_spans() function, like this:
+
+with open("source_file.txt", "r") as source_file:
+    source_file_contents = source_file.read()
+
+wrapped_file_contents = wrap_lines_with_spans(source_file_contents)
+"""
+def wrap_lines_with_spans(source_file_contents):
+    # Split the source file contents into lines
+    lines = source_file_contents.splitlines()
+
+    # Create an empty list to hold the wrapped lines
+    wrapped_lines = []
+
+    # Loop over each line and wrap it with a span tag with a unique ID
+    for i, line in enumerate(lines):
+        wrapped_line = f'<span id="line{i+1}">{line}</span>'
+        wrapped_lines.append(wrapped_line)
+
+    # Join the wrapped lines back into a single string and return it
+    wrapped_file_contents = '\n'.join(wrapped_lines)
+    return wrapped_file_contents
+

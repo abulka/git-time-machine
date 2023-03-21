@@ -10,7 +10,7 @@ import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
 from difflib import HtmlDiff
-from util import add_filename_to_link, get_file_contents
+from util import add_filename_to_link, get_file_contents, wrap_lines_with_spans
 
 class Commit:
     def __init__(self, sha, date, author, comment):
@@ -369,6 +369,9 @@ class FileContentsPanel(wx.Panel):
         }
         lang = lang_map.get(file_ext, 'auto') # Use "auto" if extension is not recognized
 
+        # wrap each line of source_file_contents with a span tag so we can scroll to a specific line, give the span a unique id corresponding to the line number
+        source_file_contents = wrap_lines_with_spans(source_file_contents)
+                                                            
         template_path = os.path.join(os.path.dirname(__file__), 'template.html')
         with open(template_path, 'r') as f:
             template = f.read()
@@ -382,8 +385,8 @@ class FileContentsPanel(wx.Panel):
         html_str = template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
 
         # write html to file junk.html
-        # with open('junk.html', 'w') as f:
-        #     f.write(html_str)
+        with open('junk.html', 'w') as f:
+            f.write(html_str)
 
         return html_str
 

@@ -182,6 +182,7 @@ class FileTreePanel(wx.Panel):
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_sel_changed)
        
         pub.subscribe(self.rebuild_tree, 'commit_changed')
+        pub.subscribe(self.select_treeview_item, 'select_treeview_item')
 
         # Use a box sizer to layout the controls
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -189,6 +190,32 @@ class FileTreePanel(wx.Panel):
         self.SetSizer(sizer)
 
         self.rebuild_tree()
+
+    def select_treeview_item(self, path):
+        # Select the item in the treeview that corresponds to the given path
+        item = self.tree.GetRootItem()
+        for part in path.split('/'):
+            child, cookie = self.tree.GetFirstChild(item)
+            while child:
+                if self.tree.GetItemText(child) == part:
+                    item = child
+                    break
+                child, cookie = self.tree.GetNextChild(item, cookie)
+
+        # self.tree.SelectItem(item) # will trigger wx.EVT_TREE_SEL_CHANGED 
+        
+        # Avoid raising the event twice by selecting the item without triggering the event
+
+        # Disconnect the event handler
+        self.tree.Unbind(wx.EVT_TREE_SEL_CHANGED)
+
+        # Set the item without triggering the event
+        self.tree.SelectItem(item)
+
+        # Reconnect the event handler
+        self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_sel_changed)
+
+        
 
     def rebuild_tree(self):
         # remember the selected item, if any
@@ -421,9 +448,12 @@ class DiffPanel(wx.Panel):
                 lineNum = command_obj['lineNum']
                 print("Jump to file command received", filePath, lineNum)
 
-                # Bit of a hack for now - no line number and no selection of treeview item
+                # Load the file contents into the content view and jump to the specified line
                 contents = get_file_contents(current_commit, filePath)
                 pub.sendMessage('file_selected', path=filePath, contents=contents, line_to=lineNum)
+
+                # Tell the treeview to select the item
+                pub.sendMessage('select_treeview_item', path=filePath)
 
 
     def get_previous_commit(self, current_commit):

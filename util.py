@@ -47,19 +47,19 @@ with open("source_file.txt", "r") as source_file:
 
 wrapped_file_contents = wrap_lines_with_spans(source_file_contents)
 """
-def wrap_lines_with_spans(source_file_contents):
-    # Split the source file contents into lines
-    lines = source_file_contents.splitlines()
+# def wrap_lines_with_spans(source_file_contents):
+#     # Split the source file contents into lines
+#     lines = source_file_contents.splitlines()
 
-    # Create an empty list to hold the wrapped lines
-    wrapped_lines = []
+#     # Create an empty list to hold the wrapped lines
+#     wrapped_lines = []
 
-    # Loop over each line and wrap it with a span tag with a unique ID
-    for i, line in enumerate(lines):
-        wrapped_line = f'<span id="line{i+1}">{line}</span>'
-        wrapped_lines.append(wrapped_line)
+#     # Loop over each line and wrap it with a span tag with a unique ID
+#     for i, line in enumerate(lines):
+#         wrapped_line = f'<span id="line{i+1}">{line}</span>'
+#         wrapped_lines.append(wrapped_line)
 
-    # Join the wrapped lines back into a single string and return it
-    wrapped_file_contents = '\n'.join(wrapped_lines)
-    return wrapped_file_contents
+#     # Join the wrapped lines back into a single string and return it
+#     wrapped_file_contents = '\n'.join(wrapped_lines)
+#     return wrapped_file_contents
 

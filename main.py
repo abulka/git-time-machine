@@ -414,7 +414,7 @@ class FileContentsPanel(wx.Panel):
         html_str = template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
 
         # write html to file junk.html
-        with open('junk.html', 'w') as f:
+        with open('junk-content.html', 'w') as f:
             f.write(html_str)
 
         return html_str
@@ -484,11 +484,16 @@ class DiffPanel(wx.Panel):
         hyperlinks = self.extract_hyperlinks(diff_body)
         diff_body = self.inject_hyperlinks(diff_body, hyperlinks)
 
-        toc_links = '<ul>'
+        # toc_links = '<ul>'
+        # for hyperlink in hyperlinks:
+        #     hyperlink = add_filename_to_link(hyperlink)
+        #     toc_links += f'<li>{hyperlink}</li>'
+        # toc_links += '</ul>'
+
+        toc_links = ''
         for hyperlink in hyperlinks:
             hyperlink = add_filename_to_link(hyperlink)
-            toc_links += f'<li>{hyperlink}</li>'
-        toc_links += '</ul>'
+            toc_links += hyperlink + '&nbsp;'*5
 
         template_path = os.path.join(os.path.dirname(__file__), 'template-diff.html')
         with open(template_path, 'r') as f:
@@ -500,6 +505,10 @@ class DiffPanel(wx.Panel):
 
         # use the template as a f string and substitue the values
         html_str = html_template.format(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)
+
+        # write html to file junk.html
+        with open('junk-diff.html', 'w') as f:
+            f.write(html_str)
 
         # Set the HTML content
         self.html.SetPage(html_str, "")
@@ -539,8 +548,7 @@ class DiffPanel(wx.Panel):
 
     def inject_hyperlinks(self, diff, hyperlinks):
         for hyperlink in hyperlinks:
-            # add the class white to the hyperlink
-            hyperlink_new = hyperlink.replace('>', ' class="white">')
+            hyperlink_new = hyperlink.replace('>', ' class="hyperlink-colour">')
             diff = diff.replace(hyperlink.split('>')[1].split('<')[0], hyperlink_new)
         return diff
     

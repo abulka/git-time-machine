@@ -3,16 +3,33 @@
 
 <head>
   <style>
+    body {{
+      background-color: darkgray;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin: 0;
+    }}
+
     pre {{
       background-color: #2f2f2f;
       color: #ffffff;
       font-family: monospace;
       white-space: pre-wrap;
       word-wrap: break-word;
+      margin-top: 0;
     }}
 
-    .white {{
-      color: #ffffff;
+    a {{
+      white-space: nowrap;
+    }}
+
+    .hyperlink-colour {{
+      color: cyan;
+    }}
+
+    ul {{
+      background-color: antquewhite;
     }}
   </style>
   <script>
@@ -21,7 +38,7 @@
 </head>
 
 <body>
-  {toc_links}<br>
+  {toc_links}
   <pre>{diff_body}</pre>
 </body>
 

@@ -39,14 +39,11 @@ function jumpToLine(lineNumber) {
   }
 
 window.onload = function () {
-    scroll_or_jump = "0000";  // 0000 will be replaced with "scroll" or "jump"
-
-    if (scroll_or_jump == "scroll") {
-        // Scroll to the position with x=0 and y=500 before the html on loaded meaning no flickering
-        window.scrollTo(0, 9999);  // 9999 will be replaced by the scrollPos by python
-    }
-    else if (scroll_or_jump == "jump") {
-        // Scroll to the line before the html on loaded meaning no flickering
-        jumpToLine(8888);
-    }
+    {% if scroll_to %}
+    // Scroll to the position with x=0 and y={{ scroll_to }} before the html is loaded to prevent flickering
+    window.scrollTo(0, {{ scroll_to }});
+    {% elif line_to %}
+    // Scroll to the line before the html is loaded to prevent flickering
+    jumpToLine({{ line_to }});
+    {% endif %}
 };

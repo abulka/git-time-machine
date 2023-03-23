@@ -411,20 +411,7 @@ class FileContentsPanel(wx.Panel):
         }
         lang = lang_map.get(file_ext, 'auto') # Use "auto" if extension is not recognized
 
-        # wrap each line of source_file_contents with a span tag so we can scroll to a specific line, give the span a unique id corresponding to the line number
-        # source_file_contents = wrap_lines_with_spans(source_file_contents)
-
-        # jinja templating
-
-        # template_path = os.path.join(os.path.dirname(__file__), 'template.html')
-        # with open(template_path, 'r') as f:
-        #     template = f.read()
-        template = environment.get_template("template.html")
-
-        js_file_contents = os.path.join(os.path.dirname(__file__), 'template.js')
-        with open(js_file_contents, 'r') as f:
-            js_file_contents = f.read()
-
+        js_file_contents = environment.get_template("template.js").render()
         if scroll_to:
             js_file_contents = js_file_contents.replace('9999', str(scroll_to)) # wish there was a nicer way to do this
             js_file_contents = js_file_contents.replace('0000', 'scroll') # wish there was a nicer way to do this
@@ -432,11 +419,9 @@ class FileContentsPanel(wx.Panel):
             js_file_contents = js_file_contents.replace('8888', str(line_to)) # wish there was a nicer way to do this
             js_file_contents = js_file_contents.replace('0000', 'jump') # wish there was a nicer way to do this
 
-        # use the template as a f string and substitue the values
-        # html_str = template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
+        template = environment.get_template("template.html")
         html_str = template.render(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
 
-        # write html to file junk.html
         if html_debug:
             with open('junk-content.html', 'w') as f:
                 f.write(html_str)
@@ -459,7 +444,7 @@ class DiffPanel(wx.Panel):
         self.html.AddScriptMessageHandler('wx_msg')
         self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
 
-        pub.subscribe(self.on_show_diff, 'commit_changed')
+        pub.subscribe(self.generate_html_diff, 'commit_changed')
 
         self.html.SetPage("diffs go here", "")
 
@@ -503,7 +488,7 @@ class DiffPanel(wx.Panel):
         else:
             raise Exception("No commits found in repository")
     
-    def on_show_diff(self):
+    def generate_html_diff(self):
         if event_debug:
             print('   commit_changed ->', 'on_show_diff')
         # call git to find the sha of the previous commit to current_commit sha
@@ -518,8 +503,7 @@ class DiffPanel(wx.Panel):
         toc_template = environment.get_template("links-diff.html")
         toc_links = toc_template.render(hyperlinks=hyperlinks, add_filename_to_link=add_filename_to_link)
 
-        js_template = environment.get_template("template-diff.js")
-        js_file_contents = js_template.render()
+        js_file_contents = environment.get_template("template-diff.js").render()
         
         html_template = environment.get_template("template-diff.html")
         html_str = html_template.render(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)

@@ -23,6 +23,7 @@ current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
 scroll_pos = 0
+event_debug = True
 
 def get_files_in_repo(commit):
     command = ['git', 'ls-tree', '-r', '--name-only', commit]
@@ -90,16 +91,24 @@ class BranchesPanel(wx.Panel):
         self.rebuild_branches()
 
     def rebuild_branches(self):
+        if event_debug:
+            print('   repo-changed ->', 'rebuild_branches')
         # get the list of branches using the git command
         git_command = ['git', 'branch']
         branches = subprocess.check_output(git_command, universal_newlines=True).splitlines()
         self.branches_list.Set(branches)
+
+        if event_debug:
+            print('\n⚡️branch_changed (BranchesPanel, rebuild_branches)')
+        pub.sendMessage('branch_changed') ## NEW
     
     def on_branch_selected(self, event):
         global current_branch
         current_branch = self.branches_list.GetStringSelection().strip('* ')
 
         # Publish a message to notify the CommitsPanel that the branch has changed
+        if event_debug:
+            print('\n⚡️branch_changed (BranchesPanel)')
         pub.sendMessage('branch_changed')
 
 class CommitsPanel(wx.Panel):
@@ -134,6 +143,9 @@ class CommitsPanel(wx.Panel):
         self.rebuild_commits()
 
     def rebuild_commits(self):
+        if event_debug:
+            print('   branch_changed ->', 'rebuild_commits')
+
         # Fetch the commits for the current branch
         commits = get_commits_for_branch(current_branch)
 
@@ -148,6 +160,7 @@ class CommitsPanel(wx.Panel):
             self.list_ctrl.SetItem(index, 3, commit.comment)
 
         # set the selected item to the item with the current commit
+        # this will trigger the on_commit_selected event
         found = False
         for index in range(self.list_ctrl.GetItemCount()):
             if self.list_ctrl.GetItemText(index) == current_commit:
@@ -160,7 +173,9 @@ class CommitsPanel(wx.Panel):
             self.list_ctrl.Select(0)
             self.list_ctrl.Focus(0)
         
-        pub.sendMessage('commit_changed')
+        # if event_debug:
+        #     print('\n⚡️commit_changed (CommitsPanel, rebuild_commits)')
+        # pub.sendMessage('commit_changed')  ## NEW
 
     def on_commit_selected(self, event):
         # Update the global variable current_commit with the SHA of the selected commit
@@ -170,6 +185,8 @@ class CommitsPanel(wx.Panel):
             current_commit = self.list_ctrl.GetItemText(selected_item)
 
             # Publish a message to notify the FileTreePanel that the commit has changed
+            if event_debug:
+                print('\n⚡️commit_changed (CommitsPanel, on_commit_selected)')
             pub.sendMessage('commit_changed')
 
 class FileTreePanel(wx.Panel):
@@ -197,6 +214,8 @@ class FileTreePanel(wx.Panel):
         self.rebuild_tree()
 
     def select_treeview_item(self, path):
+        if event_debug:
+            print('   select_treeview_item ->', 'select_treeview_item')
         # Select the item in the treeview that corresponds to the given path
         item = self.tree.GetRootItem()
         for part in path.split('/'):
@@ -221,6 +240,9 @@ class FileTreePanel(wx.Panel):
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_sel_changed)
 
     def rebuild_tree(self):
+        if event_debug:
+            print('   commit_changed ->', 'rebuild_tree')
+        
         # remember the selected item, if any
         item = self.tree.GetSelection() # Could be None
         item_text = ''
@@ -319,6 +341,9 @@ class FileTreePanel(wx.Panel):
         # Get the contents of the selected file at the current commit
         contents = get_file_contents(current_commit, path)
         # TODO if file path has changed, scroll_pos will be wrong and needs to be reset to 0
+
+        if event_debug:
+            print('\n⚡️file_selected (FileTreePanel, on_tree_sel_changed)')
         pub.sendMessage('file_selected', path=path, contents=contents, scroll_to=scroll_pos)
 
 
@@ -351,6 +376,8 @@ class FileContentsPanel(wx.Panel):
         self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
 
     def on_file_selected(self, path, contents, scroll_to=None, line_to=None):
+        if event_debug:
+            print('   file_selected ->', 'on_file_selected')
         # Set the HTML content and restore the scroll position
         html_str = self.generate_html(path, contents, scroll_to, line_to)
         self.html.SetPage(html_str, "")
@@ -452,9 +479,14 @@ class DiffPanel(wx.Panel):
 
                 # Load the file contents into the content view and jump to the specified line
                 contents = get_file_contents(current_commit, filePath)
+
+                if event_debug:
+                    print('\n⚡️file_selected (DiffPanel, jump_to_file)')
                 pub.sendMessage('file_selected', path=filePath, contents=contents, line_to=lineNum)
 
                 # Tell the treeview to select the item
+                if event_debug:
+                    print('\n⚡️select_treeview_item (DiffPanel, jump_to_file)')
                 pub.sendMessage('select_treeview_item', path=filePath)
 
 
@@ -477,6 +509,8 @@ class DiffPanel(wx.Panel):
             raise Exception("No commits found in repository")
     
     def on_show_diff(self):
+        if event_debug:
+            print('   commit_changed ->', 'on_show_diff')
         # call git to find the sha of the previous commit to current_commit sha
         previous_commit = self.get_previous_commit(current_commit)
 
@@ -639,9 +673,12 @@ class MyFrame(wx.Frame):
         left_area.AppendWindow(DiffPanel(left_area))
 
         # Once all the panels are created, initialize them
-        bp.init()
-        cp.init()
-        ftp.init()
+        # bp.init()
+        # cp.init()
+        # ftp.init()
+        if event_debug:
+            print('\n⚡️repo-changed (MyFrame, layout_ui)')
+        pub.sendMessage('repo-changed')
 
         right_area = FileContentsPanel(outer_area)
 
@@ -665,6 +702,8 @@ class MyFrame(wx.Frame):
             current_repo_path = path
             os.chdir(path)
             self.SetTitle(self.title)
+            if event_debug:
+                print('\n⚡️repo-changed (MyFrame, on_open)')
             pub.sendMessage('repo-changed')
 
     @property

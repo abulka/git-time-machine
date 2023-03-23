@@ -9,8 +9,10 @@ import wx.html # old, doesn't support css and javascript
 import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
-from difflib import HtmlDiff
+# from difflib import HtmlDiff # weird google diff library
 from util import add_filename_to_link, get_file_contents
+import jinja2
+from jinja2 import Environment, FileSystemLoader
 
 class Commit:
     def __init__(self, sha, date, author, comment):
@@ -513,16 +515,21 @@ class DiffPanel(wx.Panel):
             hyperlink = add_filename_to_link(hyperlink)
             toc_links += hyperlink + '&nbsp;'*5
 
-        template_path = os.path.join(os.path.dirname(__file__), 'template-diff.html')
-        with open(template_path, 'r') as f:
-            html_template = f.read()
+        # jinja templating
+        environment = Environment(loader=FileSystemLoader("templates/"))
+        html_template = environment.get_template("template-diff.html")
+
+        # template_path = os.path.join(os.path.dirname(__file__), 'template-diff.html')
+        # with open(template_path, 'r') as f:
+        #     html_template = f.read()
 
         js_file_contents = os.path.join(os.path.dirname(__file__), 'template-diff.js')
         with open(js_file_contents, 'r') as f:
             js_file_contents = f.read()
 
         # use the template as a f string and substitue the values
-        html_str = html_template.format(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)
+        # html_str = html_template.format(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)
+        html_str = html_template.render(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)
 
         # write html to file junk.html
         with open('junk-diff.html', 'w') as f:

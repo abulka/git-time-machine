@@ -3,44 +3,44 @@
 
 <head>
   <style>
-    body {{
+    body {
       /* background-color: darkgray; */
       /* white-space: pre-wrap; YUK causes huge top margin*/
       word-wrap: break-word;
       margin: 0;
-    }}
+    }
 
-    pre {{
+    pre {
       background-color: #2f2f2f;
       color: #ffffff;
       font-family: monospace;
       white-space: pre-wrap;
       word-wrap: break-word;
       margin-top: 0;
-    }}
+    }
 
-    a {{
+    a {
       white-space: nowrap;
-    }}
+    }
 
-    .hyperlink-colour {{
+    .hyperlink-colour {
       color: cyan;
-    }}
+    }
 
-    ul {{
+    ul {
       background-color: antquewhite;
-    }}
+    }
   </style>
   <script>
-    {js}
+    {{js | safe}}
   </script>
 </head>
 
 <body>
-  <pre>{diff_body}</pre>
+  <pre>{{diff_body | safe}}</pre>
   <h2>Summary of Changes in this commit</h2>
   <p>Links to the file contents of each change in this commit are summarised here.</p>
-  {toc_links}
+  {{toc_links}}
 </body>
 
 </html>

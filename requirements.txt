@@ -1,3 +1,4 @@
 wheel
 pypubsub
 wxpython
+jinja2

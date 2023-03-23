@@ -27,6 +27,7 @@ current_commit = 'HEAD'
 scroll_pos = 0
 event_debug = False
 environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
+LIGHT_GREEN = "#90EE90"
 
 def get_files_in_repo(commit):
     command = ['git', 'ls-tree', '-r', '--name-only', commit]
@@ -596,17 +597,17 @@ class DiffPanel(wx.Panel):
 
         # add span tags for highlighting "-" and "+" lines
         highlighted_lines = []
+        template_coloured = environment.from_string('<span style="color:{{text_colour}}">{{line | escape}}</span>')
+        template_untouched = environment.from_string('{{line | escape}}')
         for line in git_output.split("\n"):
             if len(line) >= 1 and line[0] in ['+', '-']:
                 if len(line) > 1 and line[1] in ['+', '-']:
-                    highlighted_lines.append(line)
+                    highlighted_lines.append(template_untouched.render(line=line))
                 else:
-                    light_green = "#90EE90"
-                    text_colour = light_green if line[0] == "+" else "red"
-                    highlighted_line = f'<span style="color:{text_colour}">{line}</span>'
-                    highlighted_lines.append(highlighted_line)
+                    text_colour = LIGHT_GREEN if line[0] == "+" else "red"
+                    highlighted_lines.append(template_coloured.render(line=line, text_colour=text_colour))
             else:
-                highlighted_lines.append(line)
+                highlighted_lines.append(template_untouched.render(line=line))
 
         # join the lines back into a string with newline separators
         git_output = "\n".join(highlighted_lines)

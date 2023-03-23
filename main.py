@@ -587,8 +587,9 @@ class DiffPanel(wx.Panel):
                 if len(line) > 1 and line[1] in ['+', '-']:
                     highlighted_lines.append(line)
                 else:
-                    line_color = "green" if line[0] == "+" else "red"
-                    highlighted_line = f'<span style="color:{line_color}">{line}</span>'
+                    light_green = "#90EE90"
+                    text_colour = light_green if line[0] == "+" else "red"
+                    highlighted_line = f'<span style="color:{text_colour}">{line}</span>'
                     highlighted_lines.append(highlighted_line)
             else:
                 highlighted_lines.append(line)
@@ -662,7 +663,7 @@ class MyFrame(wx.Frame):
         right_area = FileContentsPanel(outer_area)
 
         outer_area.SplitVertically(left_area, right_area)
-        outer_area.SetSashGravity(0.7)
+        outer_area.SetSashGravity(0.6)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(outer_area, 1, wx.EXPAND)

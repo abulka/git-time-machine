@@ -25,7 +25,10 @@ current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
 scroll_pos = 0
-event_debug = True
+event_debug = False
+
+# jinja templating
+environment = Environment(loader=FileSystemLoader("templates/"))
 
 def get_files_in_repo(commit):
     command = ['git', 'ls-tree', '-r', '--name-only', commit]
@@ -358,6 +361,10 @@ class FileContentsPanel(wx.Panel):
         # Bind an event handler to receive those messages
         self.html.AddScriptMessageHandler('wx_msg')
         self.html.Bind(wx.html2.EVT_WEBVIEW_SCRIPT_MESSAGE_RECEIVED, self.on_script_message_received)
+        
+        empty_page = environment.get_template("empty.html")
+        html_str = empty_page.render()
+        self.html.SetPage(html_str, "")
 
     def on_file_selected(self, path, contents, scroll_to=None, line_to=None):
         if event_debug:
@@ -407,10 +414,13 @@ class FileContentsPanel(wx.Panel):
 
         # wrap each line of source_file_contents with a span tag so we can scroll to a specific line, give the span a unique id corresponding to the line number
         # source_file_contents = wrap_lines_with_spans(source_file_contents)
-                                                            
-        template_path = os.path.join(os.path.dirname(__file__), 'template.html')
-        with open(template_path, 'r') as f:
-            template = f.read()
+
+        # jinja templating
+
+        # template_path = os.path.join(os.path.dirname(__file__), 'template.html')
+        # with open(template_path, 'r') as f:
+        #     template = f.read()
+        template = environment.get_template("template.html")
 
         js_file_contents = os.path.join(os.path.dirname(__file__), 'template.js')
         with open(js_file_contents, 'r') as f:
@@ -424,7 +434,8 @@ class FileContentsPanel(wx.Panel):
             js_file_contents = js_file_contents.replace('0000', 'jump') # wish there was a nicer way to do this
 
         # use the template as a f string and substitue the values
-        html_str = template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
+        # html_str = template.format(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
+        html_str = template.render(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
 
         # write html to file junk.html
         with open('junk-content.html', 'w') as f:
@@ -516,7 +527,6 @@ class DiffPanel(wx.Panel):
             toc_links += hyperlink + '&nbsp;'*5
 
         # jinja templating
-        environment = Environment(loader=FileSystemLoader("templates/"))
         html_template = environment.get_template("template-diff.html")
 
         # template_path = os.path.join(os.path.dirname(__file__), 'template-diff.html')
@@ -626,7 +636,8 @@ class MyFrame(wx.Frame):
         super().__init__(parent, title=self.title)
         
         # Set the size of the frame
-        self.SetSize(wx.Size(1100, 700))
+        self.SetSize(wx.Size(1200, 700))
+        self.Centre(wx.BOTH)
 
         # Create a menu bar
         menu_bar = wx.MenuBar()

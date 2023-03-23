@@ -26,6 +26,7 @@ current_branch = 'main'
 current_commit = 'HEAD'
 scroll_pos = 0
 event_debug = False
+html_debug = False
 environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
 LIGHT_GREEN = "#90EE90"
 
@@ -436,8 +437,9 @@ class FileContentsPanel(wx.Panel):
         html_str = template.render(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)
 
         # write html to file junk.html
-        with open('junk-content.html', 'w') as f:
-            f.write(html_str)
+        if html_debug:
+            with open('junk-content.html', 'w') as f:
+                f.write(html_str)
 
         return html_str
 
@@ -513,35 +515,18 @@ class DiffPanel(wx.Panel):
         hyperlinks = self.extract_hyperlinks(diff_body)
         diff_body = self.inject_hyperlinks(diff_body, hyperlinks)
 
-        # toc_links = '<ul>'
-        # for hyperlink in hyperlinks:
-        #     hyperlink = add_filename_to_link(hyperlink)
-        #     toc_links += f'<li>{hyperlink}</li>'
-        # toc_links += '</ul>'
+        toc_template = environment.get_template("links-diff.html")
+        toc_links = toc_template.render(hyperlinks=hyperlinks, add_filename_to_link=add_filename_to_link)
 
-        toc_links = ''
-        for hyperlink in hyperlinks:
-            hyperlink = add_filename_to_link(hyperlink)
-            toc_links += hyperlink + '&nbsp;'*5
-
-        # jinja templating
+        js_template = environment.get_template("template-diff.js")
+        js_file_contents = js_template.render()
+        
         html_template = environment.get_template("template-diff.html")
-
-        # template_path = os.path.join(os.path.dirname(__file__), 'template-diff.html')
-        # with open(template_path, 'r') as f:
-        #     html_template = f.read()
-
-        js_file_contents = os.path.join(os.path.dirname(__file__), 'template-diff.js')
-        with open(js_file_contents, 'r') as f:
-            js_file_contents = f.read()
-
-        # use the template as a f string and substitue the values
-        # html_str = html_template.format(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)
         html_str = html_template.render(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)
 
-        # write html to file junk.html
-        with open('junk-diff.html', 'w') as f:
-            f.write(html_str)
+        if html_debug:
+            with open('junk-diff.html', 'w') as f:
+                f.write(html_str)
 
         # Set the HTML content
         self.html.SetPage(html_str, "")

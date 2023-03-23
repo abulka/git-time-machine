@@ -87,9 +87,6 @@ class BranchesPanel(wx.Panel):
         # set the panel sizer
         self.SetSizer(sizer)
     
-    def init(self):
-        self.rebuild_branches()
-
     def rebuild_branches(self):
         if event_debug:
             print('   repo-changed ->', 'rebuild_branches')
@@ -139,9 +136,6 @@ class CommitsPanel(wx.Panel):
         # Set the sizer for the panel
         self.SetSizer(sizer)
 
-    def init(self):
-        self.rebuild_commits()
-
     def rebuild_commits(self):
         if event_debug:
             print('   branch_changed ->', 'rebuild_commits')
@@ -173,10 +167,6 @@ class CommitsPanel(wx.Panel):
             self.list_ctrl.Select(0)
             self.list_ctrl.Focus(0)
         
-        # if event_debug:
-        #     print('\n⚡️commit_changed (CommitsPanel, rebuild_commits)')
-        # pub.sendMessage('commit_changed')  ## NEW
-
     def on_commit_selected(self, event):
         # Update the global variable current_commit with the SHA of the selected commit
         selected_item = self.list_ctrl.GetFirstSelected()
@@ -210,9 +200,6 @@ class FileTreePanel(wx.Panel):
         sizer.Add(self.tree, 1, wx.EXPAND)
         self.SetSizer(sizer)
 
-    def init(self):
-        self.rebuild_tree()
-
     def select_treeview_item(self, path):
         if event_debug:
             print('   select_treeview_item ->', 'select_treeview_item')
@@ -226,16 +213,11 @@ class FileTreePanel(wx.Panel):
                     break
                 child, cookie = self.tree.GetNextChild(item, cookie)
 
-        # self.tree.SelectItem(item) # will trigger wx.EVT_TREE_SEL_CHANGED 
-
         # Avoid raising the event twice by selecting the item without triggering the event
-
         # Disconnect the event handler
         self.tree.Unbind(wx.EVT_TREE_SEL_CHANGED)
-
         # Set the item without triggering the event
         self.tree.SelectItem(item)
-
         # Reconnect the event handler
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_sel_changed)
 
@@ -672,10 +654,7 @@ class MyFrame(wx.Frame):
         left_area.AppendWindow(ftp:=FileTreePanel(left_area))
         left_area.AppendWindow(DiffPanel(left_area))
 
-        # Once all the panels are created, initialize them
-        # bp.init()
-        # cp.init()
-        # ftp.init()
+        # Once all the panels are created, kick-start the population of panels
         if event_debug:
             print('\n⚡️repo-changed (MyFrame, layout_ui)')
         pub.sendMessage('repo-changed')

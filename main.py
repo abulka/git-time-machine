@@ -9,7 +9,6 @@ import wx.html # old, doesn't support css and javascript
 import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
-# from difflib import HtmlDiff # weird google diff library
 from util import add_filename_to_link, get_file_contents
 import jinja2
 from jinja2 import Environment, FileSystemLoader

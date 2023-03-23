@@ -4,9 +4,8 @@
 <head>
   <style>
     body {{
-      background-color: darkgray;
-      font-family: monospace;
-      white-space: pre-wrap;
+      /* background-color: darkgray; */
+      /* white-space: pre-wrap; YUK causes huge top margin*/
       word-wrap: break-word;
       margin: 0;
     }}
@@ -38,8 +37,10 @@
 </head>
 
 <body>
-  {toc_links}
   <pre>{diff_body}</pre>
+  <h2>Summary of Changes in this commit</h2>
+  <p>Links to the file contents of each change in this commit are summarised here.</p>
+  {toc_links}
 </body>
 
 </html>

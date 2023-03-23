@@ -618,7 +618,7 @@ class MyFrame(wx.Frame):
         super().__init__(parent, title=self.title)
         
         # Set the size of the frame
-        self.SetSize(wx.Size(1000, 600))
+        self.SetSize(wx.Size(1100, 700))
 
         # Create a menu bar
         menu_bar = wx.MenuBar()
@@ -662,7 +662,7 @@ class MyFrame(wx.Frame):
         right_area = FileContentsPanel(outer_area)
 
         outer_area.SplitVertically(left_area, right_area)
-        outer_area.SetSashGravity(0.5)
+        outer_area.SetSashGravity(0.7)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(outer_area, 1, wx.EXPAND)

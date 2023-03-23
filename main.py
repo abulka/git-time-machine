@@ -83,11 +83,12 @@ class BranchesPanel(wx.Panel):
         # subscribe to 'repo-changed' message
         pub.subscribe(self.rebuild_branches, 'repo-changed')
 
-        self.rebuild_branches()
-        
         # set the panel sizer
         self.SetSizer(sizer)
     
+    def init(self):
+        self.rebuild_branches()
+
     def rebuild_branches(self):
         # get the list of branches using the git command
         git_command = ['git', 'branch']
@@ -126,10 +127,11 @@ class CommitsPanel(wx.Panel):
 
         pub.subscribe(self.rebuild_commits, 'branch_changed')
 
-        self.rebuild_commits()
-
         # Set the sizer for the panel
         self.SetSizer(sizer)
+
+    def init(self):
+        self.rebuild_commits()
 
     def rebuild_commits(self):
         # Fetch the commits for the current branch
@@ -157,6 +159,8 @@ class CommitsPanel(wx.Panel):
             # set the selected item to the first
             self.list_ctrl.Select(0)
             self.list_ctrl.Focus(0)
+        
+        pub.sendMessage('commit_changed')
 
     def on_commit_selected(self, event):
         # Update the global variable current_commit with the SHA of the selected commit
@@ -189,6 +193,7 @@ class FileTreePanel(wx.Panel):
         sizer.Add(self.tree, 1, wx.EXPAND)
         self.SetSizer(sizer)
 
+    def init(self):
         self.rebuild_tree()
 
     def select_treeview_item(self, path):
@@ -214,8 +219,6 @@ class FileTreePanel(wx.Panel):
 
         # Reconnect the event handler
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_sel_changed)
-
-        
 
     def rebuild_tree(self):
         # remember the selected item, if any
@@ -282,8 +285,6 @@ class FileTreePanel(wx.Panel):
             # self.tree.ExpandAll()
             self.tree.CollapseAll()
 
-
-
     def get_item_by_label(self, tree, search_text, root_item):
         item, cookie = tree.GetFirstChild (root_item)
         while item.IsOk ():
@@ -319,6 +320,7 @@ class FileTreePanel(wx.Panel):
         contents = get_file_contents(current_commit, path)
         # TODO if file path has changed, scroll_pos will be wrong and needs to be reset to 0
         pub.sendMessage('file_selected', path=path, contents=contents, scroll_to=scroll_pos)
+
 
 class FileContentsPanel(wx.Panel):
     def __init__(self, parent):
@@ -631,22 +633,17 @@ class MyFrame(wx.Frame):
 
         left_area = MultiSplitterWindow(outer_area, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
         left_area.SetOrientation(wx.VERTICAL)
-        left_area.AppendWindow(BranchesPanel(left_area))
-        left_area.AppendWindow(CommitsPanel(left_area))
-        left_area.AppendWindow(FileTreePanel(left_area))
+        left_area.AppendWindow(bp:=BranchesPanel(left_area))
+        left_area.AppendWindow(cp:=CommitsPanel(left_area))
+        left_area.AppendWindow(ftp:=FileTreePanel(left_area))
         left_area.AppendWindow(DiffPanel(left_area))
 
-        right_area = FileContentsPanel(outer_area)
+        # Once all the panels are created, initialize them
+        bp.init()
+        cp.init()
+        ftp.init()
 
-        # right_area = wx.SplitterWindow(outer_area, -1, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
-        # # add FileContentsPanel and DiffPanel vertically in splitter
-        # self.file_contents_area = FileContentsPanel(right_area)
-        # self.diff_area = DiffPanel(right_area)
-        # right_area.SplitVertically(self.file_contents_area, self.diff_area)
-        # right_area.SetSashGravity(0.5)
-        # right_area.SetSashPosition(300)
-        # # right_sizer = wx.BoxSizer(wx.VERTICAL)
-        # # right_sizer.Add(right_area, 1, wx.EXPAND)
+        right_area = FileContentsPanel(outer_area)
 
         outer_area.SplitVertically(left_area, right_area)
         outer_area.SetSashGravity(0.5)

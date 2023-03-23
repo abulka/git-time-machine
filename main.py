@@ -26,9 +26,7 @@ current_branch = 'main'
 current_commit = 'HEAD'
 scroll_pos = 0
 event_debug = False
-
-# jinja templating
-environment = Environment(loader=FileSystemLoader("templates/"))
+environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
 
 def get_files_in_repo(commit):
     command = ['git', 'ls-tree', '-r', '--name-only', commit]
@@ -332,7 +330,6 @@ class FileTreePanel(wx.Panel):
         if event_debug:
             print('\n⚡️file_selected (FileTreePanel, on_tree_sel_changed)')
         pub.sendMessage('file_selected', path=path, contents=contents, scroll_to=scroll_pos)
-
 
 class FileContentsPanel(wx.Panel):
     def __init__(self, parent):

@@ -11,6 +11,11 @@ Just select a commit and see the directory tree as it was at that time! Then sel
 
 ![screenshot1](doco/images/screenshot1.png)
 
+## Installation
+
+        pip install -r requirements.txt
+        python main.py
+        
 ## Usage Tip
 Click on a commit and then click on a file to see the contents of that file at that commit.
 

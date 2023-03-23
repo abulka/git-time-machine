@@ -410,7 +410,7 @@ class FileContentsPanel(wx.Panel):
         }
         lang = lang_map.get(file_ext, 'auto') # Use "auto" if extension is not recognized
 
-        js_file_template = environment.get_template("template.js")
+        js_file_template = environment.get_template("template.jinja-js")
         js_file_contents = js_file_template.render(scroll_to=scroll_to, line_to=line_to)
 
         template = environment.get_template("template.html")

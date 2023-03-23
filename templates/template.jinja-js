@@ -38,6 +38,8 @@ function jumpToLine(lineNumber) {
     scrollToPos(position);
   }
 
+/* eslint-disable */  // ignore all eslint errors for this block of code
+// @ts-ignore
 window.onload = function () {
     {% if scroll_to %}
     // Scroll to the position with x=0 and y={{ scroll_to }} before the html is loaded to prevent flickering
@@ -47,3 +49,4 @@ window.onload = function () {
     jumpToLine({{ line_to }});
     {% endif %}
 };
+/* eslint-enable */  // re-enable eslint validation

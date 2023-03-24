@@ -10,7 +10,6 @@ import wx.html2 # modern supports css and javascript
 from wx.lib.splitter import MultiSplitterWindow
 from pubsub import pub  # pip install pypubsub
 from util import add_filename_to_link, get_file_contents
-import jinja2
 from jinja2 import Environment, FileSystemLoader
 
 class Commit:
@@ -23,9 +22,10 @@ class Commit:
 current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
-scroll_pos = 0
+scroll_pos = 0  # window scroll position
+scroll_posX = 0  # pre scroll position containg the source code being previewed by prism
 event_debug = False
-html_debug = False
+html_debug = True
 environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
 LIGHT_GREEN = "#90EE90"
 
@@ -352,7 +352,6 @@ class FileContentsPanel(wx.Panel):
         self.Layout()
         
         self.html.Bind(wx.html2.EVT_WEBVIEW_NAVIGATED, self.on_page_navigated)
-        self.html.Bind(wx.html2.EVT_WEBVIEW_LOADED, self.on_page_loaded)
         self.html.Bind(wx.html2.EVT_WEBVIEW_ERROR, self.on_page_error) # only seems to work for loadURL pages
 
         # Install message handler with the name wx_msg, this just listens for messages from the page
@@ -375,27 +374,19 @@ class FileContentsPanel(wx.Panel):
         # print("Page navigated")
         event.Skip()
 
-    def on_page_loaded(self, event):
-        # print("Page loaded")
-
-        # This works but causes the page to jump from the top to the specified scroll position - yuk
-        # so now we embed the scroll position in the html via the 9999 placeholder
-        # self.html.RunScript(f"window.scrollTo(0, {scroll_pos})")
-        pass
-
     def on_page_error(self, event):
         print("Page error")
         print(event.GetString())
 
     def on_script_message_received(self, event):
-        global scroll_pos
-        # print("Script message received", event.GetString())
+        global scroll_pos, scroll_posX
+        print("Script message received", event.GetString())
 
         # if first char of message is '{' then it is JSON containing our scroll position
         if event.GetString()[0] == '{':
             scroll_pos_data = json.loads(event.GetString())
-            # print("Scroll pos extracted as", scroll_pos_data['scrollPos'])
-            scroll_pos = scroll_pos_data['scrollPos']
+            scroll_pos = scroll_pos_data.get('scrollPos', scroll_pos) # if key not found, use previous value
+            scroll_posX = scroll_pos_data.get('scrollPosX', scroll_posX) # if key not found, use previous value
 
     def generate_html(self, path, source_file_contents, scroll_to=None, line_to=None):
         _, file_ext = os.path.splitext(path)
@@ -411,7 +402,7 @@ class FileContentsPanel(wx.Panel):
         lang = lang_map.get(file_ext, 'auto') # Use "auto" if extension is not recognized
 
         js_file_template = environment.get_template("template.jinja-js")
-        js_file_contents = js_file_template.render(scroll_to=scroll_to, line_to=line_to)
+        js_file_contents = js_file_template.render(scroll_to=scroll_to, scroll_to_x=scroll_posX, line_to=line_to)
 
         template = environment.get_template("template.html")
         html_str = template.render(lang=lang, source_file_contents=source_file_contents, js_file_contents=js_file_contents)

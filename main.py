@@ -218,7 +218,7 @@ class FileTreePanel(wx.Panel):
                     item = child
                     break
                 child, cookie = self.tree.GetNextChild(item, cookie)
-        print('looking for', path, 'found', item, self.tree.GetItemText(item))
+        print('select_treeview_item - looking for', path, 'found', item, self.tree.GetItemText(item)) # TODO could be the bug - need to remember full path!
 
         # Avoid raising the event twice by selecting the item without triggering the event
         # Disconnect the event handler
@@ -237,6 +237,7 @@ class FileTreePanel(wx.Panel):
         item_text = ''
         if item:
             item_text = self.tree.GetItemText(item)
+            print('remembering selected item', item_text) # TODO This could be the bug - need to remember full path!
 
         # remember the expanded items
         expanded_items = []
@@ -280,6 +281,7 @@ class FileTreePanel(wx.Panel):
             item = self.get_item_by_label(self.tree, item_text, root)
             if item.IsOk():
                 self.tree.SelectItem(item)
+                print('restored selection to', item_text) # TODO this could also be the bug - need to remember full path!
 
         # Expand the items that were expanded before
         def expand_items(item):
@@ -322,7 +324,7 @@ class FileTreePanel(wx.Panel):
 
             # Remove the root item from the path
             path = path.replace('My Root Item/', '')
-            print(path)
+            print('on_tree_sel_changed', path)
 
             # self.tree.SetItemBackgroundColour(item, wx.Colour(255, 0, 0)) # set the background color to red
 

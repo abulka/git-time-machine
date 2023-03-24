@@ -208,8 +208,9 @@ class FileTreePanel(wx.Panel):
     def select_treeview_item(self, path):
         if event_debug:
             print('   select_treeview_item ->', 'select_treeview_item')
+
         # Select the item in the treeview that corresponds to the given path
-        # TODO fix bug where this is partially matching the path not the full path
+        # Correctly matches the full path e.g. 'src/main/java/com/example/HelloWorld.java'
         item = self.tree.GetRootItem()
         for part in path.split('/'):
             child, cookie = self.tree.GetFirstChild(item)
@@ -218,7 +219,6 @@ class FileTreePanel(wx.Panel):
                     item = child
                     break
                 child, cookie = self.tree.GetNextChild(item, cookie)
-        print('select_treeview_item - looking for', path, 'found', item, self.tree.GetItemText(item)) # TODO could be the bug - need to remember full path!
 
         # Avoid raising the event twice by selecting the item without triggering the event
         # Disconnect the event handler
@@ -236,12 +236,6 @@ class FileTreePanel(wx.Panel):
         item = self.tree.GetSelection() # Could be None
         item_text = ''
         item_path = ''
-        # if item:
-        #     item_text = self.tree.GetItemText(item)
-        #     item_path = self.tree.GetPath(item)
-        #     print('remembering selected item', item_text) # TODO This could be the bug - need to remember full path!
-
-        print('item', item, item_text, item_path)
         if item and self.tree.GetItemText(item) != 'My Root Item':
             item_text = self.tree.GetItemText(item)
             item_path = [item_text]
@@ -252,9 +246,10 @@ class FileTreePanel(wx.Panel):
                     item_path.insert(0, parent_text)
                 parent = self.tree.GetItemParent(parent)
             item_path = '/'.join(item_path)
-            print('remembering selected item', item_path)
+            # print('remembering selected item', item_path)
         else:
-            print('no item selected')
+            # print('no item selected')
+            pass 
 
         # remember the expanded items
         expanded_items = []
@@ -293,13 +288,6 @@ class FileTreePanel(wx.Panel):
 
             self.tree.AppendItem(parent, path_parts[-1])
 
-        # Restore the selection, using self.get_item_by_label
-        # if item_text:
-        #     item = self.get_item_by_label(self.tree, item_text, root)
-        #     if item.IsOk():
-        #         self.tree.SelectItem(item)
-        #         print('restored selection to', item_text) # TODO this could also be the bug - need to remember full path!
-
         # restore the selected item, if any
         if item_path:
             item = self.get_item_by_path(item_path)
@@ -311,7 +299,6 @@ class FileTreePanel(wx.Panel):
                 pub.sendMessage('file_selected', path=None, contents=None, scroll_to=0) # NEW
         else:
             print('not restoring anything')
-            # send event to clear the file contents view
             pub.sendMessage('file_selected', path=None, contents=None, scroll_to=0) # NEW
 
 
@@ -330,19 +317,6 @@ class FileTreePanel(wx.Panel):
             # self.tree.ExpandAll()
             self.tree.CollapseAll()
 
-    # def get_item_by_label(self, tree, search_text, root_item):
-    #     item, cookie = tree.GetFirstChild (root_item)
-    #     while item.IsOk ():
-    #         text = tree.GetItemText (item)
-    #         if text.lower () == search_text.lower ():
-    #             return item
-    #         if tree.ItemHasChildren (item):
-    #             match = self.get_item_by_label (tree, search_text, item)
-    #             if match.IsOk ():
-    #                 return match
-    #         item, cookie = tree.GetNextChild (root_item, cookie)
-    #     return wx.TreeItemId ()
-
     def get_item_by_path(self, item_path):
         root_item = self.tree.GetRootItem()
         item_parts = item_path.split('/')
@@ -357,8 +331,6 @@ class FileTreePanel(wx.Panel):
             else:
                 return wx.TreeItemId()
         return item
-
-
 
     def on_tree_sel_changed(self, event):
         # Get the selected file path

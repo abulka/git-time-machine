@@ -54,7 +54,7 @@ def get_commits_for_branch(branch):
         return []
 
 def extract_fields(commit_info):
-    print('commit_info', commit_info)
+    # print('commit_info', commit_info)
     match = re.match(r'(?P<date>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}) (?P<author>.*) (?P<comment>.*)', commit_info)
 
     if match:
@@ -62,7 +62,7 @@ def extract_fields(commit_info):
         date = match.group('date')
         author = match.group('author')
         comment = match.group('comment')
-        print(f'date: {date}, author: {author}, comment: {comment}')
+        # print(f'date: {date}, author: {author}, comment: {comment}')
     else:
         # old dogy technique
         date, author, comment = commit_info.split(' ', 2)
@@ -293,12 +293,12 @@ class FileTreePanel(wx.Panel):
             item = self.get_item_by_path(item_path)
             if item.IsOk() and self.tree.GetItemText(item) != 'My Root Item':
                 self.tree.SelectItem(item)
-                print('restored selection to', item_path)
+                # print('restored selection to', item_path)
             else:
-                print('could not restore selection to', item_path)
+                # print('could not restore selection to', item_path)
                 pub.sendMessage('file_selected', path=None, contents=None, scroll_to=0) # NEW
         else:
-            print('not restoring anything')
+            # print('not restoring anything')
             pub.sendMessage('file_selected', path=None, contents=None, scroll_to=0) # NEW
 
 
@@ -345,7 +345,7 @@ class FileTreePanel(wx.Panel):
 
             # Remove the root item from the path
             path = path.replace('My Root Item/', '')
-            print('on_tree_sel_changed', path)
+            # print('on_tree_sel_changed', path)
 
             # self.tree.SetItemBackgroundColour(item, wx.Colour(255, 0, 0)) # set the background color to red
 
@@ -418,7 +418,7 @@ class FileContentsPanel(wx.Panel):
 
     def on_script_message_received(self, event):
         global scroll_pos, scroll_posX
-        print("Script message received", event.GetString())
+        # print("Script message received", event.GetString())
 
         # if first char of message is '{' then it is JSON containing our scroll position
         if event.GetString()[0] == '{':

@@ -19,6 +19,7 @@ class Commit:
         self.author = author
         self.comment = comment
 
+app_version = '0.1.0'
 current_repo_path = os.getcwd()
 current_branch = 'main'
 current_commit = 'HEAD'
@@ -625,6 +626,7 @@ class MyFrame(wx.Frame):
         menu_bar.Append(file_menu, 'File')
         file_menu.Append(wx.ID_OPEN, 'Open Git Repo\tCtrl+O', 'Open a git repo')
         self.Bind(wx.EVT_MENU, self.on_open, id=wx.ID_OPEN)
+
         # add menu items to the view menu called refresh commits and refresh branches
         view_menu = wx.Menu()
         view_menu.Append(wx.ID_REFRESH, 'Refresh Commits\tCtrl+R', 'Refresh the commits')
@@ -633,6 +635,14 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_refresh_branches, id=wx.ID_REFRESH)
         menu_bar.Append(view_menu, 'View')
 
+        # add a help menu with a menu item called about
+        help_menu = wx.Menu()
+        help_menu.Append(wx.ID_ABOUT, 'About Git Time Machine\tCtrl+A', 'About the application')
+        self.Bind(wx.EVT_MENU, self.on_about, id=wx.ID_ABOUT)
+        # add menu item to visit the website https://github.com/abulka/git-time-machine 
+        help_menu.Append(wx.ID_HELP, 'Visit Website\tCtrl+V', 'Visit the website')
+        self.Bind(wx.EVT_MENU, self.on_visit_website, id=wx.ID_HELP)
+        menu_bar.Append(help_menu, 'Help')
 
 
         # Set the menu bar
@@ -696,6 +706,13 @@ class MyFrame(wx.Frame):
         if event_debug:
             print('\n⚡️repo-changed (MyFrame, on_refresh_branches)')
         pub.sendMessage('repo-changed')
+
+    def on_about(self, event):
+        wx.MessageBox(f'Git Repo Time Machine version {app_version}', 'About Git Repo Time Machine', wx.OK | wx.ICON_INFORMATION)
+
+    def on_visit_website(self, event):
+        wx.LaunchDefaultBrowser('https://github.com/abulka/git-time-machine')
+                                
 
     @property
     def title(self):

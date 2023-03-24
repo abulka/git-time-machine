@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Git Time Machine
+GenericName=Git Time Machine
+Comment=App for easily viewing the state of your git source code directory tree at any commit incl. contents of any file
+Exec=git-tm
+Icon=${SNAP}/meta/gui/git-tm.png
+Terminal=false
+Type=Application
+Categories=Development;
+StartupNotify=true

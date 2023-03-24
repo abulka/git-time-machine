@@ -218,6 +218,7 @@ class FileTreePanel(wx.Panel):
                     item = child
                     break
                 child, cookie = self.tree.GetNextChild(item, cookie)
+        print('looking for', path, 'found', item, self.tree.GetItemText(item))
 
         # Avoid raising the event twice by selecting the item without triggering the event
         # Disconnect the event handler
@@ -321,6 +322,7 @@ class FileTreePanel(wx.Panel):
 
             # Remove the root item from the path
             path = path.replace('My Root Item/', '')
+            print(path)
 
             # self.tree.SetItemBackgroundColour(item, wx.Colour(255, 0, 0)) # set the background color to red
 

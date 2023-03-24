@@ -717,7 +717,11 @@ class MyFrame(wx.Frame):
     def title(self):
         return f"Git Repo Time Machine - {current_repo_path}"
 
-if __name__ == '__main__':
+def run():
     app = wx.App()
     frame = MyFrame(None)
     app.MainLoop()
+    
+if __name__ == '__main__':
+    run()
+

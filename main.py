@@ -194,7 +194,6 @@ class FileTreePanel(wx.Panel):
         # Create a tree control to display the file tree
         self.tree = wx.TreeCtrl(self, style=wx.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT)
 
-        # Bind the tree control to the EVT_TREE_SEL_CHANGED event
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_sel_changed)
        
         pub.subscribe(self.rebuild_tree, 'commit_changed')
@@ -606,20 +605,6 @@ class DiffPanel(wx.Panel):
 
         # return the diff with highlighted lines
         return " ".join(git_command) + '\n\n' + git_output
-
-class LeftPanel(wx.Panel):
-    def __init__(self, parent):
-        super().__init__(parent, style=wx.SIMPLE_BORDER)
-
-        # Create the CommitsPanel and FileTreePanel sub-panels vertically
-        commits_panel = CommitsPanel(self)
-        file_tree_panel = FileTreePanel(self)
-
-        # Split the left panel vertically to show the two sub-panels
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(commits_panel, proportion=1, flag=wx.EXPAND)
-        sizer.Add(file_tree_panel, proportion=2, flag=wx.EXPAND)
-        self.SetSizer(sizer)
 
 class MyFrame(wx.Frame):
     def __init__(self, parent):

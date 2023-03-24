@@ -235,9 +235,26 @@ class FileTreePanel(wx.Panel):
         # remember the selected item, if any
         item = self.tree.GetSelection() # Could be None
         item_text = ''
-        if item:
+        item_path = ''
+        # if item:
+        #     item_text = self.tree.GetItemText(item)
+        #     item_path = self.tree.GetPath(item)
+        #     print('remembering selected item', item_text) # TODO This could be the bug - need to remember full path!
+
+        print('item', item, item_text, item_path)
+        if item and self.tree.GetItemText(item) != 'My Root Item':
             item_text = self.tree.GetItemText(item)
-            print('remembering selected item', item_text) # TODO This could be the bug - need to remember full path!
+            item_path = [item_text]
+            parent = self.tree.GetItemParent(item)
+            while parent.IsOk():
+                parent_text = self.tree.GetItemText(parent)
+                if parent_text != 'My Root Item':
+                    item_path.insert(0, parent_text)
+                parent = self.tree.GetItemParent(parent)
+            item_path = '/'.join(item_path)
+            print('remembering selected item', item_path)
+        else:
+            print('no item selected')
 
         # remember the expanded items
         expanded_items = []
@@ -276,12 +293,27 @@ class FileTreePanel(wx.Panel):
 
             self.tree.AppendItem(parent, path_parts[-1])
 
-        # Restore the selection, if possible, using self.get_item_by_label
-        if item_text:
-            item = self.get_item_by_label(self.tree, item_text, root)
-            if item.IsOk():
+        # Restore the selection, using self.get_item_by_label
+        # if item_text:
+        #     item = self.get_item_by_label(self.tree, item_text, root)
+        #     if item.IsOk():
+        #         self.tree.SelectItem(item)
+        #         print('restored selection to', item_text) # TODO this could also be the bug - need to remember full path!
+
+        # restore the selected item, if any
+        if item_path:
+            item = self.get_item_by_path(item_path)
+            if item.IsOk() and self.tree.GetItemText(item) != 'My Root Item':
                 self.tree.SelectItem(item)
-                print('restored selection to', item_text) # TODO this could also be the bug - need to remember full path!
+                print('restored selection to', item_path)
+            else:
+                print('could not restore selection to', item_path)
+                pub.sendMessage('file_selected', path=None, contents=None, scroll_to=0) # NEW
+        else:
+            print('not restoring anything')
+            # send event to clear the file contents view
+            pub.sendMessage('file_selected', path=None, contents=None, scroll_to=0) # NEW
+
 
         # Expand the items that were expanded before
         def expand_items(item):
@@ -298,18 +330,35 @@ class FileTreePanel(wx.Panel):
             # self.tree.ExpandAll()
             self.tree.CollapseAll()
 
-    def get_item_by_label(self, tree, search_text, root_item):
-        item, cookie = tree.GetFirstChild (root_item)
-        while item.IsOk ():
-            text = tree.GetItemText (item)
-            if text.lower () == search_text.lower ():
-                return item
-            if tree.ItemHasChildren (item):
-                match = self.get_item_by_label (tree, search_text, item)
-                if match.IsOk ():
-                    return match
-            item, cookie = tree.GetNextChild (root_item, cookie)
-        return wx.TreeItemId ()
+    # def get_item_by_label(self, tree, search_text, root_item):
+    #     item, cookie = tree.GetFirstChild (root_item)
+    #     while item.IsOk ():
+    #         text = tree.GetItemText (item)
+    #         if text.lower () == search_text.lower ():
+    #             return item
+    #         if tree.ItemHasChildren (item):
+    #             match = self.get_item_by_label (tree, search_text, item)
+    #             if match.IsOk ():
+    #                 return match
+    #         item, cookie = tree.GetNextChild (root_item, cookie)
+    #     return wx.TreeItemId ()
+
+    def get_item_by_path(self, item_path):
+        root_item = self.tree.GetRootItem()
+        item_parts = item_path.split('/')
+        item = root_item
+        for part in item_parts:
+            child, cookie = self.tree.GetFirstChild(item)
+            while child:
+                if self.tree.GetItemText(child) == part:
+                    item = child
+                    break
+                child, cookie = self.tree.GetNextChild(item, cookie)
+            else:
+                return wx.TreeItemId()
+        return item
+
+
 
     def on_tree_sel_changed(self, event):
         # Get the selected file path
@@ -378,8 +427,13 @@ class FileContentsPanel(wx.Panel):
     def on_file_selected(self, path, contents, scroll_to=None, line_to=None):
         if event_debug:
             print('   file_selected ->', 'on_file_selected')
+
         # Set the HTML content and restore the scroll position
-        html_str = self.generate_html(path, contents, scroll_to, line_to)
+        if (not path):
+            empty_page = environment.get_template("empty.html")
+            html_str = empty_page.render()
+        else:
+            html_str = self.generate_html(path, contents, scroll_to, line_to)
         self.html.SetPage(html_str, "")
 
     def on_page_navigated(self, event):

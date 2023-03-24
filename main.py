@@ -655,31 +655,6 @@ class MyFrame(wx.Frame):
 
         self.Show()
 
-        # call method repair_menu after after a few moments
-        wx.CallLater(100, self.repair_menu)
-
-
-    def repair_menu(self):
-        # Can't get access to the Window menu - even after things settle down. Weird.
-        
-        # Move the Window menu to its standard location
-        # Get the index of the "Window" menu
-        print('repair_menu')
-        menu_bar = self.menu_bar
-        window_menu_index = -1
-        for i, item in enumerate(menu_bar.GetMenus()):
-            (menu, label) = item
-            if label == 'Window':
-                window_menu_index = i
-                print('window_menu_index', window_menu_index)
-                break
-        # # Move the "Window" menu before the "Help" menu
-        # if window_menu_index >= 0:
-        #     help_menu_index = len(menu_bar.GetMenus()) - 1
-        #     menu_bar.Insert(help_menu_index, menu_bar.Remove(window_menu_index))
-
-
-
     def layout_ui(self):
         outer_area = wx.SplitterWindow(self, -1, style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
 

@@ -644,6 +644,19 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_visit_website, id=wx.ID_HELP)
         menu_bar.Append(help_menu, 'Help')
 
+        # Move the Window menu to its standard location
+        # Get the index of the "Window" menu
+        # window_menu_index = -1
+        # for i, menu in enumerate(menu_bar.GetMenus()):
+        #     if menu[0].GetLabel() == 'Window':
+        #         window_menu_index = i
+        #         break
+
+        # # Move the "Window" menu before the "Help" menu
+        # if window_menu_index >= 0:
+        #     help_menu_index = len(menu_bar.GetMenus()) - 1
+        #     menu_bar.Insert(help_menu_index, menu_bar.Remove(window_menu_index))
+
 
         # Set the menu bar
         self.SetMenuBar(menu_bar)

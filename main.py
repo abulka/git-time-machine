@@ -24,6 +24,7 @@ current_branch = 'main'
 current_commit = 'HEAD'
 scroll_pos = 0  # window scroll position
 scroll_posX = 0  # pre scroll position containg the source code being previewed by prism
+scroll_is_for_path = ''  # path of the file being previewed by prism and whose scroll position is being saved
 event_debug = False
 html_debug = True
 environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
@@ -208,6 +209,7 @@ class FileTreePanel(wx.Panel):
         if event_debug:
             print('   select_treeview_item ->', 'select_treeview_item')
         # Select the item in the treeview that corresponds to the given path
+        # TODO fix bug where this is partially matching the path not the full path
         item = self.tree.GetRootItem()
         for part in path.split('/'):
             child, cookie = self.tree.GetFirstChild(item)
@@ -326,7 +328,13 @@ class FileTreePanel(wx.Panel):
 
         # Get the contents of the selected file at the current commit
         contents = get_file_contents(current_commit, path)
-        # TODO if file path has changed, scroll_pos will be wrong and needs to be reset to 0
+
+        # If file path has changed, scroll_pos will be wrong and needs to be reset to 0
+        global scroll_is_for_path, scroll_pos, scroll_posX
+        if scroll_is_for_path != path:
+            scroll_pos = 0
+            scroll_posX = 0
+        scroll_is_for_path = path
 
         if event_debug:
             print('\n⚡️file_selected (FileTreePanel, on_tree_sel_changed)')

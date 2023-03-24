@@ -26,7 +26,7 @@ scroll_pos = 0  # window scroll position
 scroll_posX = 0  # pre scroll position containg the source code being previewed by prism
 scroll_is_for_path = ''  # path of the file being previewed by prism and whose scroll position is being saved
 event_debug = False
-html_debug = True
+html_debug = False
 environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
 LIGHT_GREEN = "#90EE90"
 
@@ -625,6 +625,14 @@ class MyFrame(wx.Frame):
         menu_bar.Append(file_menu, 'File')
         file_menu.Append(wx.ID_OPEN, 'Open Git Repo\tCtrl+O', 'Open a git repo')
         self.Bind(wx.EVT_MENU, self.on_open, id=wx.ID_OPEN)
+        # add menu items to the view menu called refresh commits and refresh branches
+        view_menu = wx.Menu()
+        view_menu.Append(wx.ID_REFRESH, 'Refresh Commits\tCtrl+R', 'Refresh the commits')
+        self.Bind(wx.EVT_MENU, self.on_refresh_commits, id=wx.ID_REFRESH)
+        view_menu.Append(wx.ID_REFRESH, 'Refresh Branches\tCtrl+B', 'Refresh the branches')
+        self.Bind(wx.EVT_MENU, self.on_refresh_branches, id=wx.ID_REFRESH)
+        menu_bar.Append(view_menu, 'View')
+
 
 
         # Set the menu bar
@@ -678,6 +686,16 @@ class MyFrame(wx.Frame):
             if event_debug:
                 print('\n⚡️repo-changed (MyFrame, on_open)')
             pub.sendMessage('repo-changed')
+
+    def on_refresh_commits(self, event):
+        if event_debug:
+            print('\n⚡️repo-changed (MyFrame, on_refresh_commits)')
+        pub.sendMessage('repo-changed')
+
+    def on_refresh_branches(self, event):
+        if event_debug:
+            print('\n⚡️repo-changed (MyFrame, on_refresh_branches)')
+        pub.sendMessage('repo-changed')
 
     @property
     def title(self):

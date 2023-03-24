@@ -30,6 +30,12 @@
     ul {
       background-color: antquewhite;
     }
+
+    .toc-area {
+      background-color: gray;
+      padding: 10px;
+      margin: 0;
+    }
   </style>
   <script>
     {{js}}
@@ -38,9 +44,11 @@
 
 <body>
   <pre>{{diff_body | safe}}</pre>
-  <h2>Summary of Changes in this commit</h2>
-  <p>Links to the file contents of each change in this commit are summarised here.</p>
-  {{toc_links}}
+  <div class="toc-area">
+    <h2>Summary of Changes in this commit</h2>
+    <p>Links to the file contents of each change in this commit are summarised here.</p>
+    {{toc_links}}
+  </div>
 </body>
 
 </html>

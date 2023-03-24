@@ -26,7 +26,8 @@ def add_filename_to_link(link_text):
         filename = match.group(1)
         start_line = match.group(3)
         line_range = match.group(4)
-        new_link_text = f'<a href="javascript:jumpTo(\'{filename}\', {start_line})">{filename} @@ -{start_line},{line_range} @@</a>'
+        # new_link_text = f'<a href="javascript:jumpTo(\'{filename}\', {start_line})">{filename} @@ -{start_line},{line_range} @@</a>'
+        new_link_text = f'<a href="javascript:jumpTo(\'{filename}\', {start_line})">{filename} {start_line}</a>'
         return new_link_text
     else:
         return link_text

@@ -1,16 +1,18 @@
 # Requires snapcraft snapcraft 7.3.1.post21+gitfa823013 from edge or later to build this snap
-name: git time machine
+name: git-time-machine
 version: git
-summary: 'Git Time Machine - App for easily viewing the state of your git source code directory tree at any commit incl. contents of any file'
+summary: 'Easily view the state of your git source code directory tree at any commit'
 description: |
       App for easily viewing the state of your git source code directory tree at any commit incl. contents of any file.
 
-      Sure, Git by definition is a 'time machine', and you can get to this information with git log and git show, or even by checking out a commit and looking at your file system etc. but using Git Time Machine is a lot easier:
+      Sure, Git by definition is a 'time machine', and you can get to this information with git log and git show, 
+      or even by checking out a commit and looking at your file system etc. but using Git Time Machine is a lot easier:
 
         No need to checkout a commit
         No need to learn arcane git commands e.g. git show {commit}:{file_path}
 
-      Just select a commit and see the directory tree as it was at that time! Then select a file and you can see the contents of that file (at the time of that commit). Simply watch a file change as you navigate through the commit history.
+      Just select a commit and see the directory tree as it was at that time! Then select a file and you can see the 
+      contents of that file (at the time of that commit). Simply watch a file change as you navigate through the commit history.
 
 grade: stable # devel # must be 'stable' to release into candidate/stable channels
 confinement: devmode # strict # use 'strict' once you have the right plugs and slots
@@ -19,9 +21,9 @@ architectures:
   - build-on: [amd64]
 
 apps:
-  # Once built and installed, you can also run with /snap/bin/pynsource. (hit TAB to autocomplete)
-  pynsource:
-    command: bin/git-tm
+  # Once built and installed, you can also run with /snap/bin/git-time-machine.gitm. (hit TAB to autocomplete)
+  gitm:
+    command: bin/gitm
     plugs:
       - desktop
       - desktop-legacy
@@ -32,7 +34,7 @@ apps:
       - network
       - network-bind
       - removable-media
-    desktop: usr/share/applications/pynsource.desktop
+    desktop: usr/share/applications/gitm.desktop
     extensions:
       # HINT: Adds plugs and changes environment variables when building and running
       - gnome
@@ -55,7 +57,7 @@ parts:
       - https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
     override-build: |
       # this .desktop file ends up in /var/lib/snapd/desktop/applications/pynsource_pynsource.desktop not the usual /usr/share/applications
-      install -Dm644 "snap/gui/git-tm.desktop" -t "$CRAFT_PART_INSTALL/usr/share/applications/"
+      install -Dm644 "snap/gui/gitm.desktop" -t "$CRAFT_PART_INSTALL/usr/share/applications/"
       craftctl default
     organize:
       usr/lib/$CRAFT_ARCH_TRIPLET/pulseaudio/libpulsecommon-15.99.so: usr/lib/$CRAFT_ARCH_TRIPLET/libpulsecommon-15.99.so

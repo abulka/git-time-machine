@@ -4,4 +4,10 @@ python3 setup.py sdist
 echo Andy Tip: install in dev mode with 
 echo "    pip install -e ."
 echo uninstall with
-echo "    pip uninstall git-tm"
+echo "    pip uninstall git-time-machine"
+echo
+echo "view package info with"
+echo "    pip show -f git-time-machine"
+echo "view executables with"
+echo "    ls /home/andy/.local/bin/"
+echo "or  ls venv/bin/"

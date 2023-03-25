@@ -12,7 +12,7 @@ setup(
     author='Andy Bulka',
     author_email='abulka@gmail.com',
 
-    py_modules=['main'],
+    py_modules=['main', 'util'],
 
     # install_requires=[
     #     # Add your requirements here

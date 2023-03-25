@@ -31,8 +31,8 @@ html_debug = False
 environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
 LIGHT_GREEN = "#90EE90"
 GIT = 'git'
-if sys.platform == 'linux':
-    GIT = '/usr/bin/git'
+# if sys.platform == 'linux':
+#     GIT = '/usr/bin/git'
 
 def get_files_in_repo(commit):
     command = [GIT, 'ls-tree', '-r', '--name-only', commit]

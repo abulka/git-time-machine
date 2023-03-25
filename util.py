@@ -2,8 +2,8 @@ import re
 import subprocess
 import sys
 GIT = 'git'
-if sys.platform == 'linux':
-    GIT = '/usr/bin/git'
+# if sys.platform == 'linux':
+#     GIT = '/usr/bin/git'
 
 """
 The function uses a regular expression to extract the filename, starting line

@@ -1,5 +1,9 @@
 import re
 import subprocess
+import sys
+GIT = 'git'
+if sys.platform == 'linux':
+    GIT = '/usr/bin/git'
 
 """
 The function uses a regular expression to extract the filename, starting line
@@ -35,7 +39,7 @@ def add_filename_to_link(link_text):
     
 def get_file_contents(commit, file_path):
     # get the git command to get the contents of the file at the given commit
-    command = ['git', 'show', f'{commit}:{file_path}']
+    command = [GIT, 'show', f'{commit}:{file_path}']
     try:
         # run the command and return the output
         return subprocess.check_output(command).decode()

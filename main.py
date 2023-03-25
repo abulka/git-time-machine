@@ -30,16 +30,19 @@ event_debug = False
 html_debug = False
 environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
 LIGHT_GREEN = "#90EE90"
+GIT = 'git'
+if sys.platform == 'linux':
+    GIT = '/usr/bin/git'
 
 def get_files_in_repo(commit):
-    command = ['git', 'ls-tree', '-r', '--name-only', commit]
+    command = [GIT, 'ls-tree', '-r', '--name-only', commit]
     output = subprocess.check_output(command).decode().strip()
     return output.splitlines()
 
 def get_commits_for_branch(branch):
     try:
         # Fetch the commit hashes for the specified branch
-        command = ['git', 'log', f'{branch}', '--format=%H///%cd///%an///%s']
+        command = [GIT, 'log', f'{branch}', '--format=%H///%cd///%an///%s']
         commit_info = subprocess.check_output(command).splitlines()
 
         commits = []
@@ -97,7 +100,7 @@ class BranchesPanel(wx.Panel):
         if event_debug:
             print('   repo-changed ->', 'rebuild_branches')
         # get the list of branches using the git command
-        git_command = ['git', 'branch']
+        git_command = [GIT, 'branch']
         branches = subprocess.check_output(git_command, universal_newlines=True).splitlines()
         self.branches_list.Set(branches)
 
@@ -495,7 +498,7 @@ class DiffPanel(wx.Panel):
 
     def get_previous_commit(self, current_commit):
         # construct the git command to get the previous commit in history
-        git_command = ['git', 'rev-list', current_commit]
+        git_command = [GIT, 'rev-list', current_commit]
 
         # call git to get the list of commits
         git_output = subprocess.check_output(git_command)
@@ -579,7 +582,7 @@ class DiffPanel(wx.Panel):
     
     def get_diff(self, previous_commit, current_commit):
         # construct the git command to get the diff between the two commits
-        git_command = ['git', 'diff', previous_commit, current_commit]
+        git_command = [GIT, 'diff', previous_commit, current_commit]
         
         # call git to get the diff between the two commits
         git_output = subprocess.check_output(git_command)

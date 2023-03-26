@@ -2,7 +2,7 @@
 Name=Git Time Machine
 GenericName=Git Time Machine
 Comment=App for easily viewing the state of your git source code directory tree at any commit incl. contents of any file
-Exec=gitm
+Exec=git-time-machine.gitm
 Icon=${SNAP}/meta/gui/gitm.png
 Terminal=false
 Type=Application

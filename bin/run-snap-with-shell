@@ -1,0 +1,2 @@
+echo Now run /snap/bin/git-time-machine.gitm
+sudo snap run --shell git-time-machine.gitm

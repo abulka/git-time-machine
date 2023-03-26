@@ -1,0 +1,2 @@
+echo Running with x11 backend
+export GDK_BACKEND=x11 && python3 main.py

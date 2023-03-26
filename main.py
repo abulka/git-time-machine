@@ -30,20 +30,25 @@ event_debug = False
 html_debug = False
 environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
 LIGHT_GREEN = "#90EE90"
-GIT = 'git'
-# if sys.platform == 'linux':
-#     GIT = '/usr/bin/git'
 
 def get_files_in_repo(commit):
-    command = [GIT, 'ls-tree', '-r', '--name-only', commit]
-    output = subprocess.check_output(command).decode().strip()
+    command = ['git', 'ls-tree', '-r', '--name-only', commit]
+    try:
+        output = subprocess.check_output(command).decode().strip()
+    except subprocess.CalledProcessError as e:
+        wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+        return []
     return output.splitlines()
 
 def get_commits_for_branch(branch):
     try:
         # Fetch the commit hashes for the specified branch
-        command = [GIT, 'log', f'{branch}', '--format=%H///%cd///%an///%s']
-        commit_info = subprocess.check_output(command).splitlines()
+        command = ['git', 'log', f'{branch}', '--format=%H///%cd///%an///%s']
+        try:
+            commit_info = subprocess.check_output(command).splitlines()
+        except subprocess.CalledProcessError as e:
+            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+            return []
 
         commits = []
         for info in commit_info:
@@ -99,9 +104,15 @@ class BranchesPanel(wx.Panel):
     def rebuild_branches(self):
         if event_debug:
             print('   repo-changed ->', 'rebuild_branches')
+        
         # get the list of branches using the git command
-        git_command = [GIT, 'branch']
-        branches = subprocess.check_output(git_command, universal_newlines=True).splitlines()
+        git_command = ['git', 'branch']
+        try:
+            branches = subprocess.check_output(git_command, universal_newlines=True).splitlines()
+        except subprocess.CalledProcessError as e:
+            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+            return
+
         self.branches_list.Set(branches)
 
         if event_debug:
@@ -498,10 +509,14 @@ class DiffPanel(wx.Panel):
 
     def get_previous_commit(self, current_commit):
         # construct the git command to get the previous commit in history
-        git_command = [GIT, 'rev-list', current_commit]
+        git_command = ['git', 'rev-list', current_commit]
 
         # call git to get the list of commits
-        git_output = subprocess.check_output(git_command)
+        try:
+            git_output = subprocess.check_output(git_command)
+        except subprocess.CalledProcessError as e:
+            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+            return None
 
         # decode the output from bytes to a string and split it into a list of commits
         commits = git_output.decode('utf-8').splitlines()
@@ -582,10 +597,14 @@ class DiffPanel(wx.Panel):
     
     def get_diff(self, previous_commit, current_commit):
         # construct the git command to get the diff between the two commits
-        git_command = [GIT, 'diff', previous_commit, current_commit]
+        git_command = ['git', 'diff', previous_commit, current_commit]
         
         # call git to get the diff between the two commits
-        git_output = subprocess.check_output(git_command)
+        try:
+            git_output = subprocess.check_output(git_command)
+        except subprocess.CalledProcessError as e:
+            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+            return ''        
         
         # decode the output from bytes to a string
         git_output = git_output.decode('utf-8')

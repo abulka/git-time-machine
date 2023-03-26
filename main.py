@@ -633,6 +633,11 @@ class MyFrame(wx.Frame):
     def __init__(self, parent):
         super().__init__(parent, title=self.title)
         
+        env_vars = os.environ
+        with open('env_vars.txt', 'w') as file:
+            for var in sorted(env_vars):
+                file.write(var + ' : ' + env_vars[var] + '\n')
+
         # Set the size of the frame
         self.SetSize(wx.Size(1200, 700))
         self.Centre(wx.BOTH)

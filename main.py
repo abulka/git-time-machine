@@ -28,7 +28,11 @@ scroll_posX = 0  # pre scroll position containg the source code being previewed 
 scroll_is_for_path = ''  # path of the file being previewed by prism and whose scroll position is being saved
 event_debug = False
 html_debug = False
-environment = Environment(loader=FileSystemLoader("templates/")) # jinja templating
+
+main_path = os.path.dirname(os.path.abspath(__file__))
+templates_path = os.path.join(main_path, 'templates')
+environment = Environment(loader=FileSystemLoader(templates_path)) # jinja templating
+
 LIGHT_GREEN = "#90EE90"
 
 def get_files_in_repo(commit):
@@ -633,10 +637,10 @@ class MyFrame(wx.Frame):
     def __init__(self, parent):
         super().__init__(parent, title=self.title)
         
-        env_vars = os.environ
-        with open('env_vars.txt', 'w') as file:
-            for var in sorted(env_vars):
-                file.write(var + ' : ' + env_vars[var] + '\n')
+        # env_vars = os.environ
+        # with open('env_vars.txt', 'w') as file:
+        #     for var in sorted(env_vars):
+        #         file.write(var + ' : ' + env_vars[var] + '\n')
 
         # Set the size of the frame
         self.SetSize(wx.Size(1200, 700))

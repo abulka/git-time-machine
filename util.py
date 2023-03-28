@@ -2,6 +2,7 @@ import re
 import subprocess
 import sys
 
+show_git_fails_in_msgbox = False
 
 """
 The function uses a regular expression to extract the filename, starting line
@@ -43,7 +44,8 @@ def get_file_contents(commit, file_path):
         return subprocess.check_output(command).decode()
     except subprocess.CalledProcessError as e:
         # catch the exception and print an error message
-        wx.MessageBox(f"Error getting file contents: {e}", "Error", wx.OK | wx.ICON_ERROR)
+        if show_git_fails_in_msgbox:
+            wx.MessageBox(f"Error getting file contents: {e}", "Error", wx.OK | wx.ICON_ERROR)
         print(f"Error getting file contents: {e}")
         return 'File does not exist at this commit.'
 

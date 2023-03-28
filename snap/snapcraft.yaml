@@ -28,6 +28,7 @@ apps:
       - desktop
       - desktop-legacy
       - x11
+      - wayland
       - pulseaudio
       - home
       - gsettings
@@ -38,9 +39,6 @@ apps:
     extensions:
       # HINT: Adds plugs and changes environment variables when building and running
       - gnome
-    environment:
-      # Otherwise html2 browser windows don't work
-      GDK_BACKEND: x11
 
 parts:
   copy-templates:

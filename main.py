@@ -28,6 +28,7 @@ scroll_posX = 0  # pre scroll position containg the source code being previewed 
 scroll_is_for_path = ''  # path of the file being previewed by prism and whose scroll position is being saved
 event_debug = False
 html_debug = False
+show_git_fails_in_msgbox = False
 
 main_path = os.path.dirname(os.path.abspath(__file__))
 templates_path = os.path.join(main_path, 'templates')
@@ -40,7 +41,8 @@ def get_files_in_repo(commit):
     try:
         output = subprocess.check_output(command).decode().strip()
     except subprocess.CalledProcessError as e:
-        wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+        if show_git_fails_in_msgbox:
+            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
         return []
     return output.splitlines()
 
@@ -51,7 +53,8 @@ def get_commits_for_branch(branch):
         try:
             commit_info = subprocess.check_output(command).splitlines()
         except subprocess.CalledProcessError as e:
-            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+            if show_git_fails_in_msgbox:
+                wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
             return []
 
         commits = []
@@ -114,7 +117,8 @@ class BranchesPanel(wx.Panel):
         try:
             branches = subprocess.check_output(git_command, universal_newlines=True).splitlines()
         except subprocess.CalledProcessError as e:
-            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+            if show_git_fails_in_msgbox:
+                wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
             return
 
         self.branches_list.Set(branches)
@@ -519,7 +523,8 @@ class DiffPanel(wx.Panel):
         try:
             git_output = subprocess.check_output(git_command)
         except subprocess.CalledProcessError as e:
-            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+            if show_git_fails_in_msgbox:
+                wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
             return None
 
         # decode the output from bytes to a string and split it into a list of commits
@@ -607,7 +612,8 @@ class DiffPanel(wx.Panel):
         try:
             git_output = subprocess.check_output(git_command)
         except subprocess.CalledProcessError as e:
-            wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
+            if show_git_fails_in_msgbox:
+                wx.MessageBox(str(e), f'Error calling git', wx.OK | wx.ICON_INFORMATION)
             return ''        
         
         # decode the output from bytes to a string

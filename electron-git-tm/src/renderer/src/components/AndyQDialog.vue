@@ -4,9 +4,10 @@
     <q-dialog v-model="show" title="My Dialog" @hide="hideDialog">
       <q-card>
         <q-card-section>
+          <h2>My Dialog</h2>
+          <p class="bg-yellow rounded-lg shadow-lg">This is the content of my dialog.</p>
           <p>This is the content of my dialog.</p>
-          <p>This is the content of my dialog.</p>
-          <p>This is the content of my dialog.</p>
+          <p class="text-lg p-4">This is the larger content of my dialog.</p>
           <p>This is the content of my dialog.</p>
         </q-card-section>
         <q-card-actions align="right">

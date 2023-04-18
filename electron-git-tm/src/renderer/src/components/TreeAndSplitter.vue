@@ -1,18 +1,18 @@
 <template>
   <div>
     <q-splitter v-model="splitterModel" style="height: 400px">
-      <template v-slot:before>
+      <template #before>
         <div class="q-pa-md">
           <q-tree
+            v-model:selected="selected"
             :nodes="simple"
             node-key="label"
             selected-color="primary"
-            v-model:selected="selected"
             default-expand-all
           />
         </div>
       </template>
-      <template v-slot:after>
+      <template #after>
         <q-tab-panels
           v-model="selected"
           animated
@@ -84,12 +84,12 @@
     </q-splitter>
 
     <q-btn label="XXXXX" />
-    <q-btn @click="addNode" label="Add Node" />
+    <q-btn label="Add Node" @click="addNode" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const simple = ref([
   {
@@ -108,9 +108,8 @@ const addNode = (): void => {
     label: 'New Node',
     icon: 'add'
   })
-};
+}
 
 const splitterModel = ref(50)
 const selected = ref('Food')
-
 </script>

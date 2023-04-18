@@ -88,60 +88,29 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue';
 
-export default {
-  setup() {
-    // const addNode = () => {
-    //   // do nothing
-    // }
-
-    const simple = ref([
+const simple = ref([
+  {
+    label: 'Relax Hotel',
+    children: [
       {
-        label: 'Relax Hotel',
-        children: [
-          {
-            label: 'Room view',
-            icon: 'photo'
-          }
-        ]
+        label: 'Room view',
+        icon: 'photo'
       }
-    ])
-
-    const addNode = () => {
-      simple.value[0].children.push({
-        label: 'New Node',
-        icon: 'add'
-      })
-    }
-    return {
-      splitterModel: ref(50),
-      selected: ref('Food'),
-
-      addNode,
-      simple
-
-      // simple: [
-      //   {
-      //     label: 'Relax Hotel',
-      //     children: [
-      //       {
-      //         label: 'Food',
-      //         icon: 'restaurant_menu',
-      //       },
-      //       {
-      //         label: 'Room service',
-      //         icon: 'room_service',
-      //       },
-      //       {
-      //         label: 'Room view',
-      //         icon: 'photo',
-      //       },
-      //     ],
-      //   },
-      // ],
-    }
+    ]
   }
-}
+])
+
+const addNode = (): void => {
+  simple.value[0].children.push({
+    label: 'New Node',
+    icon: 'add'
+  })
+};
+
+const splitterModel = ref(50)
+const selected = ref('Food')
+
 </script>

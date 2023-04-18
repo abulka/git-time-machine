@@ -5,21 +5,23 @@ import AndyTailwind from './components/AndyTailwind.vue'
 import AndySlots from './components/AndySlots.vue'
 import TreeAndSplitter from './components/TreeAndSplitter.vue'
 import AndySplitter from './components/AndySplitter.vue'
+import TimeMachine from './components/TimeMachine.vue'
 </script>
 
 <template>
+  <TimeMachine />
   <Versions></Versions>
 
   <AndySlots>
     G'day DEFAULT slot from PARENT
-    <template v-slot:second> This is the content of the SECOND slot from PARENT </template>
-    <template v-slot:third> This is the content of the THIRD slot from PARENT </template>
+    <template #second> This is the content of the SECOND slot from PARENT </template>
+    <template #third> This is the content of the THIRD slot from PARENT </template>
     <template #fourth> This is the content of the FOURTH slot from PARENT </template>
   </AndySlots>
 
   <TreeAndSplitter />
   <AndySplitter />
-  
+
   <AndyQDialog>
     <template #content> extra content </template>
     <template #actions> extra stuff </template>

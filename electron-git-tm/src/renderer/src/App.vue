@@ -6,11 +6,14 @@ import AndySlots from './components/AndySlots.vue'
 import TreeAndSplitter from './components/TreeAndSplitter.vue'
 import AndySplitter from './components/AndySplitter.vue'
 import TimeMachine from './components/TimeMachine.vue'
+import VuetifyList from './components/VuetifyList.vue'
 </script>
 
 <template>
+  <VuetifyList />
   <TimeMachine />
   <Versions></Versions>
+
 
   <AndySlots>
     G'day DEFAULT slot from PARENT

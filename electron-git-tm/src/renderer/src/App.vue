@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import Versions from './components/Versions.vue'
+import AndyQDialog from './components/AndyQDialog.vue'
 </script>
 
 <template>
   <Versions></Versions>
   <Versions></Versions>
+
+  <AndyQDialog>
+    <template #content> extra content </template>
+    <template #actions> extra stuff </template>
+  </AndyQDialog>
 
   <svg class="hero-logo" viewBox="0 0 900 300">
     <use xlink:href="./assets/icons.svg#electron" />

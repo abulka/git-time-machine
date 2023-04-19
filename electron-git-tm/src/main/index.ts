@@ -4,6 +4,11 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 const { ipcMain } = require('electron')
 // import { generateHtml } from './generateHtml'
 
+// ipc
+
+import { contextBridge } from 'electron'
+import { electronAPI } from '@electron-toolkit/preload'
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -38,6 +43,19 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
+
+  if (process.contextIsolated) {
+    console.log('context is isolated, exposing electronAPI to contextBridge')
+    try {
+      contextBridge.exposeInMainWorld('electron', electronAPI)
+    } catch (error) {
+      console.error(error)
+    }
+  } else {
+    console.log('context is not isolated, setting window.electron = electronAPI')
+    mainWindow.electron = electronAPI
+  }
+
 }
 
 // This method will be called when Electron has finished
@@ -76,6 +94,22 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 // FUNCTIONALITY BEGINS
+
+// ipcMain.handle('ping', (what) => {
+//   console.log(what)
+//   return 'pong'
+// })
+// Main process
+ipcMain.handle('ping', (event, name) => {
+  return `Main process handle(): Hello, ${name}! - pong from main`;
+});
+
+ipcMain.on('say', (event, what) => {
+  console.log('Main process on()', what)
+})
+
+console.log('hello from main')
+
 
 // ipcMain.handle('generate-html', (event, path, sourceFileContents, scrollTo, lineTo) => {
 //   const htmlStr = generateHtml(path, sourceFileContents, scrollTo, lineTo)

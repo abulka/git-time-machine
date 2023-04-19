@@ -8,17 +8,20 @@
 //   show.value = true
 // }
 
-import { ipcRenderer } from 'electron'
-
-// ipcRenderer.invoke('generate-html', path, sourceFileContents, scrollTo, lineTo)
-//   .then(htmlStr => {
-//     // Do something with the generated HTML string
-//   })
-//   .catch(err => {
-//     console.error(err)
-//   })
-
 function generateHtml(): void {
+  console.log('generateHtml')
+
+  window.electron.ipcRenderer.send('say', 'hello there')
+
+  window.electron.ipcRenderer
+    .invoke('ping', 'dat')
+    .then((result) => {
+      console.log('renderer process got', result) // logs 'pong'
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+
   // ipcRenderer
   //   .invoke('generate-html')
   //   .then((htmlStr) => {

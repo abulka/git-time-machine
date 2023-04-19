@@ -1,8 +1,9 @@
 import Handlebars from 'handlebars'
+const fs = require('fs')
 
 export function generateHtml() {
   // Get a reference to the template source
-  const templateSource = `
+  const templateSource_OFFLINE = `
   <html>
     <body style="background-color: grey;">
       <h1>Test</h1>
@@ -10,6 +11,9 @@ export function generateHtml() {
     </body>
   </html>
 `
+
+  const templateSource = fs.readFileSync('src/main/templates/template1.hbs', 'utf8')
+
   // Compile the template
   const template = Handlebars.compile(templateSource)
 

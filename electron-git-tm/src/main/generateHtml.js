@@ -38,5 +38,12 @@
 
 export function generateHtml() {
   // return a dummy html file for testing
-  return '<html><body><h1>Test</h1></body></html>'
+  return `
+  <html>
+    <body style="background-color: grey;">
+      <h1>Test</h1>
+    </body>
+  </html>
+`
+
 }

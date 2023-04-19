@@ -1,8 +1,21 @@
-<script setup lang="ts">
-// import Versions from './components/Versions.vue'
+<!-- eslint-disable @typescript-eslint/explicit-function-return-type -->
+<script setup>
 import { ref, onMounted } from 'vue'
-// import users from '../assets/users.json'
+
+// interface SelectedItem {
+//   id: number;
+//   name: string;
+//   // add other properties as needed
+// }
+// interface UsersTable {
+//   selectAll: () => void;
+//   deselectAll: () => void;
+//   selectRows: (ids: number[]) => void;
+//   // Add any other properties or methods that the usersTable object has
+// }
+
 const usersTable = ref('usersTable')
+// const usersTable = ref<HTMLInputElement | null>(null) // Template Refs
 
 // const name = ref('World')
 const users = ref([
@@ -253,33 +266,48 @@ const users = ref([
 const selectedRows = ref([])
 
 onMounted(() => {
-  console.log('users', users)
+  // console.log('users', users)
 })
 
-function selectAll(): void {
+function selectAll() {
   console.log('selectAll', users)
   usersTable.value.selectAll()
 }
-function deselectAll(): void {
+
+function deselectAll() {
   usersTable.value.deselectAll()
 }
-function selectSome(): void {
+function selectSome() {
   const toSelect = [users.value[0], users.value[2], users.value[5]]
   usersTable.value.selectRows(toSelect)
 }
-
+function selectOne() {
+  const toSelect = [users.value[4]]
+  usersTable.value.selectRows(toSelect)
+}
+function selectOneOther() {
+  const toSelect = [users.value[7]]
+  usersTable.value.selectRows(toSelect)
+}
 </script>
 
 <template>
+  <!-- eslint-disable vue/attribute-hyphenation -->
+  <!-- eslint-disable vue/v-on-event-hyphenation -->
+
   <div>
-    <button @click="selectAll">Select All</button>
-    <button @click="deselectAll">Deselect All</button>
-    <button @click="selectSome">Select Some</button>
+    <div class="flex justify-between mb-5">
+      <button @click="selectAll">Select All</button>
+      <button @click="deselectAll">Deselect All</button>
+      <button @click="selectSome">Select Some</button>
+      <button @click="selectOne">Select One</button>
+      <button @click="selectOneOther">Select One Other</button>
+    </div>
 
     <VTable
       ref="usersTable"
       :data="users"
-      selectionMode="multiple"
+      selectionMode="single"
       selectedClass="selected-row"
       @stateChanged="selectedRows = $event.selectedRows"
     >
@@ -315,20 +343,19 @@ table {
   width: 100%;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
 }
 
 th {
-  background-color: #ccc;
+  background-color: #ac2c2c;
   color: #fff;
 }
 
 .selected-row {
   background-color: rgba(255, 255, 255, 0.1);
 }
-
-
 </style>

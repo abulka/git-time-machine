@@ -7,9 +7,12 @@ import TreeAndSplitter from './components/TreeAndSplitter.vue'
 import AndySplitter from './components/AndySplitter.vue'
 import TimeMachine from './components/TimeMachine.vue'
 import VuetifyList from './components/VuetifyList.vue'
+// import SmartyTable from './components/SmartyTable.vue'
+import SmartyTable from './components/SmartyTableSel.vue'
 </script>
 
 <template>
+  <SmartyTable />
   <VuetifyList />
   <TimeMachine />
   <Versions></Versions>

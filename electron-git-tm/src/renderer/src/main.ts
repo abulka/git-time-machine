@@ -5,6 +5,8 @@ import '@quasar/extras/material-icons/material-icons.css'
 import 'quasar/src/css/index.sass'
 import './index.css'
 
+import SmartTable from 'vuejs-smart-table'
+
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -32,4 +34,4 @@ const vuetify = createVuetify({
   }
 })
 
-createApp(App).use(Quasar, { plugins: {} }).use(vuetify).mount('#app')
+createApp(App).use(Quasar, { plugins: {} }).use(vuetify).use(SmartTable).mount('#app')

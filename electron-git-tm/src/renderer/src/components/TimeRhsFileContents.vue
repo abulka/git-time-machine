@@ -1,37 +1,27 @@
 <script setup lang="ts">
-// import Versions from './components/Versions.vue'
-// import { ref } from 'vue'
-
-// const show = ref(false)
-
-// function showDialog(): void {
-//   show.value = true
-// }
-
 function generateHtml(): void {
   console.log('generateHtml')
 
-  window.electron.ipcRenderer.send('say', 'hello there')
+  // window.electron.ipcRenderer.send('say', 'hello there')
 
-  window.electron.ipcRenderer
-    .invoke('ping', 'dat')
-    .then((result) => {
-      console.log('renderer process got', result) // logs 'pong'
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-
-  // ipcRenderer
-  //   .invoke('generate-html')
-  //   .then((htmlStr) => {
-  //     // Do something with the generated HTML string
-  //     console.log(htmlStr)
+  // window.electron.ipcRenderer
+  //   .invoke('ping', 'dat')
+  //   .then((result) => {
+  //     console.log('renderer process got', result) // logs 'pong'
   //   })
   //   .catch((err) => {
   //     console.error(err)
   //   })
-  // console.log('generateHtml', ipcRenderer)
+
+  window.electron.ipcRenderer
+    .invoke('generate-html')
+    .then((htmlStr) => {
+      // Do something with the generated HTML string
+      console.log(htmlStr)
+    })
+    .catch((err) => {
+      console.error(err)
+    })
 }
 </script>
 

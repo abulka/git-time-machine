@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow } from 'electron'
 import * as path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 const { ipcMain } = require('electron')
-// import { generateHtml } from './generateHtml'
+import { generateHtml } from './generateHtml'
 
 // ipc
 
@@ -95,11 +95,7 @@ app.on('window-all-closed', () => {
 
 // FUNCTIONALITY BEGINS
 
-// ipcMain.handle('ping', (what) => {
-//   console.log(what)
-//   return 'pong'
-// })
-// Main process
+
 ipcMain.handle('ping', (event, name) => {
   return `Main process handle(): Hello, ${name}! - pong from main`;
 });
@@ -115,7 +111,7 @@ console.log('hello from main')
 //   const htmlStr = generateHtml(path, sourceFileContents, scrollTo, lineTo)
 //   return htmlStr
 // })
-// ipcMain.handle('generate-html', () => {
-//   const htmlStr = generateHtml()
-//   return htmlStr
-// })
+ipcMain.handle('generate-html', () => {
+  const htmlStr = generateHtml()
+  return htmlStr
+})

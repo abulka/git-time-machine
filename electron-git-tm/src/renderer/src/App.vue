@@ -8,14 +8,12 @@ import AndySplitter from './components/AndySplitter.vue'
 import TimeMachine from './components/TimeMachine.vue'
 import VuetifyList from './components/VuetifyList.vue'
 // import SmartyTable from './components/SmartyTable.vue'
-import SmartyTable from './components/SmartyTableSel.vue'
+// import SmartyTable from './components/SmartyTableSel.vue'
 </script>
 
 <template>
   <TimeMachine />
   <Versions></Versions>
-  <SmartyTable />
-  <VuetifyList />
 
 
   <AndySlots>
@@ -34,6 +32,7 @@ import SmartyTable from './components/SmartyTableSel.vue'
   </AndyQDialog>
 
   <AndyTailwind />
+  <VuetifyList />
 
   <svg class="hero-logo" viewBox="0 0 900 300">
     <use xlink:href="./assets/icons.svg#electron" />

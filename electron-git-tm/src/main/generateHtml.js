@@ -12,7 +12,9 @@ export function generateHtml() {
   </html>
 `
 
-  const templateSource = fs.readFileSync('src/main/templates/template1.hbs', 'utf8')
+  // const templateSource = fs.readFileSync('src/main/templates/template1.hbs', 'utf8')
+  const templateSource = fs.readFileSync('src/main/templates/template2.hbs', 'utf8')
+  // const templateSource = fs.readFileSync('../templates/template.html', 'utf8')
 
   // Compile the template
   const template = Handlebars.compile(templateSource)
@@ -20,7 +22,10 @@ export function generateHtml() {
   // Define the data to be used in the template
   const data = {
     title: 'My Title',
-    body: 'This is the body of my template.'
+    body: 'This is the body of my template.',
+    lang: 'python',
+    source_file_contents: 'print("Hello World")',
+    js_file_contents: ''
   }
 
   // Render the template with the data

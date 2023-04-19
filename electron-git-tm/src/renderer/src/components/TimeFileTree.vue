@@ -69,6 +69,7 @@ const simple = ref([
       node-key="label"
       selected-color="primary"
       default-expand-all
+      dark
     />
   </div>
 </template>

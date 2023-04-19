@@ -12,10 +12,10 @@ import SmartyTable from './components/SmartyTableSel.vue'
 </script>
 
 <template>
-  <SmartyTable />
-  <VuetifyList />
   <TimeMachine />
   <Versions></Versions>
+  <SmartyTable />
+  <VuetifyList />
 
 
   <AndySlots>

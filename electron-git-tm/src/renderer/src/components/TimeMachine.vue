@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import SmartyTable from './SmartyTableSel.vue'
+
 const splitterModel = ref(50) // start at 50%
 
 const selectedColor = ref('main')
@@ -20,12 +22,13 @@ const colorOptions = [
 
 <template>
   <div>
+    <div class="flex items-center">
+      <div class="inline mr-6">Select a branch:</div>
+      <q-select id="my-select" v-model="selectedColor" :options="colorOptions" />
+    </div>
     <q-splitter v-model="splitterModel" horizontal class="h-screen">
       <template #before>
-        <div class="flex items-center">
-          <div class="inline mr-6">Select a branch:</div>
-          <q-select id="my-select" v-model="selectedColor" :options="colorOptions" />
-        </div>
+        <SmartyTable />
       </template>
 
       <template #after>

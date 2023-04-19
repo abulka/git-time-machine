@@ -1,3 +1,29 @@
+import Handlebars from 'handlebars'
+
+export function generateHtml() {
+  // Get a reference to the template source
+  const templateSource = `
+  <html>
+    <body style="background-color: grey;">
+      <h1>Test</h1>
+      <h1>{{ title }}</h1><p>{{ body }}</p>
+    </body>
+  </html>
+`
+  // Compile the template
+  const template = Handlebars.compile(templateSource)
+
+  // Define the data to be used in the template
+  const data = {
+    title: 'My Title',
+    body: 'This is the body of my template.'
+  }
+
+  // Render the template with the data
+  const renderedTemplate = template(data)
+  return renderedTemplate
+}
+
 // const generateHtml = (path, sourceFileContents, scrollTo = null, lineTo = null) => {
 //   const pathExtension = path.substring(path.lastIndexOf('.'))
 //   const langMap = {
@@ -36,7 +62,7 @@
 // //   return htmlStr
 // }
 
-export function generateHtml() {
+export function generateHtml_OFFLINE() {
   // return a dummy html file for testing
   return `
   <html>
@@ -45,5 +71,4 @@ export function generateHtml() {
     </body>
   </html>
 `
-
 }

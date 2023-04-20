@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { globals } from '@renderer/globals'
 
 function generateHtml(): void {
   console.log('generateHtml')
@@ -48,6 +49,7 @@ onMounted(() => {
 
 <template>
   <div class="q-pa-md">
+    {{ globals.silly }}
     <q-btn label="Generate HTML" @click="generateHtml" />
     <iframe ref="myiframe" style="height: 87vh" class="w-full"></iframe>
   </div>

@@ -72,6 +72,7 @@ const simple = ref([
     <q-btn label="Expand2" @click="expanded = ['Relax Hotel', 'Room amenities']" />
     <q-btn label="select Room view" @click="selected = 'Room view'" />
     <q-btn label="select TV" @click="selected = 'TV'" />
+    <q-btn label="Change a node" @click="simple[0].children[1].label = 'FRED'" />
     <q-tree
       v-model:selected="selected"
       v-model:expanded="expanded"

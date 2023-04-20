@@ -2,7 +2,7 @@ import Handlebars from 'handlebars'
 const fs = require('fs')
 
 export function generateHtml() {
-  const templateSource = fs.readFileSync('src/main/templates/template2.hbs', 'utf8')
+  const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
   const source_file_contents = fs.readFileSync('src/main/generateHtml.js', 'utf8')
 
   // Compile the template

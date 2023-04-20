@@ -5,10 +5,11 @@ const versions = reactive({ ...window.electron.process.versions })
 </script>
 
 <template>
-  <ul class="versions">
-    <li class="electron-version">Electron v{{ versions.electron }}</li>
-    <li class="chrome-version">Chromium v{{ versions.chrome }}</li>
-    <li class="node-version">Node v{{ versions.node }}</li>
-    <li class="v8-version">V8 v{{ versions.v8 }}</li>
-  </ul>
+  <hr />
+  <div class="flex justify-evenly">
+    <span>Electron v{{ versions.electron }}</span>
+    <span>Chromium v{{ versions.chrome }}</span>
+    <span>Node v{{ versions.node }}</span>
+    <span>V8 v{{ versions.v8 }}</span>
+  </div>
 </template>

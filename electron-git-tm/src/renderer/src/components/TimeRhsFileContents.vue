@@ -48,7 +48,6 @@ onMounted(() => {
 
 <template>
   <div class="q-pa-md">
-    <div class="text-h4 q-mb-md">RHS</div>
     <q-btn label="Generate HTML" @click="generateHtml" />
     <iframe ref="myiframe" class="h-screen w-full"></iframe>
   </div>

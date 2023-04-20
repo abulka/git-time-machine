@@ -49,7 +49,7 @@ onMounted(() => {
 <template>
   <div class="q-pa-md">
     <q-btn label="Generate HTML" @click="generateHtml" />
-    <iframe ref="myiframe" class="h-screen w-full"></iframe>
+    <iframe ref="myiframe" style="height: 87vh" class="w-full"></iframe>
   </div>
 </template>
 

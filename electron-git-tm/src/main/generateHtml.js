@@ -2,19 +2,8 @@ import Handlebars from 'handlebars'
 const fs = require('fs')
 
 export function generateHtml() {
-  // Get a reference to the template source
-  const templateSource_OFFLINE = `
-  <html>
-    <body style="background-color: grey;">
-      <h1>Test</h1>
-      <h1>{{ title }}</h1><p>{{ body }}</p>
-    </body>
-  </html>
-`
-
-  // const templateSource = fs.readFileSync('src/main/templates/template1.hbs', 'utf8')
   const templateSource = fs.readFileSync('src/main/templates/template2.hbs', 'utf8')
-  // const templateSource = fs.readFileSync('../templates/template.html', 'utf8')
+  const source_file_contents = fs.readFileSync('src/main/generateHtml.js', 'utf8')
 
   // Compile the template
   const template = Handlebars.compile(templateSource)
@@ -23,9 +12,9 @@ export function generateHtml() {
   const data = {
     title: 'My Title',
     body: 'This is the body of my template.',
-    lang: 'python',
-    source_file_contents: 'print("Hello World")',
-    js_file_contents: ''
+    lang: 'javascript',
+    source_file_contents: source_file_contents,
+    js_file_contents: 'console.log("Hello World from template")'
   }
 
   // Render the template with the data

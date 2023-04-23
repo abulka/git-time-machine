@@ -1,3 +1,10 @@
+# Andy notes
+
+update the sass files and avoid deprecation warnings
+
+    npm install -g sass-migrator
+    sass-migrator division node_modules/quasar/src/css/**/*.sass
+
 # electron-app
 
 ![electron version](https://img.shields.io/github/package-json/dependency-version/alex8088/electron-vite-boilerplate/dev/electron)

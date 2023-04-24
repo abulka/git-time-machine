@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import HorizontalSplitter from './HorizontalSplitter.vue'
+import HorizontalSplitter from './sub/HorizontalSplitter.vue'
 
 const splitterModel = ref(50) // start at 50%
 </script>

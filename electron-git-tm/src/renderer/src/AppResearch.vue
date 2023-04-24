@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import Versions from './components/Versions.vue'
-import AndyQDialog from './components/AndyQDialog.vue'
-import AndyTailwind from './components/AndyTailwind.vue'
-import AndySlots from './components/AndySlots.vue'
-import TreeAndSplitter from './components/TreeAndSplitter.vue'
-import AndySplitter from './components/AndySplitter.vue'
-import TimeMachine from './components/TimeMachine.vue'
-import VuetifyList from './components/VuetifyList.vue'
+import AndyQDialog from './components/research/AndyQDialog.vue'
+import AndyTailwind from './components/research/AndyTailwind.vue'
+import AndySlots from './components/research/AndySlots.vue'
+import TreeAndSplitter from './components/research/TreeAndSplitter.vue'
+import AndySplitter from './components/research/AndySplitter.vue'
+import VuetifyList from './components/research/VuetifyList.vue'
 // import SmartyTable from './components/SmartyTable.vue'
 // import SmartyTable from './components/SmartyTableSel.vue'
 </script>
 
 <template>
-  <TimeMachine />
   <Versions></Versions>
-
 
   <AndySlots>
     G'day DEFAULT slot from PARENT

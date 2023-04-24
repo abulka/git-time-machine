@@ -51,7 +51,7 @@ onMounted(() => {
   <div class="q-pa-md">
     {{ globals.silly }}
     <q-btn label="Generate HTML" @click="generateHtml" />
-    <iframe ref="myiframe" style="height: 87vh" class="w-full"></iframe>
+    <iframe ref="myiframe" style="height: 100vh" class="w-full"></iframe>
   </div>
 </template>
 

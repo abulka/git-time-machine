@@ -17,7 +17,7 @@ const colorOptions = [
     <div class="inline mr-6">Select a branch:</div>
     <q-select id="my-select" v-model="selectedColor" :options="colorOptions" dark />
   </div>
-  <q-splitter v-model="splitterModel" horizontal style="height: 87vh">
+  <q-splitter v-model="splitterModel" horizontal style="height: 100vh">
     <template #before>
       <SmartyTable />
     </template>

@@ -1,13 +1,14 @@
 <!-- eslint-disable @typescript-eslint/explicit-function-return-type -->
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 // import { Commit } from '../../main/Commit'
 
 async function getCommits() {
   const branch = 'main' // or whatever branch you want to get commits for
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
-  const commitsFormatted = commits.map((commit) => {
+  const commitsFormatted = commits.map((commit, index) => {
     return {
+      id: index,
       sha: shortenSha(commit.sha),
       comment: commit.comment,
       date: shortenDateString(commit.date),
@@ -33,7 +34,10 @@ function shortenSha(sha) {
 onMounted(() => {
   // call the function getCommits()
   getCommits()
-
+  document.addEventListener('keydown', handleKeyboardInput)
+})
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeyboardInput)
 })
 
 function selectAll() {
@@ -47,6 +51,7 @@ function deselectAll() {
 function selectSome() {
   const toSelect = [commitsData.value[0], commitsData.value[2], commitsData.value[5]]
   commitsTable.value.selectRows(toSelect)
+  // console.log('selectedRows', selectedRows)
 }
 function selectOne() {
   const toSelect = [commitsData.value[4]]
@@ -55,6 +60,39 @@ function selectOne() {
 function selectOneOther() {
   const toSelect = [commitsData.value[7]]
   commitsTable.value.selectRows(toSelect)
+}
+function handleKeyboardInput(event) {
+  console.log('shortcut', event.key)
+  // const currentRow = selectedRows.value[0]
+  // console.log('currentRow', currentRow)
+  // return
+  if (event.key === 'ArrowDown') {
+    if (selectedRows.value.length === 0) {
+      const toSelect = [commitsData.value[0]]
+      commitsTable.value.selectRows(toSelect)
+      return
+    }
+    const currId = selectedRows.value[0].id
+    if (currId === commitsData.value.length - 1) {
+      return
+    }
+    const toSelect = [commitsData.value[currId + 1]]
+    commitsTable.value.selectRows(toSelect)
+    // prevent the default action (scrolling down) - but would be nice if it did scroll when the selection was not visible anymore
+    // event.preventDefault()
+  } else if (event.key === 'ArrowUp') {
+    if (selectedRows.value.length === 0) {
+      const toSelect = [commitsData.value[0]]
+      commitsTable.value.selectRows(toSelect)
+      return
+    }
+    const currId = selectedRows.value[0].id
+    if (currId === 0) {
+      return
+    }
+    const toSelect = [commitsData.value[currId - 1]]
+    commitsTable.value.selectRows(toSelect)
+  }
 }
 </script>
 

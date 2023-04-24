@@ -10,9 +10,18 @@ const colorOptions = [
   { label: 'master', value: 'master' },
   { label: 'branch1', value: 'branch1' }
 ]
+
+const lastKeyPressed = ref('')
+function handleKeyDown(event): void {
+  console.log('key', event.key)
+  lastKeyPressed.value = event.key
+}
 </script>
 
 <template>
+  <input type="text" autofocus @keydown="handleKeyDown">
+  {{ lastKeyPressed }}
+
   <div class="flex items-center">
     <div class="inline mr-6">Select a branch:</div>
     <q-select id="my-select" v-model="selectedColor" :options="colorOptions" dark />

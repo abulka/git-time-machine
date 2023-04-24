@@ -6,24 +6,10 @@ import { ref, onMounted } from 'vue'
 async function getCommits() {
   const branch = 'main' // or whatever branch you want to get commits for
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
-
-  // direct!
   commitsData.value = commits
-
-  // commitsData.value = []
-  // for (const commit of commits) {
-  //   // users.value.push(commit)
-  //   const dummy = {}
-  //   dummy.guid = commit.sha
-  //   dummy.name = commit.sha
-  //   dummy.age = commit.comment
-  //   dummy.gender = commit.date
-  //   dummy.registered = commit.author
-  //   commitsData.value.push(dummy)
-  // }
 }
 
-const usersTable = ref('usersTable')
+const commitsTable = ref('commitsTable')
 const commitsData = ref([])
 const selectedRows = ref([])
 
@@ -35,23 +21,23 @@ onMounted(() => {
 
 function selectAll() {
   console.log('selectAll', commitsData)
-  usersTable.value.selectAll()
+  commitsTable.value.selectAll()
 }
 
 function deselectAll() {
-  usersTable.value.deselectAll()
+  commitsTable.value.deselectAll()
 }
 function selectSome() {
   const toSelect = [commitsData.value[0], commitsData.value[2], commitsData.value[5]]
-  usersTable.value.selectRows(toSelect)
+  commitsTable.value.selectRows(toSelect)
 }
 function selectOne() {
   const toSelect = [commitsData.value[4]]
-  usersTable.value.selectRows(toSelect)
+  commitsTable.value.selectRows(toSelect)
 }
 function selectOneOther() {
   const toSelect = [commitsData.value[7]]
-  usersTable.value.selectRows(toSelect)
+  commitsTable.value.selectRows(toSelect)
 }
 </script>
 
@@ -70,7 +56,7 @@ function selectOneOther() {
     </div>
 
     <VTable
-      ref="usersTable"
+      ref="commitsTable"
       :data="commitsData"
       selectionMode="single"
       selectedClass="selected-row"

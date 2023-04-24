@@ -6,12 +6,29 @@ import { ref, onMounted } from 'vue'
 async function getCommits() {
   const branch = 'main' // or whatever branch you want to get commits for
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
-  commitsData.value = commits
+  const commitsFormatted = commits.map((commit) => {
+    return {
+      sha: shortenSha(commit.sha),
+      comment: commit.comment,
+      date: shortenDateString(commit.date),
+      author: commit.author
+    }
+  })
+  commitsData.value = commitsFormatted
 }
 
 const commitsTable = ref('commitsTable')
 const commitsData = ref([])
 const selectedRows = ref([])
+
+function shortenDateString(dateString) {
+  const date = new Date(dateString)
+  return date.toLocaleDateString()
+}
+
+function shortenSha(sha) {
+  return sha.substring(0, 7)
+}
 
 onMounted(() => {
   // call the function getCommits()

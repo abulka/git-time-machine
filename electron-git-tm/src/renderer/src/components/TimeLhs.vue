@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import SmartyTable from './SmartyTableSel.vue'
+import Commits from './Commits.vue'
 import TimeFileTree from './TimeFileTree.vue'
 const splitterModel = ref(30)
 const splitterModelDiffs = ref(55)
@@ -19,7 +19,7 @@ const colorOptions = [
   </div>
   <q-splitter v-model="splitterModel" horizontal style="height: 100vh">
     <template #before>
-      <SmartyTable />
+      <Commits />
     </template>
 
     <template #after>

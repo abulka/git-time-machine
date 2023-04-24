@@ -52,7 +52,8 @@ function createWindow(): void {
       console.error(error)
     }
   } else {
-    console.log('context is not isolated, setting window.electron = electronAPI')
+    // ---> This is what typically runs... <---
+    // console.log('context is not isolated, setting window.electron = electronAPI')
     mainWindow.electron = electronAPI
   }
 
@@ -104,7 +105,7 @@ ipcMain.on('say', (event, what) => {
   console.log('Main process on()', what)
 })
 
-console.log('hello from main')
+// console.log('hello from main')
 
 
 // ipcMain.handle('generate-html', (event, path, sourceFileContents, scrollTo, lineTo) => {

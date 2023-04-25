@@ -1,9 +1,16 @@
 import Handlebars from 'handlebars'
 const fs = require('fs')
 
-export function generateHtml() {
+export function generateHtml(fileName) {
   const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
-  const source_file_contents = fs.readFileSync('src/main/generateHtml.js', 'utf8')
+
+  // TODO don't read file from file system, get it from git
+  let source_file_contents
+  if (fileName == 'README.md')
+    source_file_contents = fs.readFileSync('src/main/generateHtml.js', 'utf8')
+  else if (fileName == 'package.json')
+    source_file_contents = fs.readFileSync('package.json', 'utf8')
+  else source_file_contents = fs.readFileSync('src/main/getBranches.ts', 'utf8')
 
   // Compile the template
   const template = Handlebars.compile(templateSource)

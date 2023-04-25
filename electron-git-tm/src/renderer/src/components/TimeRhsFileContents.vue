@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { globals } from '@renderer/globals'
 
+watch(
+  () => globals.selectedTreeNode,
+  () => {
+    console.log('selectedTreeNode', globals.selectedTreeNode)
+    generateHtml()
+  }
+)
+
 function generateHtml(): void {
-  console.log('generateHtml')
 
   // window.electron.ipcRenderer.send('say', 'hello there')
 
@@ -17,10 +24,9 @@ function generateHtml(): void {
   //   })
 
   window.electron.ipcRenderer
-    .invoke('generate-html')
+    .invoke('generate-html', globals.selectedTreeNode)
     .then((htmlStr) => {
       // Do something with the generated HTML string
-      console.log(htmlStr)
       myiframe.value.srcdoc = htmlStr
 
     })
@@ -49,7 +55,7 @@ onMounted(() => {
 
 <template>
   <div class="q-pa-md">
-    {{ globals.silly }}
+    {{ globals.selectedTreeNode }}
     <q-btn label="Generate HTML" @click="generateHtml" />
     <iframe ref="myiframe" style="height: 100vh" class="w-full"></iframe>
   </div>

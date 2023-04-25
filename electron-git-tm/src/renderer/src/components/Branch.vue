@@ -17,7 +17,7 @@ function branchChanged(value): void {
     <div class="inline mr-6">Select a branch:</div>
     <q-select
       id="my-select"
-      v-model="globals.selectedBranch"
+      v-model="globals.selectedBranchOption"
       :options="branches"
       dark
       @update:model-value="branchChanged"

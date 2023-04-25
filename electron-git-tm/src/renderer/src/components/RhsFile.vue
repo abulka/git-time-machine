@@ -13,7 +13,7 @@ watch(
 
 function generateHtml(): void {
   console.log('generateHtml', globals.commit, globals.selectedTreeNode)
-  if (globals.selectedTreeNode === null) {
+  if (!globals.selectedTreeNode) {
     noFile()
     return
   }
@@ -22,7 +22,6 @@ function generateHtml(): void {
     .then((htmlStr) => {
       // Do something with the generated HTML string
       myiframe.value.srcdoc = htmlStr
-
     })
     .catch((err) => {
       console.error(err)

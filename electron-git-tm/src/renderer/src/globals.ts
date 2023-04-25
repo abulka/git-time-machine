@@ -23,5 +23,5 @@ export const globals = reactive({
   get commit(): string {
     return this.selectedCommitRows[0]?.sha
   },
-  selectedTreeNode: 'README.md'
+  selectedTreeNode: ''
 })

@@ -13,6 +13,10 @@ watch(
 
 function generateHtml(): void {
   console.log('generateHtml', globals.commit, globals.selectedTreeNode)
+  if (globals.selectedTreeNode === null) {
+    noFile()
+    return
+  }
   window.electron.ipcRenderer
     .invoke('generate-html', globals.commit, globals.selectedTreeNode)
     .then((htmlStr) => {
@@ -30,6 +34,10 @@ const myiframe = ref('myiframe')
 
 onMounted(() => {
   // default html content
+  noFile()
+})
+
+function noFile(): void {
   myiframe.value.srcdoc = `
     <html>
       <head>
@@ -39,15 +47,15 @@ onMounted(() => {
         <p>Click on a file in the tree to view its contents.</p>
       </body>
     </html>
-  `
-})
+  `;
+}
 </script>
 
 <template>
   <div class="q-pa-md">
     {{ globals.commit }}
     {{ globals.selectedTreeNode }}
-    <q-btn label="Generate HTML" @click="generateHtml" />
+    <!-- <q-btn label="Generate HTML" @click="generateHtml" /> -->
     <iframe ref="myiframe" style="height: 100vh" class="w-full"></iframe>
   </div>
 </template>

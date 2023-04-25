@@ -44,11 +44,11 @@ function shortenSha(sha) {
 
 onMounted(() => {
   // call the function getCommits()
-  getCommits()
-  document.addEventListener('keydown', handleKeyboardInput)
+  // getCommits()
+  // document.addEventListener('keydown', handleKeyboardInput)
 })
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeyboardInput)
+  // document.removeEventListener('keydown', handleKeyboardInput)
 })
 
 function selectAll() {

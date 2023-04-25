@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { onMounted } from 'vue'
 import { globals } from '@renderer/globals'
 
 function branchChanged(value): void {
@@ -10,17 +10,17 @@ async function getBranches(): Promise<void> {
   const _branches = await window.electron.ipcRenderer.invoke('get-branches')
 
   globals.branches = _branches.map((branch, index) => {
+    const branchLabel = branch
     if (branch.startsWith('* ')) {
       branch = branch.substring(2)
-      globals.selectedBranchOption = { id: index, label: branch, value: branch }
+      globals.selectedBranchOption = { id: index, label: branchLabel, value: branch }
     }
     return {
       id: index,
-      label: branch,
+      label: branchLabel,
       value: branch
     }
   })
-  console.log(`${globals.branches.length} branches: ${globals.branches}`)
 }
 
 onMounted(() => {

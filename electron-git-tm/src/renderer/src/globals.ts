@@ -19,5 +19,6 @@ export const globals = reactive({
   },
   branches: [] as string[],
   commitsData: [], // this is the array of commits
-  selectedCommitRows: [] as Commit[]
+  selectedCommitRows: [] as Commit[],
+  selectedTreeNode: 'README.md'
 })

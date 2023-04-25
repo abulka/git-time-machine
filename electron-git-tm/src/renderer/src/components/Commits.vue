@@ -10,7 +10,6 @@ import { globals } from '@renderer/globals'
 watch(
   () => globals.selectedBranch,
   async () => {
-    console.log('selectedBranch changed', globals.selectedBranch)
     await getCommits()
   }
 )

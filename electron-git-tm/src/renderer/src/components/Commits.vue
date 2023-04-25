@@ -2,9 +2,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 // import { Commit } from '../../main/Commit'
+import { globals } from '@renderer/globals'
 
 async function getCommits() {
-  const branch = 'main' // or whatever branch you want to get commits for
+  const branch = globals.selectedBranch // or whatever branch you want to get commits for
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
   const commitsFormatted = commits.map((commit, index) => {
     return {

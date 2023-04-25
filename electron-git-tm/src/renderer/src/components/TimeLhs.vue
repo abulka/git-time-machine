@@ -2,24 +2,14 @@
 import { ref } from 'vue'
 import Commits from './Commits.vue'
 import TimeFileTree from './TimeFileTree.vue'
-import LastKeyPressed from './research/LastKeyPressed.vue'
+import Branch from './Branch.vue'
 
 const splitterModel = ref(30)
 const splitterModelDiffs = ref(55)
-const selectedColor = ref('main')
-const colorOptions = [
-  { label: 'main', value: 'main' },
-  { label: 'master', value: 'master' },
-  { label: 'branch1', value: 'branch1' }
-]
 </script>
 
 <template>
-  <LastKeyPressed />
-  <div class="flex items-center">
-    <div class="inline mr-6">Select a branch:</div>
-    <q-select id="my-select" v-model="selectedColor" :options="colorOptions" dark />
-  </div>
+  <Branch />
   <q-splitter v-model="splitterModel" horizontal style="height: 100vh">
     <template #before>
       <Commits />

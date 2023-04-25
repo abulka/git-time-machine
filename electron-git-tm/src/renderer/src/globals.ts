@@ -5,5 +5,6 @@ import { reactive } from 'vue'
 // We also make this reactive so that it plays nice with vue.
 // TIP: reactive variables are never 'undefined', as vue will set them to a special proxy object
 export const globals = reactive({
-  silly: 'global sillyness'
+  silly: 'global sillyness',
+  selectedBranch: 'main'
 })

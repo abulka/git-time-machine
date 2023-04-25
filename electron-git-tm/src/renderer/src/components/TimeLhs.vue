@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import Commits from './Commits.vue'
 import TimeFileTree from './TimeFileTree.vue'
+import LastKeyPressed from './research/LastKeyPressed.vue'
+
 const splitterModel = ref(30)
 const splitterModelDiffs = ref(55)
 const selectedColor = ref('main')
@@ -10,18 +12,10 @@ const colorOptions = [
   { label: 'master', value: 'master' },
   { label: 'branch1', value: 'branch1' }
 ]
-
-const lastKeyPressed = ref('')
-function handleKeyDown(event): void {
-  console.log('key', event.key)
-  lastKeyPressed.value = event.key
-}
 </script>
 
 <template>
-  <input type="text" autofocus @keydown="handleKeyDown">
-  {{ lastKeyPressed }}
-
+  <LastKeyPressed />
   <div class="flex items-center">
     <div class="inline mr-6">Select a branch:</div>
     <q-select id="my-select" v-model="selectedColor" :options="colorOptions" dark />

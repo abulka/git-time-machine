@@ -12,7 +12,7 @@ async function getBranches(): Promise<void> {
   globals.branches = _branches.map((branch, index) => {
     if (branch.startsWith('* ')) {
       branch = branch.substring(2)
-      // TODO set selectedBranchOption to this branch
+      globals.selectedBranchOption = { id: index, label: branch, value: branch }
     }
     return {
       id: index,

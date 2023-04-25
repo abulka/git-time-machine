@@ -1,6 +1,7 @@
 import { reactive } from 'vue'
 
 interface BranchOption {
+  id: number
   label: string
   value: string
 }
@@ -11,7 +12,7 @@ interface BranchOption {
 // TIP: reactive variables are never 'undefined', as vue will set them to a special proxy object
 export const globals = reactive({
   silly: 'global sillyness',
-  selectedBranchOption: { label: 'main', value: 'main' } as BranchOption,
+  selectedBranchOption: { id: 9999, label: 'main', value: 'main' } as BranchOption,
   get selectedBranch(): string {
     return this.selectedBranchOption.value
   },

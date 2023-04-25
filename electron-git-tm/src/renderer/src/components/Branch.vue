@@ -4,7 +4,7 @@ import { globals } from '@renderer/globals'
 const branches = [
   { label: 'main', value: 'main' },
   { label: 'master', value: 'master' },
-  { label: 'branch1', value: 'branch1' },
+  { label: 'electron', value: 'electron' },
   { label: 'branch2', value: 'branch2' },
 ]
 function branchChanged(value): void {

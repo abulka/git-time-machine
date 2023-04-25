@@ -1,11 +1,23 @@
 <!-- eslint-disable @typescript-eslint/explicit-function-return-type -->
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 // import { Commit } from '../../main/Commit'
 import { globals } from '@renderer/globals'
 
+// The watch function in Vue takes two main parameters: a function that returns
+// the value to watch, and a callback function that is called when the value
+// changes.
+watch(
+  () => globals.selectedBranch,
+  async () => {
+    console.log('selectedBranch changed', globals.selectedBranch)
+    await getCommits()
+  }
+)
+
 async function getCommits() {
   const branch = globals.selectedBranch // or whatever branch you want to get commits for
+  console.log('getCommits', branch)
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
   const commitsFormatted = commits.map((commit, index) => {
     return {
@@ -16,11 +28,10 @@ async function getCommits() {
       author: commit.author
     }
   })
-  commitsData.value = commitsFormatted
+  globals.commitsData = commitsFormatted
 }
 
 const commitsTable = ref('commitsTable')
-const commitsData = ref([])
 const selectedRows = ref([])
 
 function shortenDateString(dateString) {
@@ -42,7 +53,7 @@ onUnmounted(() => {
 })
 
 function selectAll() {
-  console.log('selectAll', commitsData)
+  console.log('selectAll', globals.commitsData)
   commitsTable.value.selectAll()
 }
 
@@ -50,16 +61,16 @@ function deselectAll() {
   commitsTable.value.deselectAll()
 }
 function selectSome() {
-  const toSelect = [commitsData.value[0], commitsData.value[2], commitsData.value[5]]
+  const toSelect = [globals.commitsData[0], globals.commitsData[2], globals.commitsData[5]]
   commitsTable.value.selectRows(toSelect)
   // console.log('selectedRows', selectedRows)
 }
 function selectOne() {
-  const toSelect = [commitsData.value[4]]
+  const toSelect = [globals.commitsData[4]]
   commitsTable.value.selectRows(toSelect)
 }
 function selectOneOther() {
-  const toSelect = [commitsData.value[7]]
+  const toSelect = [globals.commitsData[7]]
   commitsTable.value.selectRows(toSelect)
 }
 function handleKeyboardInput(event) {
@@ -69,21 +80,21 @@ function handleKeyboardInput(event) {
   // return
   if (event.key === 'ArrowDown') {
     if (selectedRows.value.length === 0) {
-      const toSelect = [commitsData.value[0]]
+      const toSelect = [globals.commitsData[0]]
       commitsTable.value.selectRows(toSelect)
       return
     }
     const currId = selectedRows.value[0].id
-    if (currId === commitsData.value.length - 1) {
+    if (currId === globals.commitsData.length - 1) {
       return
     }
-    const toSelect = [commitsData.value[currId + 1]]
+    const toSelect = [globals.commitsData[currId + 1]]
     commitsTable.value.selectRows(toSelect)
     // prevent the default action (scrolling down) - but would be nice if it did scroll when the selection was not visible anymore
     // event.preventDefault()
   } else if (event.key === 'ArrowUp') {
     if (selectedRows.value.length === 0) {
-      const toSelect = [commitsData.value[0]]
+      const toSelect = [globals.commitsData[0]]
       commitsTable.value.selectRows(toSelect)
       return
     }
@@ -91,7 +102,7 @@ function handleKeyboardInput(event) {
     if (currId === 0) {
       return
     }
-    const toSelect = [commitsData.value[currId - 1]]
+    const toSelect = [globals.commitsData[currId - 1]]
     commitsTable.value.selectRows(toSelect)
   }
 }
@@ -113,7 +124,7 @@ function handleKeyboardInput(event) {
 
     <VTable
       ref="commitsTable"
-      :data="commitsData"
+      :data="globals.commitsData"
       selectionMode="single"
       selectedClass="selected-row"
       @stateChanged="selectedRows = $event.selectedRows"

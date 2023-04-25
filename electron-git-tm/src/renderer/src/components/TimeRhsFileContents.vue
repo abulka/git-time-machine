@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { globals } from '@renderer/globals'
 
 watch(
+  // TODO watch for changes to globals.commit as well
   () => globals.selectedTreeNode,
   () => {
     console.log('selectedTreeNode', globals.selectedTreeNode)
@@ -11,20 +12,9 @@ watch(
 )
 
 function generateHtml(): void {
-
-  // window.electron.ipcRenderer.send('say', 'hello there')
-
-  // window.electron.ipcRenderer
-  //   .invoke('ping', 'dat')
-  //   .then((result) => {
-  //     console.log('renderer process got', result) // logs 'pong'
-  //   })
-  //   .catch((err) => {
-  //     console.error(err)
-  //   })
-
+  console.log('generateHtml', globals.commit, globals.selectedTreeNode)
   window.electron.ipcRenderer
-    .invoke('generate-html', globals.selectedTreeNode)
+    .invoke('generate-html', globals.commit, globals.selectedTreeNode)
     .then((htmlStr) => {
       // Do something with the generated HTML string
       myiframe.value.srcdoc = htmlStr
@@ -55,6 +45,7 @@ onMounted(() => {
 
 <template>
   <div class="q-pa-md">
+    {{ globals.commit }}
     {{ globals.selectedTreeNode }}
     <q-btn label="Generate HTML" @click="generateHtml" />
     <iframe ref="myiframe" style="height: 100vh" class="w-full"></iframe>

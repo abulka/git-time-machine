@@ -1,16 +1,19 @@
 import Handlebars from 'handlebars'
 const fs = require('fs')
+import { getFileContents } from './getFileContents'
 
-export function generateHtml(fileName) {
+export function generateHtml(commit, fileName) {
   const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
 
   // TODO don't read file from file system, get it from git
-  let source_file_contents
-  if (fileName == 'README.md')
-    source_file_contents = fs.readFileSync('src/main/generateHtml.js', 'utf8')
-  else if (fileName == 'package.json')
-    source_file_contents = fs.readFileSync('package.json', 'utf8')
-  else source_file_contents = fs.readFileSync('src/main/getBranches.ts', 'utf8')
+  const source_file_contents = getFileContents(commit, fileName)
+
+  // let source_file_contents
+  // if (fileName == 'README.md')
+  //   source_file_contents = fs.readFileSync('src/main/generateHtml.js', 'utf8')
+  // else if (fileName == 'package.json')
+  //   source_file_contents = fs.readFileSync('package.json', 'utf8')
+  // else source_file_contents = fs.readFileSync('src/main/getBranches.ts', 'utf8')
 
   // Compile the template
   const template = Handlebars.compile(templateSource)
@@ -21,7 +24,8 @@ export function generateHtml(fileName) {
     body: 'This is the body of my template.',
     lang: 'javascript',
     source_file_contents: source_file_contents,
-    js_file_contents: 'console.log("Hello World from template")'
+    // js_file_contents: 'console.log("Hello World from template")'
+    js_file_contents: ''
   }
 
   // Render the template with the data

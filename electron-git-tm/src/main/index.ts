@@ -115,8 +115,8 @@ ipcMain.on('say', (event, what) => {
 //   const htmlStr = generateHtml(path, sourceFileContents, scrollTo, lineTo)
 //   return htmlStr
 // })
-ipcMain.handle('generate-html', (event, fileName) => {
-  const htmlStr = generateHtml(fileName)
+ipcMain.handle('generate-html', (event, commit, fileName) => {
+  const htmlStr = generateHtml(commit, fileName)
   return htmlStr
 })
 

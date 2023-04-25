@@ -16,7 +16,7 @@ watch(
 )
 
 async function getCommits() {
-  const branch = globals.selectedBranch // or whatever branch you want to get commits for
+  const branch = globals.selectedBranch
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
   const commitsFormatted = commits.map((commit, index) => {
     return {
@@ -28,10 +28,13 @@ async function getCommits() {
     }
   })
   globals.commitsData = commitsFormatted
+
+  // select the latest commit row
+  const toSelect = [globals.commitsData[0]]
+  commitsTable.value.selectRows(toSelect)
 }
 
 const commitsTable = ref('commitsTable')
-const selectedRows = ref([])
 
 function shortenDateString(dateString) {
   const date = new Date(dateString)
@@ -51,6 +54,7 @@ onUnmounted(() => {
   // document.removeEventListener('keydown', handleKeyboardInput)
 })
 
+/*
 function selectAll() {
   console.log('selectAll', globals.commitsData)
   commitsTable.value.selectAll()
@@ -62,7 +66,6 @@ function deselectAll() {
 function selectSome() {
   const toSelect = [globals.commitsData[0], globals.commitsData[2], globals.commitsData[5]]
   commitsTable.value.selectRows(toSelect)
-  // console.log('selectedRows', selectedRows)
 }
 function selectOne() {
   const toSelect = [globals.commitsData[4]]
@@ -74,16 +77,16 @@ function selectOneOther() {
 }
 function handleKeyboardInput(event) {
   console.log('shortcut', event.key)
-  // const currentRow = selectedRows.value[0]
+  // const currentRow = globals.selectedCommitRows.value[0]
   // console.log('currentRow', currentRow)
   // return
   if (event.key === 'ArrowDown') {
-    if (selectedRows.value.length === 0) {
+    if (globals.selectedCommitRows.value.length === 0) {
       const toSelect = [globals.commitsData[0]]
       commitsTable.value.selectRows(toSelect)
       return
     }
-    const currId = selectedRows.value[0].id
+    const currId = globals.selectedCommitRows.value[0].id
     if (currId === globals.commitsData.length - 1) {
       return
     }
@@ -92,12 +95,12 @@ function handleKeyboardInput(event) {
     // prevent the default action (scrolling down) - but would be nice if it did scroll when the selection was not visible anymore
     // event.preventDefault()
   } else if (event.key === 'ArrowUp') {
-    if (selectedRows.value.length === 0) {
+    if (globals.selectedCommitRows.value.length === 0) {
       const toSelect = [globals.commitsData[0]]
       commitsTable.value.selectRows(toSelect)
       return
     }
-    const currId = selectedRows.value[0].id
+    const currId = globals.selectedCommitRows.value[0].id
     if (currId === 0) {
       return
     }
@@ -105,6 +108,7 @@ function handleKeyboardInput(event) {
     commitsTable.value.selectRows(toSelect)
   }
 }
+*/
 </script>
 
 <template>
@@ -112,21 +116,21 @@ function handleKeyboardInput(event) {
   <!-- eslint-disable vue/v-on-event-hyphenation -->
 
   <div>
-    <div class="flex justify-between mb-5">
+    <!-- <div class="flex justify-between mb-5">
       <button @click="selectAll">Select All</button>
       <button @click="deselectAll">Deselect All</button>
       <button @click="selectSome">Select Some</button>
       <button @click="selectOne">Select One</button>
       <button @click="selectOneOther">Select One Other</button>
       <button @click="getCommits">Get Commits</button>
-    </div>
+    </div> -->
 
     <VTable
       ref="commitsTable"
       :data="globals.commitsData"
       selectionMode="single"
       selectedClass="selected-row"
-      @stateChanged="selectedRows = $event.selectedRows"
+      @stateChanged="globals.selectedCommitRows = $event.selectedRows"
     >
       <template #head>
         <th>Sha</th>
@@ -145,9 +149,9 @@ function handleKeyboardInput(event) {
     </VTable>
 
     <strong>Selected:</strong>
-    <div v-if="selectedRows.length === 0">No rows selected</div>
+    <div v-if="globals.selectedCommitRows.length === 0">No rows selected</div>
     <ul>
-      <li v-for="selected in selectedRows" :key="selected.id">
+      <li v-for="selected in globals.selectedCommitRows" :key="selected.id">
         {{ selected.name }}
       </li>
     </ul>

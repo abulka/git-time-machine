@@ -1,4 +1,5 @@
 import { reactive } from 'vue'
+import { Commit } from '../../main/Commit'
 
 interface BranchOption {
   id: number
@@ -17,5 +18,6 @@ export const globals = reactive({
     return this.selectedBranchOption.value
   },
   branches: [] as string[],
-  commitsData: [] // this is the array of commits
+  commitsData: [], // this is the array of commits
+  selectedCommitRows: [] as Commit[]
 })

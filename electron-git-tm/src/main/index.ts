@@ -10,6 +10,7 @@ import { getCommitsForBranch } from './getCommits'
 
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { getFilesInRepo } from './getFiles'
 
 function createWindow(): void {
   // Create the browser window.
@@ -127,4 +128,9 @@ ipcMain.handle('get-commits', async (event, branch) => {
 ipcMain.handle('get-branches', async (event) => {
   const branches: string[] = await getBranches()
   return branches
+})
+
+ipcMain.handle('get-files', async (event, commit) => {
+  const files = await getFilesInRepo(commit)
+  return files
 })

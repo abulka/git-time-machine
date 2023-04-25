@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Commits from './Commits.vue'
-import TimeFileTree from './TimeFileTree.vue'
+import TimeFileTree from './FileTree.vue'
 import Branch from './Branch.vue'
 
 const splitterModel = ref(30)

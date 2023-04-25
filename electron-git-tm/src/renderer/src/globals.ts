@@ -11,8 +11,8 @@ interface BranchOption {
 // TIP: reactive variables are never 'undefined', as vue will set them to a special proxy object
 export const globals = reactive({
   silly: 'global sillyness',
-  selectedBranchOption: { label: 'main', value: 'main' }, // BranchOption
-  get selectedBranch() {
+  selectedBranchOption: { label: 'main', value: 'main' } as BranchOption,
+  get selectedBranch(): string {
     return this.selectedBranchOption.value
   },
   commitsData: [] // this is the array of commits

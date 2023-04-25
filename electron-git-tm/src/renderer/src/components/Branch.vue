@@ -1,15 +1,31 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { globals } from '@renderer/globals'
 
-const branches = [
-  { label: 'main', value: 'main' },
-  { label: 'master', value: 'master' },
-  { label: 'electron', value: 'electron' },
-  { label: 'branch2', value: 'branch2' },
-]
 function branchChanged(value): void {
   console.log('branchChanged', value)
 }
+
+async function getBranches(): Promise<void> {
+  const _branches = await window.electron.ipcRenderer.invoke('get-branches')
+
+  globals.branches = _branches.map((branch, index) => {
+    if (branch.startsWith('* ')) {
+      branch = branch.substring(2)
+      // TODO set selectedBranchOption to this branch
+    }
+    return {
+      id: index,
+      label: branch,
+      value: branch
+    }
+  })
+  console.log(`${globals.branches.length} branches: ${globals.branches}`)
+}
+
+onMounted(() => {
+  getBranches()
+})
 </script>
 
 <template>
@@ -18,7 +34,7 @@ function branchChanged(value): void {
     <q-select
       id="my-select"
       v-model="globals.selectedBranchOption"
-      :options="branches"
+      :options="globals.branches"
       dark
       @update:model-value="branchChanged"
     />

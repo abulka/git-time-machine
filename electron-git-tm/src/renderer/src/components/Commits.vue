@@ -17,7 +17,6 @@ watch(
 
 async function getCommits() {
   const branch = globals.selectedBranch // or whatever branch you want to get commits for
-  console.log('getCommits', branch)
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
   const commitsFormatted = commits.map((commit, index) => {
     return {

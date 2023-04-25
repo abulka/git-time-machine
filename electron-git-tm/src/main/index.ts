@@ -3,6 +3,7 @@ import * as path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 const { ipcMain } = require('electron')
 import { generateHtml } from './generateHtml'
+import { getBranches } from './getBranches'
 import { getCommitsForBranch } from './getCommits'
 
 // ipc
@@ -121,4 +122,9 @@ ipcMain.handle('generate-html', () => {
 ipcMain.handle('get-commits', async (event, branch) => {
   const commits = await getCommitsForBranch(branch)
   return commits
+})
+
+ipcMain.handle('get-branches', async (event) => {
+  const branches: string[] = await getBranches()
+  return branches
 })

@@ -15,5 +15,6 @@ export const globals = reactive({
   get selectedBranch(): string {
     return this.selectedBranchOption.value
   },
+  branches: [] as string[],
   commitsData: [] // this is the array of commits
 })

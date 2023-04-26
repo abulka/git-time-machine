@@ -5,6 +5,10 @@ import { getFileContents } from './getFileContents'
 import { isText, isBinary, getEncoding } from 'istextorbinary'
 
 const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
+// const templateSource = fs.readFileSync(
+//   'src/main/templates/template-file-contents-autoload.hbs',
+//   'utf8'
+// )
 const template = Handlebars.compile(templateSource) // Compile the template
 
 export function generateHtml(commit, fileName) {
@@ -34,7 +38,8 @@ export function generateHtml(commit, fileName) {
   const data = {
     title: 'My Title',
     body: 'This is the body of my template.',
-    lang: lang,
+    lang: lang, // not needed with the prism autoloader https://prismjs.com/plugins/autoloader/
+    vers: '1.29.0', // https://cdnjs.com/libraries/prism/1.29.0
     source_file_contents: source_file_contents,
     // js_file_contents: 'console.log("Hello World from template")'
     js_file_contents: ''

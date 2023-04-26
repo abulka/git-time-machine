@@ -142,6 +142,7 @@ function stateChanged(state) {
   <!-- eslint-disable vue/attribute-hyphenation -->
   <!-- eslint-disable vue/v-on-event-hyphenation -->
 
+  <!-- https://vue-smart-table.netlify.app/selection.html#head-scoped-slot for doco on this table component -->
   <div>
     <div class="flex justify-between mb-5">
       <button @click="selectAll">Select All</button>
@@ -159,18 +160,21 @@ function stateChanged(state) {
       selectedClass="selected-row"
       @stateChanged="stateChanged"
     >
-      <template #head>
+      <template #head="{ allRowsSelected, selectAll, deselectAll, toggleAllRows, selectedRows }">
+        {{ allRowsSelected }}
+        {{ selectedRows }}
         <th>Sha</th>
         <th>Comment</th>
         <th>Date</th>
         <th>Author</th>
       </template>
       <template #body="{ rows }">
-        <VTr v-for="row in rows" :key="row.guid" :row="row">
+        <VTr v-for="row in rows" :key="row.guid" :row="row" v-slot="{ isSelected, toggle }">
           <td>{{ row.sha }}</td>
           <td>{{ row.comment }}</td>
           <td>{{ row.date }}</td>
           <td>{{ row.author }}</td>
+          <td>{{ isSelected == undefined }}</td>
         </VTr>
       </template>
     </VTable>

@@ -1,5 +1,6 @@
 import Handlebars from 'handlebars'
 const fs = require('fs')
+import path from 'path';
 import { getFileContents } from './getFileContents'
 
 const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
@@ -15,13 +16,11 @@ export function generateHtml(commit, fileName) {
     '.py': 'python',
     '.java': 'java',
     '.md': 'markdown',
+    '.vue': 'html' // TODO: use vue syntax highlighting via https://vue-prism.netlify.app/ 
     // Add more mappings for other file types as needed e.g. vue
-}
-    // TODO convert lookup into js
-    // lang = lang_map.get(file_ext, 'auto') // Use "auto" if extension is not recognized
-    // const fileExtension = ??
-    // const lang = lang_map[fileExtension] ???
-    const lang = 'javasscript'
+  }
+  const fileExtension = path.extname(fileName)
+  const lang = lang_map[fileExtension] || 'auto'
 
   // Define the data to be used in the template
   const data = {

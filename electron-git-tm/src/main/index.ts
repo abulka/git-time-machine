@@ -5,12 +5,12 @@ const { ipcMain } = require('electron')
 import { generateHtml } from './generateHtml'
 import { getBranches } from './getBranches'
 import { getCommitsForBranch } from './getCommits'
+import { getRepoFileTree } from './getFileTree'
 
 // ipc
 
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { getFilesInRepo } from './getFileTree'
 
 function createWindow(): void {
   // Create the browser window.
@@ -110,6 +110,20 @@ ipcMain.on('say', (event, what) => {
 
 // console.log('hello from main')
 
+ipcMain.handle('get-branches', async (event) => {
+  const branches: string[] = await getBranches()
+  return branches
+})
+
+ipcMain.handle('get-commits', async (event, branch) => {
+  const commits = await getCommitsForBranch(branch)
+  return commits
+})  
+
+ipcMain.handle('get-files', async (event, commit) => {
+  const files = await getRepoFileTree(commit)
+  return files
+})
 
 // ipcMain.handle('generate-html', (event, path, sourceFileContents, scrollTo, lineTo) => {
 //   const htmlStr = generateHtml(path, sourceFileContents, scrollTo, lineTo)
@@ -118,19 +132,4 @@ ipcMain.on('say', (event, what) => {
 ipcMain.handle('generate-html', (event, commit, fileName) => {
   const htmlStr = generateHtml(commit, fileName)
   return htmlStr
-})
-
-ipcMain.handle('get-commits', async (event, branch) => {
-  const commits = await getCommitsForBranch(branch)
-  return commits
-})
-
-ipcMain.handle('get-branches', async (event) => {
-  const branches: string[] = await getBranches()
-  return branches
-})
-
-ipcMain.handle('get-files', async (event, commit) => {
-  const files = await getFilesInRepo(commit)
-  return files
 })

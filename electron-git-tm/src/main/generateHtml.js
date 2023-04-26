@@ -1,7 +1,7 @@
 import Handlebars from 'handlebars'
 const fs = require('fs')
 import path from 'path';
-import { getFileContents } from './getFileContents'
+import { getFileContents as getFileContent } from './getFileContent'
 import { isText, isBinary, getEncoding } from 'istextorbinary'
 
 const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
@@ -12,7 +12,7 @@ const templateSource = fs.readFileSync('src/main/templates/template-file-content
 const template = Handlebars.compile(templateSource) // Compile the template
 
 export function generateHtml(commit, fileName) {
-  const source_file_contents = getFileContents(commit, fileName)
+  const source_file_contents = getFileContent(commit, fileName)
   const fileExtension = path.extname(fileName)
 
   const isBinaryFile = isBinary(null, source_file_contents)

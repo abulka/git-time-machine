@@ -1,7 +1,7 @@
 import { exec } from 'child_process'
 import util from 'util'
 
-export async function getFilesInRepo(commit): Promise<string[]> {
+export async function getRepoFileTree(commit): Promise<string[]> {
   const execPromisified = util.promisify(exec)
   const command = ['git', 'ls-tree', '-r', '--full-tree', '--name-only', commit]
   try {

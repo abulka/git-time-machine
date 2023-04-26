@@ -1,12 +1,8 @@
 import { execSync } from 'child_process'
 
 export function getFileContents(commit, filePath): string {
-  
-  // TODO there's something about the path that's not working
-  // git show 7e40d78:'package.json'
-  // fatal: path 'electron-git-tm/package.json' exists, but not 'package.json'
-  // ALSO the sha is not long enough
-  
+  // TODO sha is not long enough
+
   const command = ['git', 'show', `${commit}:'${filePath}'`]
   try {
     const result = execSync(command.join(' ')).toString()

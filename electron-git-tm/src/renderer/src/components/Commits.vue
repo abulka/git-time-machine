@@ -2,6 +2,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 // import { Commit } from '../../main/Commit'
+import { reactive, toRaw } from 'vue'
 import { globals } from '@renderer/globals'
 
 // The watch function in Vue takes two main parameters: a function that returns
@@ -53,7 +54,6 @@ onUnmounted(() => {
   // document.removeEventListener('keydown', handleKeyboardInput)
 })
 
-/*
 function selectAll() {
   console.log('selectAll', globals.commitsData)
   commitsTable.value.selectAll()
@@ -107,7 +107,35 @@ function handleKeyboardInput(event) {
     commitsTable.value.selectRows(toSelect)
   }
 }
-*/
+
+function stateChanged(state) {
+  // console.log(
+  //   'stateChanged',
+  //   state.selectedRows,
+  //   'selectedRows.length',
+  //   state.selectedRows.length,
+  //   'globals.selectedCommitRows',
+  //   globals.selectedCommitRows,
+  //   globals.selectedCommitRows.length,
+  //   'lencommit',
+  //   globals.lencommit,
+  //   'commit',
+  //   globals.commit
+  // )
+  globals.selectedCommitRows = state.selectedRows
+  // if (state.selectedRows.length != 0)
+  //   console.log('state.selectedRows.length != 0')
+
+  // if (state.selectedRows.length === 0)
+  // // reselect the first row
+  // {
+  //   const toSelect = [globals.commitsData[0]]
+  //   console.log('toSelect', toRaw(commitsTable), toSelect)
+  //   // commitsTable.value.selectRows(toSelect)
+  // }
+  
+  // "globals.selectedCommitRows = $event.selectedRows"
+}
 </script>
 
 <template>
@@ -115,21 +143,21 @@ function handleKeyboardInput(event) {
   <!-- eslint-disable vue/v-on-event-hyphenation -->
 
   <div>
-    <!-- <div class="flex justify-between mb-5">
+    <div class="flex justify-between mb-5">
       <button @click="selectAll">Select All</button>
       <button @click="deselectAll">Deselect All</button>
       <button @click="selectSome">Select Some</button>
       <button @click="selectOne">Select One</button>
       <button @click="selectOneOther">Select One Other</button>
       <button @click="getCommits">Get Commits</button>
-    </div> -->
+    </div>
 
     <VTable
       ref="commitsTable"
       :data="globals.commitsData"
       selectionMode="single"
       selectedClass="selected-row"
-      @stateChanged="globals.selectedCommitRows = $event.selectedRows"
+      @stateChanged="stateChanged"
     >
       <template #head>
         <th>Sha</th>

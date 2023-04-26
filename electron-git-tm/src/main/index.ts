@@ -10,7 +10,7 @@ import { getCommitsForBranch } from './getCommits'
 
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { getFilesInRepo } from './getFiles'
+import { getFilesInRepo } from './getFileTree'
 
 function createWindow(): void {
   // Create the browser window.

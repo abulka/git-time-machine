@@ -23,6 +23,9 @@ export const globals = reactive({
   get commit(): string {
     return this.selectedCommitRows[0]?.sha
   },
+  get lencommit(): number {
+    return this.selectedCommitRows.length
+  },
   selectedTreeNode: '',
   get selectedTreePath(): string {
     if (!this.selectedTreeNode) {

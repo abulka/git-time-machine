@@ -7,6 +7,9 @@ watch(
   () => globals.selectedCommitRows,
   async () => {
     const commit: Commit = globals.selectedCommitRows[0]
+    if (!commit) {
+      return
+    }
     const sha = commit.sha
     await getFiles(sha)
   }
@@ -147,7 +150,6 @@ const simple: TreeData = ref([
 
 <template>
   <div class="q-pa-md">
-    {{ globals.selectedTreeNode }}
     <!-- {{ globals.selectedTreeNode }}
     {{ expanded }}
     <br />

@@ -3,22 +3,20 @@ import { ref, onMounted, watch } from 'vue'
 import { globals } from '@renderer/globals'
 
 watch(
-  // TODO watch for changes to globals.commit as well
-  () => globals.selectedTreeNode,
+  // Watch for changes to both commit and selectedTreePath
+  [(): string => globals.commit, (): string => globals.selectedTreePath],
   () => {
-    console.log('selectedTreeNode', globals.selectedTreeNode)
     generateHtml()
   }
 )
 
 function generateHtml(): void {
-  console.log('generateHtml', globals.commit, globals.selectedTreeNode)
   if (!globals.selectedTreeNode) {
     noFile()
     return
   }
   window.electron.ipcRenderer
-    .invoke('generate-html', globals.commit, globals.selectedPath)
+    .invoke('generate-html', globals.commit, globals.selectedTreePath)
     .then((htmlStr) => {
       // Do something with the generated HTML string
       myiframe.value.srcdoc = htmlStr
@@ -53,7 +51,7 @@ function noFile(): void {
 <template>
   <div class="q-pa-md">
     {{ globals.commit }}
-    {{ globals.selectedPath }}
+    {{ globals.selectedTreePath }}
     <!-- <q-btn label="Generate HTML" @click="generateHtml" /> -->
     <iframe ref="myiframe" style="height: 100vh" class="w-full"></iframe>
   </div>

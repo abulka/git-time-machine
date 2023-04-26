@@ -8,10 +8,8 @@ export function getFileContents(commit, filePath): string {
   // ALSO the sha is not long enough
   
   const command = ['git', 'show', `${commit}:'${filePath}'`]
-  console.log(`getFileContents called: ${command.join(' ')}`)
   try {
     const result = execSync(command.join(' ')).toString()
-    console.log(`File contents: ${result}`)
     return result
   } catch (e) {
     console.log(`Error getting file contents: ${e}`)

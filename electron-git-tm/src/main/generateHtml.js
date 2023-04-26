@@ -4,11 +4,11 @@ import path from 'path';
 import { getFileContents as getFileContent } from './getFileContent'
 import { isText, isBinary, getEncoding } from 'istextorbinary'
 
-const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
-// const templateSource = fs.readFileSync(
-//   'src/main/templates/template-file-contents-autoload.hbs',
-//   'utf8'
-// )
+// const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
+const templateSource = fs.readFileSync(
+  'src/main/templates/template-file-contents-autoload.hbs',
+  'utf8'
+)
 const template = Handlebars.compile(templateSource) // Compile the template
 
 export function generateHtml(commit, fileName) {
@@ -41,8 +41,7 @@ export function generateHtml(commit, fileName) {
     lang: lang, // not needed with the prism autoloader https://prismjs.com/plugins/autoloader/
     vers: '1.29.0', // https://cdnjs.com/libraries/prism/1.29.0
     source_file_contents: source_file_contents,
-    // js_file_contents: 'console.log("Hello World from template")'
-    js_file_contents: ''
+    js_file_contents: '' // 'console.log("Hello World from template")'
   }
 
   // Render the template with the data

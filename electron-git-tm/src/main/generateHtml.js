@@ -2,24 +2,32 @@ import Handlebars from 'handlebars'
 const fs = require('fs')
 import path from 'path';
 import { getFileContents } from './getFileContents'
+import { isText, isBinary, getEncoding } from 'istextorbinary'
 
 const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
 const template = Handlebars.compile(templateSource) // Compile the template
 
 export function generateHtml(commit, fileName) {
   const source_file_contents = getFileContents(commit, fileName)
+  const fileExtension = path.extname(fileName)
+
+  const isBinaryFile = isBinary(null, source_file_contents)
+  if (isBinaryFile) {
+    return 'Binary file'
+  }
 
   const lang_map = {
     '.html': 'html',
     '.css': 'css',
     '.js': 'javascript',
+    '.ts': 'typescript',
     '.py': 'python',
     '.java': 'java',
     '.md': 'markdown',
+    '.drawio': 'markup',
     '.vue': 'html' // TODO: use vue syntax highlighting via https://vue-prism.netlify.app/ 
     // Add more mappings for other file types as needed e.g. vue
   }
-  const fileExtension = path.extname(fileName)
   const lang = lang_map[fileExtension] || 'auto'
 
   // Define the data to be used in the template

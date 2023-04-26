@@ -18,7 +18,7 @@ function generateHtml(): void {
     return
   }
   window.electron.ipcRenderer
-    .invoke('generate-html', globals.commit, globals.selectedTreeNode)
+    .invoke('generate-html', globals.commit, globals.selectedPath)
     .then((htmlStr) => {
       // Do something with the generated HTML string
       myiframe.value.srcdoc = htmlStr
@@ -53,7 +53,7 @@ function noFile(): void {
 <template>
   <div class="q-pa-md">
     {{ globals.commit }}
-    {{ globals.selectedTreeNode }}
+    {{ globals.selectedPath }}
     <!-- <q-btn label="Generate HTML" @click="generateHtml" /> -->
     <iframe ref="myiframe" style="height: 100vh" class="w-full"></iframe>
   </div>

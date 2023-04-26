@@ -18,24 +18,65 @@ async function getFiles(sha): Promise<void> {
   simple.value = convertToTree(files)
 }
 
+// const selected = ref('README.md')
+const expanded = ref(['src', 'main'])
+
+// Incoming array is a list of file paths, e.g.:
+// .github/workflows/build-snap.yml
+// .github/workflows/offline/build-all-os-except-mac.yml
+// .github/workflows/offline/build-all-os.yml
+// .github/workflows/offline/build-mac.yml
+// .gitignore
+// README.md
+// bin/build-package
+// bin/build-snap
+// bin/build-snap-clean
+// bin/build-snap-clean-python-stuff
+// bin/build-snap-debug
+// bin/install-snap
+// bin/lxd-containers-ls
+// bin/lxd-shell
+// bin/publish-snap
+// bin/run
+// bin/run-snap-with-shell
+// doco/images/screenshot1.png
+// doco/uml/events.drawio
+// doco/uml/events.png
+// doco/uml/events.svg
+// doco/uml/uml.pyns
+// electron-git-tm/.editorconfig
+
+interface TreeDataItem {
+  label: string;
+  icon?: string;
+  children?: TreeDataItem[];
+  fullPath: string;
+}
+
+type TreeData = TreeDataItem[];
+
 function convertToTree(arr): TreeData {
   const root = {
     label: '',
-    children: []
+    children: [] as TreeDataItem[],
   }
   for (let i = 0; i < arr.length; i++) {
     const path = arr[i].split('/')
     let currentNode = root
+    let fullPath = ''
     for (let j = 0; j < path.length; j++) {
       const label = path[j]
-      const existingNode = currentNode.children.find((child) => child.label === label)
+      const existingNode = currentNode.children ? currentNode.children.find((child) => child.label === label) : undefined
+      fullPath += `/${label}`
       if (existingNode) {
         currentNode = existingNode
       } else {
         const newNode = {
           label: label,
-          children: []
+          children: [],
+          fullPath: fullPath
         }
+        currentNode.children = currentNode.children || []
         currentNode.children.push(newNode)
         currentNode = newNode
       }
@@ -43,20 +84,6 @@ function convertToTree(arr): TreeData {
   }
   return root.children
 }
-
-// const files = [  ".editorconfig",  ".eslintignore",  ".eslintrc.cjs",  ".gitignore",  ".prettierignore",  ".prettierrc.yaml",  ".vscode/extensions.json",  ".vscode/launch.json",  ".vscode/settings.json",  "README.md",  "electron-builder.yml",  "electron.vite.config.1681794709451.mjs",  "electron.vite.config.1681822042798.mjs",  "electron.vite.config.ts",  "package-lock.json",  "package.json",  "postcss.config.js",  "src/main/Commit.ts",  "src/main/generateHtml.js",  "src/main/getBranches.ts",  "src/main/getCommits.ts",  "src/main/index.ts",  "src/main/templates/template-file-contents.hbs",  "src/preload/index.d.ts",  "src/preload/index.ts",  "src/renderer/index.html",  "src/renderer/src/App.vue",  "src/renderer/src/AppResearch.vue",  "src/renderer/src/assets/css/styles.less",  "src/renderer/src/assets/icons.svg",  "src/renderer/src/assets/users.json",  "src/renderer/src/components/Branch.vue",  "src/renderer/src/components/Commits.vue",  "src/renderer/src/components/TimeFileTree.vue",  "src/renderer/src/components/TimeLhs.vue",  "src/renderer/src/components/TimeMachine.vue",  "src/renderer/src/components/TimeRhsFileContents.vue",  "src/renderer/src/components/Versions.vue",  "src/renderer/src/components/research/AndyQDialog.vue",  "src/renderer/src/components/research/AndySlots.vue",  "src/renderer/src/components/research/AndySplitter.vue",  "src/renderer/src/components/research/LastKeyPressed.vue",  "src/renderer/src/components/research/SmartyTable.vue",  "src/renderer/src/components/research/SmartyTableSel.vue",  "src/renderer/src/components/research/TreeAndSplitter.vue",  "src/renderer/src/components/research/VuetifyList.vue",  "src/renderer/src/components/research/sub/HorizontalSplitter.vue",  "src/renderer/src/env.d.ts",  "src/renderer/src/globals.ts",  "src/renderer/src/index.css",  "src/renderer/src/main.ts",  "tailwind.config.js",  "tsconfig.json",  "tsconfig.node.json",  "tsconfig.web.json"]
-
-// const selected = ref('README.md')
-const expanded = ref(['src', 'main'])
-
-interface TreeDataItem {
-  label: string;
-  icon?: string;
-  children?: TreeDataItem[];
-}
-
-type TreeData = TreeDataItem[];
-
 
 const simple: TreeData = ref([
   // {
@@ -134,7 +161,7 @@ const simple: TreeData = ref([
       v-model:selected="globals.selectedTreeNode"
       v-model:expanded="expanded"
       :nodes="simple"
-      node-key="label"
+      node-key="fullPath"
       selected-color="primary"
       default-expand-all
       dark

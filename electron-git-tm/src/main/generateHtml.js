@@ -2,27 +2,32 @@ import Handlebars from 'handlebars'
 const fs = require('fs')
 import { getFileContents } from './getFileContents'
 
-export function generateHtml(commit, fileName) {
-  const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
+const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
+const template = Handlebars.compile(templateSource) // Compile the template
 
-  // TODO don't read file from file system, get it from git
+export function generateHtml(commit, fileName) {
   const source_file_contents = getFileContents(commit, fileName)
 
-  // let source_file_contents
-  // if (fileName == 'README.md')
-  //   source_file_contents = fs.readFileSync('src/main/generateHtml.js', 'utf8')
-  // else if (fileName == 'package.json')
-  //   source_file_contents = fs.readFileSync('package.json', 'utf8')
-  // else source_file_contents = fs.readFileSync('src/main/getBranches.ts', 'utf8')
-
-  // Compile the template
-  const template = Handlebars.compile(templateSource)
+  const lang_map = {
+    '.html': 'html',
+    '.css': 'css',
+    '.js': 'javascript',
+    '.py': 'python',
+    '.java': 'java',
+    '.md': 'markdown',
+    // Add more mappings for other file types as needed e.g. vue
+}
+    // TODO convert lookup into js
+    // lang = lang_map.get(file_ext, 'auto') // Use "auto" if extension is not recognized
+    // const fileExtension = ??
+    // const lang = lang_map[fileExtension] ???
+    const lang = 'javasscript'
 
   // Define the data to be used in the template
   const data = {
     title: 'My Title',
     body: 'This is the body of my template.',
-    lang: 'javascript',
+    lang: lang,
     source_file_contents: source_file_contents,
     // js_file_contents: 'console.log("Hello World from template")'
     js_file_contents: ''

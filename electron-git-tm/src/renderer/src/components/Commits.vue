@@ -142,14 +142,14 @@ function stateChanged(state) {
 
   <!-- https://vue-smart-table.netlify.app/selection.html#head-scoped-slot for doco on this table component -->
   <div>
-    <div class="flex justify-between mb-5">
+    <!-- <div class="flex justify-between mb-5">
       <button @click="selectAll">Select All</button>
       <button @click="deselectAll">Deselect All</button>
       <button @click="selectSome">Select Some</button>
       <button @click="selectOne">Select One</button>
       <button @click="selectOneOther">Select One Other</button>
       <button @click="getCommits">Get Commits</button>
-    </div>
+    </div> -->
 
     <VTable
       ref="commitsTable"

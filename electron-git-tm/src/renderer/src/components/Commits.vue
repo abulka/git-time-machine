@@ -161,8 +161,8 @@ function stateChanged(state) {
       @stateChanged="stateChanged"
     >
       <template #head="{ allRowsSelected, selectAll, deselectAll, toggleAllRows, selectedRows }">
-        {{ allRowsSelected }}
-        {{ selectedRows }}
+        <!-- {{ allRowsSelected }}
+        {{ selectedRows }} -->
         <th>Sha</th>
         <th>Comment</th>
         <th>Date</th>
@@ -174,7 +174,7 @@ function stateChanged(state) {
           <td>{{ row.comment }}</td>
           <td>{{ row.date }}</td>
           <td>{{ row.author }}</td>
-          <td>{{ isSelected == undefined }}</td>
+          <!-- <td>{{ isSelected == undefined }}</td> -->
         </VTr>
       </template>
     </VTable>

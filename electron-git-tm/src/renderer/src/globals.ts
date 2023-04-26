@@ -20,8 +20,12 @@ export const globals = reactive({
   branches: [] as string[],
   commitsData: [], // this is the array of commits
   selectedCommitRows: [] as Commit[],
+  lastCommit: '' as string, // cache this so when user deselects commit table we still have it
   get commit(): string {
-    return this.selectedCommitRows[0]?.sha
+    let result = this.lastCommit
+    if (this.selectedCommitRows.length == 0 && this.lastCommit) return result
+    this.lastCommit = result = this.selectedCommitRows[0]?.sha // returns undefined if nothing selected
+    return result
   },
   get lencommit(): number {
     return this.selectedCommitRows.length

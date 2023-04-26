@@ -46,12 +46,10 @@ function shortenSha(sha) {
 }
 
 onMounted(() => {
-  // call the function getCommits()
-  // getCommits()
-  // document.addEventListener('keydown', handleKeyboardInput)
+  document.addEventListener('keydown', handleKeyboardInput)
 })
 onUnmounted(() => {
-  // document.removeEventListener('keydown', handleKeyboardInput)
+  document.removeEventListener('keydown', handleKeyboardInput)
 })
 
 function selectAll() {
@@ -80,12 +78,12 @@ function handleKeyboardInput(event) {
   // console.log('currentRow', currentRow)
   // return
   if (event.key === 'ArrowDown') {
-    if (globals.selectedCommitRows.value.length === 0) {
+    if (globals.selectedCommitRows.length === 0) {
       const toSelect = [globals.commitsData[0]]
       commitsTable.value.selectRows(toSelect)
       return
     }
-    const currId = globals.selectedCommitRows.value[0].id
+    const currId = globals.selectedCommitRows[0].id
     if (currId === globals.commitsData.length - 1) {
       return
     }
@@ -94,12 +92,12 @@ function handleKeyboardInput(event) {
     // prevent the default action (scrolling down) - but would be nice if it did scroll when the selection was not visible anymore
     // event.preventDefault()
   } else if (event.key === 'ArrowUp') {
-    if (globals.selectedCommitRows.value.length === 0) {
+    if (globals.selectedCommitRows.length === 0) {
       const toSelect = [globals.commitsData[0]]
       commitsTable.value.selectRows(toSelect)
       return
     }
-    const currId = globals.selectedCommitRows.value[0].id
+    const currId = globals.selectedCommitRows[0].id
     if (currId === 0) {
       return
     }

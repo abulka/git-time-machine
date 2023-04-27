@@ -35,7 +35,8 @@ export function generateHtml(commit, fileName) {
   const lang = lang_map[fileExtension] || 'auto'
 
   let lang_override = ''
-  if (fileExtension == '.md') lang_override = 'markdown' // just for highlight.js auto-detection which doesn't work for markdown
+  const determinedLanguageFromFileName = lang != 'auto'
+  if (determinedLanguageFromFileName) lang_override = `lang-${lang}` // highlight.js auto-detection is not working for some files so help it
 
   // Define the data to be used in the template
   const data = {

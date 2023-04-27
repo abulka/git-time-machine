@@ -7,18 +7,31 @@
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; 
                style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;"
-    >    
+    >
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Auto adds language-* class to <code> tags, but because we haven't loaded stylesheets yet, it doesn't do anything else
+        hljs.highlightAll()
+      })
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/{{vers}}/themes/prism-okaidia.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/{{vers}}/plugins/line-numbers/prism-line-numbers.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/{{vers}}/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/{{vers}}/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/{{vers}}/plugins/autoloader/prism-autoloader.min.js"></script>
+
     <script>
       {{{js_file_contents}}}
     </script>
   </head>
-  <body>
-      <pre><code class="language-{{lang}} line-numbers">{{source_file_contents}}</code></pre>
+  <body style="background-color: #272822;"> <!-- make background match prism-okaidia theme -->
+      <pre><code class="{{lang_override}} line-numbers">{{source_file_contents}}</code></pre>
   </body>
 </html>
+:not(pre)>code[class*=language-], pre[class*=language-]:not(pre)>code[class*=language-], pre[class*=language-] {
+    background: #272822;
+}

@@ -34,11 +34,15 @@ export function generateHtml(commit, fileName) {
   }
   const lang = lang_map[fileExtension] || 'auto'
 
+  let lang_override = ''
+  if (fileExtension == '.md') lang_override = 'markdown' // just for highlight.js auto-detection which doesn't work for markdown
+
   // Define the data to be used in the template
   const data = {
     title: 'My Title',
     body: 'This is the body of my template.',
-    lang: lang, // not needed with the prism autoloader https://prismjs.com/plugins/autoloader/
+    lang: lang,
+    lang_override: lang_override,
     vers: '1.29.0', // https://cdnjs.com/libraries/prism/1.29.0
     source_file_contents: source_file_contents,
     js_file_contents: '' // 'console.log("Hello World from template")'

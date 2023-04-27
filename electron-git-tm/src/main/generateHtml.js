@@ -1,6 +1,6 @@
 import Handlebars from 'handlebars'
 const fs = require('fs')
-import path from 'path';
+import path from 'path'
 import { getFileContents as getFileContent } from './getFileContent'
 import { isText, isBinary, getEncoding } from 'istextorbinary'
 import { fileExtToPrismAlias } from './fileExtToPrismAlias'
@@ -14,32 +14,16 @@ const template = Handlebars.compile(templateSource) // Compile the template
 
 export function generateHtml(commit, fileName) {
   const source_file_contents = getFileContent(commit, fileName)
-  
+
   const isBinaryFile = isBinary(null, source_file_contents)
   if (isBinaryFile) {
     return 'Binary file'
   }
-  
-  // const fileExtension = path.extname(fileName)
-  // const lang_map = {
-  //   '.html': 'html',
-  //   '.css': 'css',
-  //   '.js': 'javascript',
-  //   '.ts': 'typescript',
-  //   '.py': 'python',
-  //   '.java': 'java',
-  //   '.md': 'markdown',
-  //   '.drawio': 'markup',
-  //   '.vue': 'html' // TODO: use vue syntax highlighting via https://vue-prism.netlify.app/ 
-  //   // Add more mappings for other file types as needed e.g. vue
-  // }
-  // const lang = lang_map[fileExtension] || 'auto'
-  const lang = fileExtToPrismAlias(fileName)
-  console.log(`lang: ${lang} from fileName: ${fileName}`)
 
-  let lang_override = ''
-  const determinedLanguageFromFileName = lang != 'auto'
-  if (determinedLanguageFromFileName) lang_override = `lang-${lang}` // highlight.js auto-detection is not working for some files so help it
+  const lang = fileExtToPrismAlias(fileName)
+
+  // highlight.js auto-detection is not working for some files so help it by using the file extension to set the language-* if possible
+  const lang_override = lang != '' ? `lang-${lang}` : ''
 
   // Define the data to be used in the template
   const data = {

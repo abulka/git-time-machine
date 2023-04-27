@@ -332,7 +332,6 @@ export function fileExtToPrismAlias(fileName: string): string {
   }
   const ext = path.extname(fileName)
   if (ext === '') {
-    console.log('returning empty string', fileName, ext)
     return ''
   }
   console.log('is ext in mappings', ext in mappings, ext, mappings[ext])

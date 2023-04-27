@@ -1,6 +1,5 @@
 import { exec } from 'child_process'
 import util from 'util'
-import { Commit } from './Commit'
 
 export async function getPreviousCommit(currentCommit): Promise<string | null> {
   const execPromisified = util.promisify(exec)
@@ -22,6 +21,9 @@ export async function getPreviousCommit(currentCommit): Promise<string | null> {
     return null
   }
 }
+
+// TODO: cache a list of commits so we don't have to call git every time
+// actually we already have this in getCommitsForBranch() !!
 
 export async function getDiff(previousCommit: string, currentCommit: string): Promise<string> {
   // call git to get the diff between the two commits
@@ -68,3 +70,39 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
     return ''
   }
 }
+
+export async function generate_html_diff(currentCommit: string): Promise<string> {
+  const commit = await getPreviousCommit(currentCommit)
+  if (commit) {
+    const diff = await getDiff(commit, currentCommit)
+    return diff
+  }
+  return ''
+}
+
+// def generate_html_diff(self):
+//   if event_debug:
+//       print('   commit_changed ->', 'on_show_diff')
+//   # call git to find the sha of the previous commit to current_commit sha
+//   previous_commit = self.get_previous_commit(current_commit)
+
+//   # call git to get the diff between the two commits
+//   diff_body = self.get_diff(previous_commit, current_commit)
+
+//   hyperlinks = self.extract_hyperlinks(diff_body)
+//   diff_body = self.inject_hyperlinks(diff_body, hyperlinks)
+
+//   toc_template = environment.get_template("links-diff.html")
+//   toc_links = toc_template.render(hyperlinks=hyperlinks, add_filename_to_link=add_filename_to_link)
+
+//   js_file_contents = environment.get_template("template-diff.js").render()
+
+//   html_template = environment.get_template("template-diff.html")
+//   html_str = html_template.render(toc_links=toc_links, diff_body=diff_body, js=js_file_contents)
+
+//   if html_debug:
+//       with open('junk-diff.html', 'w') as f:
+//           f.write(html_str)
+
+//   # Set the HTML content
+//   self.html.SetPage(html_str, "")

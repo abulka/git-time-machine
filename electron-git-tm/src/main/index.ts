@@ -6,7 +6,7 @@ import { generateHtml } from './generateHtml'
 import { getBranches } from './getBranches'
 import { getCommitsForBranch } from './getCommits'
 import { getRepoFileTree } from './getFileTree'
-import { getPreviousCommit, getDiff } from './getDiff'
+import { getPreviousCommit, getDiff, generate_html_diff } from './getDiff'
 
 // ipc
 
@@ -109,16 +109,16 @@ ipcMain.on('say', (event, what) => {
   console.log('Main process on()', what)
 })
 
-console.log('hello from main')
+// console.log('hello from main')
 
-getPreviousCommit('HEAD').then((commit) => {
-  console.log('previous commit:', commit)
-  if (commit) {
-    getDiff(commit, 'HEAD').then((diff) => {
-      console.log('diff:', diff)
-    })
-  }
-})
+// getPreviousCommit('HEAD').then((commit) => {
+//   console.log('previous commit:', commit)
+//   if (commit) {
+//     getDiff(commit, 'HEAD').then((diff) => {
+//       console.log('diff:', diff)
+//     })
+//   }
+// })
 
 ipcMain.handle('get-branches', async (event) => {
   const branches: string[] = await getBranches()
@@ -142,4 +142,11 @@ ipcMain.handle('get-files', async (event, commit) => {
 ipcMain.handle('generate-html', (event, commit, fileName) => {
   const htmlStr = generateHtml(commit, fileName)
   return htmlStr
+})
+
+ipcMain.handle('generate-diff', async (event, commit) => {
+  console.log('generate-diff', commit)
+  const result = await generate_html_diff(commit)
+  console.log('generate-diff result:', result)
+  return result
 })

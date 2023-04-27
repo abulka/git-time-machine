@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import Commits from './Commits.vue'
 import TimeFileTree from './FileTree.vue'
 import Branch from './Branch.vue'
+import Diff from './CommitDiff.vue'
 
 const splitterModel = ref(30)
 const splitterModelDiffs = ref(55)
@@ -21,14 +22,7 @@ const splitterModelDiffs = ref(55)
           <TimeFileTree />
         </template>
         <template #after>
-          <div class="q-pa-md">
-            <div class="text-h4 q-mb-md">After</div>
-            <div v-for="n in 20" :key="n" class="q-my-md">
-              {{ n }}. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium
-              praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati
-              commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-            </div>
-          </div>
+          <Diff />
         </template>
       </q-splitter>
     </template>

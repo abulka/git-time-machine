@@ -6,7 +6,7 @@ import { generateHtml } from './generateHtml'
 import { getBranches } from './getBranches'
 import { getCommitsForBranch } from './getCommits'
 import { getRepoFileTree } from './getFileTree'
-import { getPreviousCommit } from './getDiff'
+import { getPreviousCommit, getDiff } from './getDiff'
 
 // ipc
 
@@ -110,8 +110,14 @@ ipcMain.on('say', (event, what) => {
 })
 
 console.log('hello from main')
+
 getPreviousCommit('HEAD').then((commit) => {
   console.log('previous commit:', commit)
+  if (commit) {
+    getDiff(commit, 'HEAD').then((diff) => {
+      console.log('diff:', diff)
+    })
+  }
 })
 
 ipcMain.handle('get-branches', async (event) => {

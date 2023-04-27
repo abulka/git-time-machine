@@ -334,7 +334,6 @@ export function fileExtToPrismAlias(fileName: string): string {
   if (ext === '') {
     return ''
   }
-  console.log('is ext in mappings', ext in mappings, ext, mappings[ext])
   if (ext in mappings) {
     return mappings[ext]
   }

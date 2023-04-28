@@ -1,17 +1,47 @@
 import { exec } from 'child_process'
 import util from 'util'
+import { commits } from './getCommits'
+
+function findPreviousCommit(currentCommit: string): string | null {
+  for (let i = 0; i < commits.length; i++) {
+    if (commits[i].sha.startsWith(currentCommit)) {
+    // if (commits[i].sha === currentCommit) { // TODO: use full length sha strings
+      if (i < commits.length - 1) {
+        return commits[i + 1].sha
+      } else {
+        return null
+      }
+    }
+  }
+  return null
+}
 
 export async function getPreviousCommit(currentCommit): Promise<string | null> {
   const execPromisified = util.promisify(exec)
   const gitCommand = ['git', 'rev-list', currentCommit]
   try {
     const { stdout } = await execPromisified(gitCommand.join(' '))
-    const commits: string[] = stdout.toString().split('\n')
+    const _commits: string[] = stdout.toString().split('\n')
+
+    // // compare _commits and commits
+    // // if they are the same, then we can use the cached commits
+    // if (_commits.length === commits.length) {
+    //   let i = 0
+    //   for (const commit of commits) {
+    //     if (commit.sha !== _commits[i]) {
+    //       console.log('cached commits do not match current commits')
+    //       break
+    //     }
+    //     i++
+    //   }
+    // }
+    // else
+    //   console.log('cached commits do not match current commits LENGTH')
 
     // return the previous commit in the list (i.e., the commit before current_commit)
-    if (commits.length > 1) {
-      return commits[1]
-    } else if (commits.length === 1) {
+    if (_commits.length > 1) {
+      return _commits[1]
+    } else if (_commits.length === 1) {
       return null
     } else {
       throw new Error('No commits found in repository')
@@ -73,6 +103,8 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
 
 export async function generate_html_diff(currentCommit: string): Promise<string> {
   const commit = await getPreviousCommit(currentCommit)
+  if (findPreviousCommit(currentCommit) == commit) console.log('BINGO - cached technique matches old technique')
+  else console.log('cached technique does not match old technique', findPreviousCommit(currentCommit), commit)
   if (commit) {
     const diff = await getDiff(commit, currentCommit)
     return diff

@@ -1,3 +1,4 @@
+<!-- eslint-disable prettier/prettier -->
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { globals } from '@renderer/globals'
@@ -49,9 +50,14 @@ function noFile(): void {
 
 // In the outer HTML of your app's render process
 window.addEventListener('message', (event) => {
-  if (event.data === 'hello from iframe') {
-    console.log('Received message from iframe:', event.data)
-  }
+  // if (event.data === 'hello from iframe') {
+  //   console.log('Received message from iframe:', event.data)
+  // }
+  // else
+  //   console.log('Received message from iframe:', event.data)
+
+  if (event.data.scrollPos) globals.scrollPos = event.data.scrollPos
+  if (event.data.scrollPosX) globals.scrollPosX = event.data.scrollPosX
 })
 </script>
 
@@ -59,6 +65,8 @@ window.addEventListener('message', (event) => {
   <div class="q-pa-md">
     {{ globals.commit }}
     {{ globals.selectedTreePath }}
+    {{ globals.scrollPos }}
+    {{ globals.scrollPosX }}
     <!-- <q-btn label="Generate HTML" @click="generateHtml" /> -->
     <iframe ref="myiframe" style="height: 100vh" class="w-full"></iframe>
   </div>

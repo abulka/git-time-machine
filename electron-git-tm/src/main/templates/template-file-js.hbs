@@ -1,4 +1,6 @@
-// window.wx_msg.postMessage('This is a message body test');
+// Whilst in wxPython we communicate with the parent frame using window.wx_msg.post_message
+// in Electron we use window.parent.postMessage
+// window.parent.postMessage('This is a message body test');
 
 // MAINTAINING SCROLL POSITION
 
@@ -8,7 +10,7 @@
 
 function sendScrollPos() {
     var scrollPos = window.scrollY;
-    window.wx_msg.postMessage({ scrollPos: scrollPos })
+    window.parent.postMessage({ scrollPos: scrollPos })
 }
 
 window.addEventListener('scroll', sendScrollPos);  // only works for the verical scroll
@@ -16,13 +18,10 @@ window.addEventListener('scroll', sendScrollPos);  // only works for the verical
 // MAINTAINING HORIZONTAL SCROLL POSITION
 
 function sendHorizontalScrollPos(scrollPosX) {
-    window.wx_msg.postMessage({ scrollPosX: scrollPosX })
+    window.parent.postMessage({ scrollPosX: scrollPosX })
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // In the iframe
-    window.parent.postMessage('hello from iframe', '*');
-
     var preElement = document.getElementsByTagName('pre')[0];
     preElement.addEventListener('scroll', function () {
       sendHorizontalScrollPos(this.scrollLeft)

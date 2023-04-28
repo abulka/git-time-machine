@@ -16,45 +16,6 @@ function findPreviousCommit(currentCommit: string): string | null {
   return null
 }
 
-export async function getPreviousCommit(currentCommit): Promise<string | null> {
-  const execPromisified = util.promisify(exec)
-  const gitCommand = ['git', 'rev-list', currentCommit]
-  try {
-    const { stdout } = await execPromisified(gitCommand.join(' '))
-    const _commits: string[] = stdout.toString().split('\n')
-
-    // // compare _commits and commits
-    // // if they are the same, then we can use the cached commits
-    // if (_commits.length === commits.length) {
-    //   let i = 0
-    //   for (const commit of commits) {
-    //     if (commit.sha !== _commits[i]) {
-    //       console.log('cached commits do not match current commits')
-    //       break
-    //     }
-    //     i++
-    //   }
-    // }
-    // else
-    //   console.log('cached commits do not match current commits LENGTH')
-
-    // return the previous commit in the list (i.e., the commit before current_commit)
-    if (_commits.length > 1) {
-      return _commits[1]
-    } else if (_commits.length === 1) {
-      return null
-    } else {
-      throw new Error('No commits found in repository')
-    }
-  } catch (e) {
-    console.log(`Error fetching previous commit: ${(e as Error).message}`)
-    return null
-  }
-}
-
-// TODO: cache a list of commits so we don't have to call git every time
-// actually we already have this in getCommitsForBranch() !!
-
 export async function getDiff(previousCommit: string, currentCommit: string): Promise<string> {
   // call git to get the diff between the two commits
   const execPromisified = util.promisify(exec)
@@ -102,9 +63,7 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
 }
 
 export async function generate_html_diff(currentCommit: string): Promise<string> {
-  const commit = await getPreviousCommit(currentCommit)
-  if (findPreviousCommit(currentCommit) == commit) console.log('BINGO - cached technique matches old technique')
-  else console.log('cached technique does not match old technique', findPreviousCommit(currentCommit), commit)
+  const commit = findPreviousCommit(currentCommit)
   if (commit) {
     const diff = await getDiff(commit, currentCommit)
     return diff

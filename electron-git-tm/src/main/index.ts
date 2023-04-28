@@ -111,15 +111,6 @@ ipcMain.on('say', (event, what) => {
 
 // console.log('hello from main')
 
-// getPreviousCommit('HEAD').then((commit) => {
-//   console.log('previous commit:', commit)
-//   if (commit) {
-//     getDiff(commit, 'HEAD').then((diff) => {
-//       console.log('diff:', diff)
-//     })
-//   }
-// })
-
 ipcMain.handle('get-branches', async (event) => {
   const branches: string[] = await getBranches()
   return branches

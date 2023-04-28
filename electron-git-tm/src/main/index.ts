@@ -136,7 +136,6 @@ ipcMain.handle('generate-html', (event, commit, fileName) => {
 })
 
 ipcMain.handle('generate-diff', async (event, commit) => {
-  console.log('generate-diff', commit)
   const result = await generate_html_diff(commit)
   // console.log('generate-diff result:', result)
   return result

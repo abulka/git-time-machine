@@ -1,9 +1,13 @@
 import Handlebars from 'handlebars'
 const fs = require('fs')
-import path from 'path'
 import { getFileContents as getFileContent } from './getFileContent'
-import { isText, isBinary, getEncoding } from 'istextorbinary'
+import { isBinary } from 'istextorbinary'
 import { fileExtToPrismAlias } from './fileExtToPrismAlias'
+
+interface Point {
+  x: number
+  y: number
+}
 
 // const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
 const templateSource = fs.readFileSync(
@@ -12,18 +16,32 @@ const templateSource = fs.readFileSync(
 )
 const template = Handlebars.compile(templateSource) // Compile the template
 
-export function generateHtml(commit, fileName) {
-  const source_file_contents = getFileContent(commit, fileName)
+const templateSourceJs = fs.readFileSync('src/main/templates/template-file-js.hbs', 'utf8')
+const templateJs = Handlebars.compile(templateSourceJs) // Compile the js template
 
+export function generateHtml(
+  commit,
+  path,
+  scrollTo: Point | null = null,
+  lineTo: number | null
+): string {
+  const scrollPosX = scrollTo?.x || 0
+  const scrollPosY = scrollTo?.y || 0
+
+  const source_file_contents: string = getFileContent(commit, path)
+  console.log('fileName', path)
   const isBinaryFile = isBinary(null, source_file_contents)
   if (isBinaryFile) {
     return 'Binary file'
   }
 
-  const lang = fileExtToPrismAlias(fileName)
+  const lang = fileExtToPrismAlias(path)
 
   // highlight.js auto-detection is not working for some files so help it by using the file extension to set the language-* if possible
   const lang_override = lang != '' ? `lang-${lang}` : ''
+
+  const jsFileTemplate = constructJsFileContents(templateJs, scrollPosX, scrollPosY, lineTo)
+  console.log(`${path} jsFileTemplate: ${jsFileTemplate}`)
 
   // Define the data to be used in the template
   const data = {
@@ -79,13 +97,18 @@ export function generateHtml(commit, fileName) {
 // //   return htmlStr
 // }
 
-export function generateHtml_OFFLINE() {
-  // return a dummy html file for testing
-  return `
-  <html>
-    <body style="background-color: grey;">
-      <h1>Test</h1>
-    </body>
-  </html>
-`
+function constructJsFileContents(
+  templateJs: Handlebars.TemplateDelegate<any>,
+  scrollPosX: number,
+  scrollPosY: number,
+  lineTo: number | null
+): string {
+  const data = {
+    scroll_to: scrollPosY,
+    scroll_to_x: scrollPosX,
+    line_to: lineTo
+  }
+  console.log(`constructJsFileContents: ${scrollPosX} ${scrollPosY} ${lineTo}`)
+  const jsFileContents = templateJs(data)
+  return jsFileContents
 }

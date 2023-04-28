@@ -11,6 +11,11 @@ export async function getCommitsForBranch(branch): Promise<Commit[]> {
     // Fetch the commit hashes for the specified branch
     const execPromisified = util.promisify(exec)
 
+    if (branch.includes('(HEAD detached at')) {
+      // we are in detached head mode, so get the commit hash from the branch name
+      branch = branch.split(' ')[3].replace(')', '')
+    }
+
     const command = `git log ${branch} --format=%H///%cd///%an///%s`
     const commitInfo = (await execPromisified(command)).stdout.split('\n')
 

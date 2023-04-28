@@ -22,7 +22,7 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
   const gitCommand = ['git', 'diff', previousCommit, currentCommit]
   try {
     const { stdout } = await execPromisified(gitCommand.join(' '))
-    return stdout
+    return `${gitCommand.join(' ')}\n\n${stdout}`
 
     // let gitOutput = stdout
 

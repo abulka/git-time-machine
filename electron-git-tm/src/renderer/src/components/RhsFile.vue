@@ -44,8 +44,15 @@ function noFile(): void {
         <p>Click on a file in the tree to view its contents.</p>
       </body>
     </html>
-  `;
+  `
 }
+
+// In the outer HTML of your app's render process
+window.addEventListener('message', (event) => {
+  if (event.data === 'hello from iframe') {
+    console.log('Received message from iframe:', event.data)
+  }
+})
 </script>
 
 <template>

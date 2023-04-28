@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import { globals } from '@renderer/globals'
 import { Commit } from '../../../main/Commit'
 
-const diff = ref('')
+const myiframe = ref('myiframe')
 
 watch(
   () => globals.selectedCommitRows,
@@ -19,15 +19,20 @@ watch(
 
 async function getDiff(sha): Promise<void> {
   const diffStr: string = await window.electron.ipcRenderer.invoke('generate-diff', sha)
-  console.log('diff is', diffStr)
-  diff.value = diffStr
+  myiframe.value.srcdoc = `<html>
+  <head>
+    <title>My HTML</title>
+  </head>
+  <body style="background-color: grey;">
+    <pre>${diffStr}</pre>
+  </body>
+  </html>
+  `
 }
 </script>
 
 <template>
-  <pre>
-{{ diff }}
-  </pre>
+  <iframe ref="myiframe" width="100%" height="100%" frameborder="0"></iframe>
 </template>
 
 <style lang="less">

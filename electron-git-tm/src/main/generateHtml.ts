@@ -41,7 +41,7 @@ export function generateHtml(
   const lang_override = lang != '' ? `lang-${lang}` : ''
 
   const jsFileTemplate = constructJsFileContents(templateJs, scrollPosX, scrollPosY, lineTo)
-  console.log(`${path} jsFileTemplate: ${jsFileTemplate}`)
+  // console.log(`${path} jsFileTemplate: ${jsFileTemplate}`)
 
   // Define the data to be used in the template
   const data = {
@@ -51,7 +51,7 @@ export function generateHtml(
     lang_override: lang_override,
     vers: '1.29.0', // https://cdnjs.com/libraries/prism/1.29.0
     source_file_contents: source_file_contents,
-    js_file_contents: '' // 'console.log("Hello World from template")'
+    js_file_contents: jsFileTemplate // '' // 'console.log("Hello World from template")'
   }
 
   // Render the template with the data

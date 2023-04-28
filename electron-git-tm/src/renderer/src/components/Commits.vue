@@ -73,7 +73,8 @@ function selectOneOther() {
   commitsTable.value.selectRows(toSelect)
 }
 function handleKeyboardInput(event) {
-  console.log('shortcut', event.key)
+  // console.log('shortcut', event.key)
+
   // const currentRow = globals.selectedCommitRows.value[0]
   // console.log('currentRow', currentRow)
   // return

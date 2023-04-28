@@ -20,6 +20,9 @@ function sendHorizontalScrollPos(scrollPosX) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    // In the iframe
+    window.parent.postMessage('hello from iframe', '*');
+
     var preElement = document.getElementsByTagName('pre')[0];
     preElement.addEventListener('scroll', function () {
       sendHorizontalScrollPos(this.scrollLeft)

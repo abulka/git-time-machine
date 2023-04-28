@@ -4,7 +4,7 @@ import { getFileContents as getFileContent } from './getFileContent'
 import { isBinary } from 'istextorbinary'
 import { fileExtToPrismAlias } from './fileExtToPrismAlias'
 
-interface Point {
+export interface Point {
   x: number
   y: number
 }
@@ -29,7 +29,7 @@ export function generateHtml(
   const scrollPosY = scrollTo?.y || 0
 
   const source_file_contents: string = getFileContent(commit, path)
-  console.log('fileName', path)
+  console.log('fileName', path, scrollPosX, scrollPosY, lineTo)
   const isBinaryFile = isBinary(null, source_file_contents)
   if (isBinaryFile) {
     return 'Binary file'

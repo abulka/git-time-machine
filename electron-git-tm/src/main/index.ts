@@ -2,11 +2,11 @@ import { app, shell, BrowserWindow } from 'electron'
 import * as path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 const { ipcMain } = require('electron')
-import { generateHtml } from './generateHtml'
+import { generateHtml, Point } from './generateHtml'
 import { getBranches } from './getBranches'
 import { getCommitsForBranch } from './getCommits'
 import { getRepoFileTree } from './getFileTree'
-import { getPreviousCommit, getDiff, generate_html_diff } from './getDiff'
+import { generate_html_diff } from './getDiff'
 
 // ipc
 
@@ -130,8 +130,8 @@ ipcMain.handle('get-files', async (event, commit) => {
 //   const htmlStr = generateHtml(path, sourceFileContents, scrollTo, lineTo)
 //   return htmlStr
 // })
-ipcMain.handle('generate-html', (event, commit, fileName) => {
-  const htmlStr = generateHtml(commit, fileName)
+ipcMain.handle('generate-html', (event, commit, fileName, scrollTo: Point, lineTo) => {
+  const htmlStr = generateHtml(commit, fileName, scrollTo, lineTo)
   return htmlStr
 })
 

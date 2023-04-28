@@ -3,6 +3,13 @@
 import { ref, onMounted, watch } from 'vue'
 import { globals } from '@renderer/globals'
 
+// import { Point } from '../../../../src/main/generateHtml'
+// DUPLICATE DECLARATION
+interface Point {
+  x: number
+  y: number
+}
+
 watch(
   // Watch for changes to both commit and selectedTreePath
   [(): string => globals.commit, (): string => globals.selectedTreePath],
@@ -16,8 +23,10 @@ function generateHtml(): void {
     noFile()
     return
   }
+  const scrollTo: Point = { x: globals.scrollPosX, y: globals.scrollPos }
+
   window.electron.ipcRenderer
-    .invoke('generate-html', globals.commit, globals.selectedTreePath)
+    .invoke('generate-html', globals.commit, globals.selectedTreePath, scrollTo, globals.lineTo)
     .then((htmlStr) => {
       // Do something with the generated HTML string
       myiframe.value.srcdoc = htmlStr

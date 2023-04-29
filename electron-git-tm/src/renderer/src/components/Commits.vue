@@ -3,6 +3,8 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 // import { Commit } from '../../main/Commit'
 import { globals } from '@renderer/globals'
+// import VTable from 'vuejs-smart-table/dist/types/VTable'
+// import VTable from 'vuejs-smart-table'
 
 // The watch function in Vue takes two main parameters: a function that returns
 // the value to watch, and a callback function that is called when the value
@@ -30,9 +32,12 @@ async function getCommits() {
 
   // select the latest commit row
   const toSelect = [globals.commitsData[0]]
+
+  //@ts-ignore - not sure how to tell vue .value about the VTable selectRows method - see https://stackoverflow.com/questions/57416991/vue-typescript-how-to-avoid-ts-error-when-accessing-child-components-methods
   commitsTable.value.selectRows(toSelect)
 }
 
+// const commitsTable = ref<typeof VTable>('commitsTable')
 const commitsTable = ref('commitsTable')
 
 function shortenDateString(dateString) {
@@ -80,6 +85,7 @@ function handleKeyboardInput(event) {
   if (event.key === 'ArrowDown') {
     if (globals.selectedCommitRows.length === 0) {
       const toSelect = [globals.commitsData[0]]
+      //@ts-ignore - not sure how to tell vue .value about the VTable selectRows method - see https://stackoverflow.com/questions/57416991/vue-typescript-how-to-avoid-ts-error-when-accessing-child-components-methods
       commitsTable.value.selectRows(toSelect)
       return
     }
@@ -88,6 +94,7 @@ function handleKeyboardInput(event) {
       return
     }
     const toSelect = [globals.commitsData[currId + 1]]
+    //@ts-ignore - not sure how to tell vue .value about the VTable selectRows method - see https://stackoverflow.com/questions/57416991/vue-typescript-how-to-avoid-ts-error-when-accessing-child-components-methods
     commitsTable.value.selectRows(toSelect)
     // prevent the default action (scrolling down) - but would be nice if it did scroll when the selection was not visible anymore
     // event.preventDefault()

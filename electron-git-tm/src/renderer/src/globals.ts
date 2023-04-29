@@ -37,6 +37,7 @@ export const globals = reactive({
     }
     return this.selectedTreeNode.replace(/^\//, '')
   },
+  scroll_is_for_path: '',
   scrollPos: 0 as number,
   scrollPosX: 0 as number,
   lineTo: 0 as number

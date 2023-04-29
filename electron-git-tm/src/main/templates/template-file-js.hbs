@@ -22,7 +22,6 @@ function sendHorizontalScrollPos(scrollPosX) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('DOMContentLoaded')
     var preElement = document.getElementsByTagName('pre')[0];
     preElement.addEventListener('scroll', function () {
       sendHorizontalScrollPos(this.scrollLeft)

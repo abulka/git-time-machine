@@ -146,6 +146,17 @@ const simple: TreeData = ref([
 ])
 
 // simple.value = convertToTree(files)
+
+function selectionChanged(state): void {
+  // If file path has changed, scroll_pos will be wrong and needs to be reset to 0
+  console.log('selectionChanged', state)
+  const path = state.substring(1) // remove leading /
+  if (globals.scroll_is_for_path !== path) {
+    globals.scrollPos = 0
+    globals.scrollPosX = 0
+  }
+  globals.scroll_is_for_path = path
+}
 </script>
 
 <template>
@@ -167,6 +178,7 @@ const simple: TreeData = ref([
       selected-color="primary"
       default-expand-all
       dark
+      @update:selected="selectionChanged"
     />
   </div>
 </template>

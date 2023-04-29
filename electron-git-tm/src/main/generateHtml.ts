@@ -29,7 +29,8 @@ export function generateHtml(
   const scrollPosY = scrollTo?.y || 0
 
   const source_file_contents: string = getFileContent(commit, path)
-  const isBinaryFile = isBinary(null, source_file_contents)
+  const source_file_contents_buffer = Buffer.from(source_file_contents)
+  const isBinaryFile = isBinary(null, source_file_contents_buffer)
   if (isBinaryFile) {
     return 'Binary file'
   }

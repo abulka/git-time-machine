@@ -1,8 +1,7 @@
 <!-- eslint-disable @typescript-eslint/explicit-function-return-type -->
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 // import { Commit } from '../../main/Commit'
-import { reactive, toRaw } from 'vue'
 import { globals } from '@renderer/globals'
 
 // The watch function in Vue takes two main parameters: a function that returns
@@ -52,26 +51,26 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeyboardInput)
 })
 
-function selectAll() {
-  console.log('selectAll', globals.commitsData)
-  commitsTable.value.selectAll()
-}
+// function selectAll() {
+//   console.log('selectAll', globals.commitsData)
+//   commitsTable.value.selectAll()
+// }
+// function deselectAll() {
+//   commitsTable.value.deselectAll()
+// }
+// function selectSome() {
+//   const toSelect = [globals.commitsData[0], globals.commitsData[2], globals.commitsData[5]]
+//   commitsTable.value.selectRows(toSelect)
+// }
+// function selectOne() {
+//   const toSelect = [globals.commitsData[4]]
+//   commitsTable.value.selectRows(toSelect)
+// }
+// function selectOneOther() {
+//   const toSelect = [globals.commitsData[7]]
+//   commitsTable.value.selectRows(toSelect)
+// }
 
-function deselectAll() {
-  commitsTable.value.deselectAll()
-}
-function selectSome() {
-  const toSelect = [globals.commitsData[0], globals.commitsData[2], globals.commitsData[5]]
-  commitsTable.value.selectRows(toSelect)
-}
-function selectOne() {
-  const toSelect = [globals.commitsData[4]]
-  commitsTable.value.selectRows(toSelect)
-}
-function selectOneOther() {
-  const toSelect = [globals.commitsData[7]]
-  commitsTable.value.selectRows(toSelect)
-}
 function handleKeyboardInput(event) {
   // console.log('shortcut', event.key)
 

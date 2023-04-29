@@ -1,5 +1,5 @@
 <!-- eslint-disable @typescript-eslint/explicit-function-return-type -->
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
 // interface SelectedItem {

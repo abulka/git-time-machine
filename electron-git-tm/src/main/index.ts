@@ -57,8 +57,8 @@ function createWindow(): void {
     }
   } else {
     // ---> This is what typically runs... <---
-    // console.log('context is not isolated, setting window.electron = electronAPI')
-    mainWindow.electron = electronAPI
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    ;(mainWindow as any).electron = electronAPI
   }
 
 }
@@ -101,27 +101,27 @@ app.on('window-all-closed', () => {
 // FUNCTIONALITY BEGINS
 
 
-ipcMain.handle('ping', (event, name) => {
+ipcMain.handle('ping', (_event, name) => {
   return `Main process handle(): Hello, ${name}! - pong from main`;
 });
 
-ipcMain.on('say', (event, what) => {
+ipcMain.on('say', (_event, what) => {
   console.log('Main process on()', what)
 })
 
 // console.log('hello from main')
 
-ipcMain.handle('get-branches', async (event) => {
+ipcMain.handle('get-branches', async (_event) => {
   const branches: string[] = await getBranches()
   return branches
 })
 
-ipcMain.handle('get-commits', async (event, branch) => {
+ipcMain.handle('get-commits', async (_event, branch) => {
   const commits = await getCommitsForBranch(branch)
   return commits
-})  
+})
 
-ipcMain.handle('get-files', async (event, commit) => {
+ipcMain.handle('get-files', async (_event, commit) => {
   const files = await getRepoFileTree(commit)
   return files
 })
@@ -130,12 +130,12 @@ ipcMain.handle('get-files', async (event, commit) => {
 //   const htmlStr = generateHtml(path, sourceFileContents, scrollTo, lineTo)
 //   return htmlStr
 // })
-ipcMain.handle('generate-html', (event, commit, fileName, scrollTo: Point, lineTo) => {
+ipcMain.handle('generate-html', (_event, commit, fileName, scrollTo: Point, lineTo) => {
   const htmlStr = generateHtml(commit, fileName, scrollTo, lineTo)
   return htmlStr
 })
 
-ipcMain.handle('generate-diff', async (event, commit) => {
+ipcMain.handle('generate-diff', async (_event, commit) => {
   const result = await generate_html_diff(commit)
   // console.log('generate-diff result:', result)
   return result

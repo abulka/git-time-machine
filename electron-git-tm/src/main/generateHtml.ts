@@ -29,7 +29,6 @@ export function generateHtml(
   const scrollPosY = scrollTo?.y || 0
 
   const source_file_contents: string = getFileContent(commit, path)
-  console.log('fileName', path, scrollPosX, scrollPosY, lineTo)
   const isBinaryFile = isBinary(null, source_file_contents)
   if (isBinaryFile) {
     return 'Binary file'
@@ -108,7 +107,6 @@ function constructJsFileContents(
     scroll_to_x: scrollPosX,
     line_to: lineTo
   }
-  console.log(`constructJsFileContents: ${scrollPosX} ${scrollPosY} ${lineTo}`)
   const jsFileContents = templateJs(data)
   return jsFileContents
 }

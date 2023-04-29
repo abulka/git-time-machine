@@ -29,6 +29,7 @@ function generateHtml(): void {
     .invoke('generate-html', globals.commit, globals.selectedTreePath, scrollTo, globals.lineTo)
     .then((htmlStr) => {
       // Do something with the generated HTML string
+      if (myiframe.value.srcdoc === htmlStr) return
       myiframe.value.srcdoc = htmlStr
     })
     .catch((err) => {

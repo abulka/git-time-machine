@@ -1,10 +1,10 @@
 {
-  "name": "electron-app",
+  "name": "git-time-machine",
   "version": "1.0.0",
-  "description": "An Electron application with Vue and TypeScript",
+  "description": "Easily viewing the state of your git source code directory tree at any commit incl. contents of any file",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://www.electronjs.org",
+  "author": "Andy Bulka",
+  "homepage": "https://github.com/abulka/git-time-machine",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix",

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      /* background-color: darkgray; */
+      /* white-space: pre-wrap; YUK causes huge top margin*/
+      word-wrap: break-word;
+      margin: 0;
+    }
+
+    pre {
+      background-color: #2f2f2f;
+      color: #ffffff;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin-top: 0;
+      margin-bottom: 0;
+      padding-bottom: 10;
+    }
+
+    a {
+      white-space: nowrap;
+    }
+
+    .hyperlink-colour {
+      color: cyan;
+    }
+
+    ul {
+      background-color: antquewhite;
+    }
+
+    .toc-area {
+      background-color: gray;
+      padding: 10px;
+      margin: 0;
+    }
+
+    .spacing {
+      background-color: #2f2f2f;
+      height: 10px;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    
+  </style>
+  <script>
+    {{{js}}}
+  </script>
+</head>
+
+<body>
+  <pre>{{git_cmd}}</pre>
+  <div class="spacing"></div>
+  <pre>{{diff_body}}</pre>
+  <div class="spacing"></div>
+  <div class="toc-area">
+    <h2>Summary of Changes in this commit</h2>
+    <p>Links to the file contents of each change in this commit are summarised here.</p>
+    {{toc_links}}
+  </div>
+</body>
+
+</html>

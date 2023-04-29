@@ -18,16 +18,8 @@ watch(
 )
 
 async function getDiff(sha): Promise<void> {
-  const diffStr: string = await window.electron.ipcRenderer.invoke('generate-diff', sha)
-  myiframe.value.srcdoc = `<html>
-  <head>
-    <title>My HTML</title>
-  </head>
-  <body style="background-color: grey;">
-    <pre>${diffStr}</pre>
-  </body>
-  </html>
-  `
+  const diffHtml: string = await window.electron.ipcRenderer.invoke('generate-diff', sha)
+  myiframe.value.srcdoc = diffHtml
 }
 </script>
 

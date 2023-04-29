@@ -1,6 +1,9 @@
 import { exec } from 'child_process'
 import util from 'util'
 import { commits } from './getCommits'
+import Handlebars from 'handlebars';
+import fs from 'fs';
+
 
 function findPreviousCommit(currentCommit: string): string | null {
   for (let i = 0; i < commits.length; i++) {
@@ -17,12 +20,26 @@ function findPreviousCommit(currentCommit: string): string | null {
 }
 
 export async function getDiff(previousCommit: string, currentCommit: string): Promise<string> {
+  const templateSource = fs.readFileSync('src/main/templates/template-diff.hbs', 'utf8')
+  const template = Handlebars.compile(templateSource) // Compile the template
+
   // call git to get the diff between the two commits
   const execPromisified = util.promisify(exec)
   const gitCommand = ['git', 'diff', previousCommit, currentCommit]
   try {
     const { stdout } = await execPromisified(gitCommand.join(' '))
-    return `${gitCommand.join(' ')}\n\n${stdout}`
+
+    const data = {
+      diff_body: stdout,
+      toc_links: '',
+      git_cmd: gitCommand.join(' '),
+      js: '' // 'console.log("Hello World from template")'
+    }
+  
+    // Render the template with the data
+    const renderedTemplate = template(data)
+
+    return renderedTemplate
 
     // let gitOutput = stdout
 

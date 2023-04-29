@@ -22,11 +22,25 @@ function sendHorizontalScrollPos(scrollPosX) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOMContentLoaded')
     var preElement = document.getElementsByTagName('pre')[0];
     preElement.addEventListener('scroll', function () {
       sendHorizontalScrollPos(this.scrollLeft)
     });
-  });
+
+    // this code used to be in window.onload() but that was too late and you could see the unscrolled page appear
+    // before the scroll happens, causing a jump. Moving the scroll code here makes the jump disapear
+    {{#if scroll_to}}
+    // Scroll to the position with x=0 and y={{ scroll_to }} before the html is loaded to prevent flickering
+    window.scrollTo(0, {{ scroll_to }});
+    scrollPreTo({{ scroll_to_x }});
+    {{else if line_to}}
+    // Scroll to the line before the html is loaded to prevent flickering
+    jumpToLine({{ line_to }});
+    {{else}}
+    // both scroll_to and line_to are not set
+    {{/if}}    
+});
   
 // JUMPING TO LINE
 
@@ -66,15 +80,3 @@ function scrollPreTo(scroll_to_x) {
     preElement.scrollLeft = scroll_to_x;
 }
   
-window.onload = function () {
-    {{#if scroll_to}}
-    // Scroll to the position with x=0 and y={{ scroll_to }} before the html is loaded to prevent flickering
-    window.scrollTo(0, {{ scroll_to }});
-    scrollPreTo({{ scroll_to_x }});
-    {{else if line_to}}
-    // Scroll to the line before the html is loaded to prevent flickering
-    jumpToLine({{ line_to }});
-    {{else}}
-    // both scroll_to and line_to are not set
-    {{/if}}
-};

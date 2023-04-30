@@ -38,7 +38,7 @@ function generateHtml(): void {
 }
 
 // const url = ref('https://www.example.com')
-const myiframe = ref('myiframe')
+const myiframe = ref()
 
 onMounted(() => {
   // default html content

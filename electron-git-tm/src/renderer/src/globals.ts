@@ -18,7 +18,7 @@ export const globals = reactive({
     return this.selectedBranchOption.value
   },
   branches: [] as string[],
-  commitsData: [], // this is the array of commits
+  commitsData: [] as Commit[], // this is the array of commits
   selectedCommitRows: [] as Commit[],
   lastCommit: '' as string, // cache this so when user deselects commit table we still have it
   get commit(): string {

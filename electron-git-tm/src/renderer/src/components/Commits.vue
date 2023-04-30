@@ -1,10 +1,8 @@
 <!-- eslint-disable @typescript-eslint/explicit-function-return-type -->
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-// import { Commit } from '../../main/Commit'
+import { Commit } from '../../../main/Commit'
 import { globals } from '@renderer/globals'
-// import VTable from 'vuejs-smart-table/dist/types/VTable'
-// import VTable from 'vuejs-smart-table'
 
 // The watch function in Vue takes two main parameters: a function that returns
 // the value to watch, and a callback function that is called when the value
@@ -16,29 +14,28 @@ watch(
   }
 )
 
-async function getCommits() {
+async function getCommits(): Promise<void> {
   const branch = globals.selectedBranch
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
-  const commitsFormatted = commits.map((commit, index) => {
-    return {
+  const commitsFormatted: Commit[] = commits.map((commit, index) => {
+    const _commit: Commit = {
       id: index,
       sha: shortenSha(commit.sha),
       comment: commit.comment,
       date: shortenDateString(commit.date),
       author: commit.author
     }
+    return _commit
   })
   globals.commitsData = commitsFormatted
 
   // select the latest commit row
   const toSelect = [globals.commitsData[0]]
 
-  //@ts-ignore - not sure how to tell vue .value about the VTable selectRows method - see https://stackoverflow.com/questions/57416991/vue-typescript-how-to-avoid-ts-error-when-accessing-child-components-methods
   commitsTable.value.selectRows(toSelect)
 }
 
-// const commitsTable = ref<typeof VTable>('commitsTable')
-const commitsTable = ref('commitsTable')
+const commitsTable = ref()
 
 function shortenDateString(dateString) {
   const date = new Date(dateString)
@@ -84,8 +81,7 @@ function handleKeyboardInput(event) {
   // return
   if (event.key === 'ArrowDown') {
     if (globals.selectedCommitRows.length === 0) {
-      const toSelect = [globals.commitsData[0]]
-      //@ts-ignore - not sure how to tell vue .value about the VTable selectRows method - see https://stackoverflow.com/questions/57416991/vue-typescript-how-to-avoid-ts-error-when-accessing-child-components-methods
+      const toSelect: Commit[] = [globals.commitsData[0]]
       commitsTable.value.selectRows(toSelect)
       return
     }
@@ -94,13 +90,12 @@ function handleKeyboardInput(event) {
       return
     }
     const toSelect = [globals.commitsData[currId + 1]]
-    //@ts-ignore - not sure how to tell vue .value about the VTable selectRows method - see https://stackoverflow.com/questions/57416991/vue-typescript-how-to-avoid-ts-error-when-accessing-child-components-methods
     commitsTable.value.selectRows(toSelect)
     // prevent the default action (scrolling down) - but would be nice if it did scroll when the selection was not visible anymore
     // event.preventDefault()
   } else if (event.key === 'ArrowUp') {
     if (globals.selectedCommitRows.length === 0) {
-      const toSelect = [globals.commitsData[0]]
+      const toSelect: Commit[] = [globals.commitsData[0]]
       commitsTable.value.selectRows(toSelect)
       return
     }
@@ -138,7 +133,7 @@ function stateChanged(state) {
   //   console.log('toSelect', toRaw(commitsTable), toSelect)
   //   // commitsTable.value.selectRows(toSelect)
   // }
-  
+
   // "globals.selectedCommitRows = $event.selectedRows"
 }
 </script>
@@ -165,7 +160,8 @@ function stateChanged(state) {
       selectedClass="selected-row"
       @stateChanged="stateChanged"
     >
-      <template #head="{ allRowsSelected, selectAll, deselectAll, toggleAllRows, selectedRows }">
+      <!-- <template #head="{ allRowsSelected, selectAll, deselectAll, toggleAllRows, selectedRows }"> -->
+      <template #head="{}">
         <!-- {{ allRowsSelected }}
         {{ selectedRows }} -->
         <th>Sha</th>
@@ -174,7 +170,8 @@ function stateChanged(state) {
         <th>Author</th>
       </template>
       <template #body="{ rows }">
-        <VTr v-for="row in rows" :key="row.guid" :row="row" v-slot="{ isSelected, toggle }">
+        <!-- <VTr v-for="row in rows" :key="row.guid" v-slot="{ isSelected, toggle }" :row="row"> -->
+        <VTr v-for="row in rows" :key="row.guid" v-slot="{}" :row="row">
           <td>{{ row.sha }}</td>
           <td>{{ row.comment }}</td>
           <td>{{ row.date }}</td>
@@ -187,8 +184,9 @@ function stateChanged(state) {
     <strong>Selected:</strong>
     <div v-if="globals.selectedCommitRows.length === 0">No rows selected</div>
     <ul>
-      <li v-for="selected in globals.selectedCommitRows" :key="selected.id">
-        {{ selected.name }}
+      <li v-for="selected in globals.selectedCommitRows" :key="selected.sha">
+        {{ selected.sha }}
+        {{ selected.id }}
       </li>
     </ul>
   </div>

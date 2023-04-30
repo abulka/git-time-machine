@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import { globals } from '@renderer/globals'
 import { Commit } from '../../../main/Commit'
 
-const myiframe = ref('myiframe')
+const myiframe = ref()
 
 watch(
   () => globals.selectedCommitRows,

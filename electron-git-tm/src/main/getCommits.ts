@@ -20,10 +20,12 @@ export async function getCommitsForBranch(branch): Promise<Commit[]> {
     const commitInfo = (await execPromisified(command)).stdout.split('\n')
 
     const _commits: Commit[] = []
+    let id = 0
     for (const info of commitInfo) {
       // split on '///' and get the sha, date, author, and comment
       const [sha, date, author, comment] = info.split('///')
-      _commits.push(new Commit(sha, date, author, comment))
+      _commits.push(new Commit(id, sha, date, author, comment))
+      id++
     }
     commits = _commits // cache the commits
     return _commits

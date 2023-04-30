@@ -1,7 +1,20 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, Ref, watch } from 'vue'
 import { globals } from '@renderer/globals'
 import { Commit } from '../../../main/Commit'
+
+interface TreeDataItem {
+  label: string
+  icon?: string
+  children?: TreeDataItem[]
+  fullPath: string
+}
+
+type TreeData = TreeDataItem[]
+
+// const treeData: TreeData = ref([])
+const treeData: Ref<TreeData> = ref<TreeData>([])
+const expanded = ref(['src', 'main'])
 
 watch(
   () => globals.selectedCommitRows,
@@ -18,50 +31,14 @@ watch(
 async function getFiles(sha): Promise<void> {
   const files: string[] = await window.electron.ipcRenderer.invoke('get-files', sha)
   // console.log('files', files)
-  simple.value = convertToTree(files)
+  treeData.value = convertToTree(files)
 }
 
-// const selected = ref('README.md')
-const expanded = ref(['src', 'main'])
-
-// Incoming array is a list of file paths, e.g.:
-// .github/workflows/build-snap.yml
-// .github/workflows/offline/build-all-os-except-mac.yml
-// .github/workflows/offline/build-all-os.yml
-// .github/workflows/offline/build-mac.yml
-// .gitignore
-// README.md
-// bin/build-package
-// bin/build-snap
-// bin/build-snap-clean
-// bin/build-snap-clean-python-stuff
-// bin/build-snap-debug
-// bin/install-snap
-// bin/lxd-containers-ls
-// bin/lxd-shell
-// bin/publish-snap
-// bin/run
-// bin/run-snap-with-shell
-// doco/images/screenshot1.png
-// doco/uml/events.drawio
-// doco/uml/events.png
-// doco/uml/events.svg
-// doco/uml/uml.pyns
-// electron-git-tm/.editorconfig
-
-interface TreeDataItem {
-  label: string;
-  icon?: string;
-  children?: TreeDataItem[];
-  fullPath: string;
-}
-
-type TreeData = TreeDataItem[];
-
-function convertToTree(arr): TreeData {
+function convertToTree(arr: string[]): TreeData {
   const root = {
     label: '',
     children: [] as TreeDataItem[],
+    fullPath: ''
   }
   for (let i = 0; i < arr.length; i++) {
     const path = arr[i].split('/')
@@ -69,7 +46,12 @@ function convertToTree(arr): TreeData {
     let fullPath = ''
     for (let j = 0; j < path.length; j++) {
       const label = path[j]
-      const existingNode = currentNode.children ? currentNode.children.find((child) => child.label === label) : undefined
+      // tries to find a child node that has the same label as the one passed in
+      // as an argument. If a child node with the same label exists, that node
+      // is returned and assigned to the existingNode variable.
+      const existingNode = currentNode.children
+        ? currentNode.children.find((child) => child.label === label)
+        : undefined
       fullPath += `/${label}`
       if (existingNode) {
         currentNode = existingNode
@@ -87,65 +69,6 @@ function convertToTree(arr): TreeData {
   }
   return root.children
 }
-
-const simple: TreeData = ref([
-  // {
-  //   label: 'Relax Hotel',
-  //   children: [
-  //     {
-  //       label: 'Room view',
-  //       icon: 'photo'
-  //     },
-  //     {
-  //       label: 'Room service',
-  //       icon: 'local_dining'
-  //     },
-  //     {
-  //       label: 'Room amenities',
-  //       children: [
-  //         {
-  //           label: 'Air conditioning',
-  //           icon: 'ac_unit'
-  //         },
-  //         {
-  //           label: 'TV',
-  //           icon: 'tv'
-  //         },
-  //         {
-  //           label: 'Wi-Fi',
-  //           icon: 'wifi'
-  //         },
-  //         {
-  //           label: 'Minibar',
-  //           icon: 'local_bar'
-  //         },
-  //         {
-  //           label: 'Safe',
-  //           icon: 'lock'
-  //         },
-  //         {
-  //           label: 'Bathroom',
-  //           icon: 'bathtub'
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       label: 'Room rates',
-  //       icon: 'attach_money'
-  //     },
-  //     {
-  //       label: 'Room availability',
-  //       icon: 'event_available'
-  //     },
-  //     {
-  //       label: 'Room booking',
-  //       icon: 'event_busy'
-  //     }
-  //   ]
-  // }
-])
-
-// simple.value = convertToTree(files)
 
 function selectionChanged(state): void {
   // If file path has changed, scroll_pos will be wrong and needs to be reset to 0
@@ -169,11 +92,11 @@ function selectionChanged(state): void {
     <q-btn label="Expand2" @click="expanded = ['Relax Hotel', 'Room amenities']" />
     <q-btn label="select Room view" @click="selected = 'Room view'" />
     <q-btn label="select TV" @click="selected = 'TV'" />
-    <q-btn label="Change a node" @click="simple[0].children[1].label = 'FRED'" /> -->
+    <q-btn label="Change a node" @click="treeData[0].children[1].label = 'FRED'" /> -->
     <q-tree
       v-model:selected="globals.selectedTreeNode"
       v-model:expanded="expanded"
-      :nodes="simple"
+      :nodes="treeData"
       node-key="fullPath"
       selected-color="primary"
       default-expand-all

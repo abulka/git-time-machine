@@ -70,3 +70,94 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+# SCRAPS
+
+## Trees
+
+Incoming array is a list of file paths, e.g.:
+
+    .github/workflows/build-snap.yml
+    .github/workflows/offline/build-all-os-except-mac.yml
+    .github/workflows/offline/build-all-os.yml
+    .github/workflows/offline/build-mac.yml
+    .gitignore
+    README.md
+    bin/build-package
+    bin/build-snap
+    bin/build-snap-clean
+    bin/build-snap-clean-python-stuff
+    bin/build-snap-debug
+    bin/install-snap
+    bin/lxd-containers-ls
+    bin/lxd-shell
+    bin/publish-snap
+    bin/run
+    bin/run-snap-with-shell
+    doco/images/screenshot1.png
+    doco/uml/events.drawio
+    doco/uml/events.png
+    doco/uml/events.svg
+    doco/uml/uml.pyns
+    electron-git-tm/.editorconfig
+
+TreeData structure is e.g.
+
+```js
+const simple: TreeData = ref([
+  {
+    label: 'Relax Hotel',
+    children: [
+      {
+        label: 'Room view',
+        icon: 'photo'
+      },
+      {
+        label: 'Room service',
+        icon: 'local_dining'
+      },
+      {
+        label: 'Room amenities',
+        children: [
+          {
+            label: 'Air conditioning',
+            icon: 'ac_unit'
+          },
+          {
+            label: 'TV',
+            icon: 'tv'
+          },
+          {
+            label: 'Wi-Fi',
+            icon: 'wifi'
+          },
+          {
+            label: 'Minibar',
+            icon: 'local_bar'
+          },
+          {
+            label: 'Safe',
+            icon: 'lock'
+          },
+          {
+            label: 'Bathroom',
+            icon: 'bathtub'
+          }
+        ]
+      },
+      {
+        label: 'Room rates',
+        icon: 'attach_money'
+      },
+      {
+        label: 'Room availability',
+        icon: 'event_available'
+      },
+      {
+        label: 'Room booking',
+        icon: 'event_busy'
+      }
+    ]
+  }
+])
+```

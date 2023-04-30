@@ -47,20 +47,6 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
-
-  if (process.contextIsolated) {
-    console.log('context is isolated, exposing electronAPI to contextBridge')
-    try {
-      contextBridge.exposeInMainWorld('electron', electronAPI)
-    } catch (error) {
-      console.error(error)
-    }
-  } else {
-    // ---> This is what typically runs... <---
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    ;(mainWindow as any).electron = electronAPI
-  }
-
 }
 
 // This method will be called when Electron has finished

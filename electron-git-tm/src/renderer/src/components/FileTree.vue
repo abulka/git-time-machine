@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, Ref, watch } from 'vue'
 import { globals } from '@renderer/globals'
-import { Commit } from '../../../main/Commit'
+import { Commit } from '../../../shared/Commit'
 
 interface TreeDataItem {
   label: string

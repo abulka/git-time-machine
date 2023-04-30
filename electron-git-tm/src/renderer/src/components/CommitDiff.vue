@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { globals } from '@renderer/globals'
-import { Commit } from '../../../main/Commit'
+import { Commit } from '../../../shared/Commit'
 
 const myiframe = ref()
 

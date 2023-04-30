@@ -1,7 +1,7 @@
 <!-- eslint-disable @typescript-eslint/explicit-function-return-type -->
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { Commit } from '../../../main/Commit'
+import { Commit } from '../../../shared/Commit'
 import { globals } from '@renderer/globals'
 
 // The watch function in Vue takes two main parameters: a function that returns

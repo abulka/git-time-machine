@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { Commit } from '../../main/Commit'
+import { Commit } from '../../shared/Commit'
 
 interface BranchOption {
   id: number

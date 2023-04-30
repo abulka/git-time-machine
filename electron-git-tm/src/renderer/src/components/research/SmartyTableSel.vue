@@ -2,6 +2,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
+interface User {
+  _id: string;
+  name: string;
+}
 // interface SelectedItem {
 //   id: number;
 //   name: string;
@@ -14,7 +18,7 @@ import { ref, onMounted } from 'vue'
 //   // Add any other properties or methods that the usersTable object has
 // }
 
-const usersTable = ref('usersTable')
+const usersTable = ref()
 // const usersTable = ref<HTMLInputElement | null>(null) // Template Refs
 
 // const name = ref('World')
@@ -263,6 +267,7 @@ const users = ref([
   }
 ])
 
+// const selectedRows: User[] = ref([])
 const selectedRows = ref([])
 
 onMounted(() => {

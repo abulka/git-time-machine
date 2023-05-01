@@ -8,11 +8,6 @@ import { getCommitsForBranch } from './getCommits'
 import { getRepoFileTree } from './getFileTree'
 import { generate_html_diff } from './getDiff'
 
-// ipc
-
-import { contextBridge } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
-
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({

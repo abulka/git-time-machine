@@ -6,7 +6,7 @@ import { Commit } from '../../../shared/Commit'
 interface TreeDataItem {
   label: string
   icon?: string
-  children?: TreeDataItem[]
+  children: TreeDataItem[]
   fullPath: string
 }
 
@@ -35,45 +35,9 @@ async function getFiles(sha): Promise<void> {
 }
 
 function convertToTree(arr: string[]): TreeData {
-  const root = {
-    label: '',
-    children: [] as TreeDataItem[],
-    fullPath: ''
-  }
-  for (let i = 0; i < arr.length; i++) {
-    const path = arr[i].split('/')
-    let currentNode = root
-    let fullPath = ''
-    for (let j = 0; j < path.length; j++) {
-      const label = path[j]
-      // tries to find a child node that has the same label as the one passed in
-      // as an argument. If a child node with the same label exists, that node
-      // is returned and assigned to the existingNode variable.
-      const existingNode = currentNode.children
-        ? currentNode.children.find((child) => child.label === label)
-        : undefined
-      fullPath += `/${label}`
-      if (existingNode) {
-        currentNode = existingNode
-      } else {
-        const newNode = {
-          label: label,
-          children: [],
-          fullPath: fullPath
-        }
-        currentNode.children = currentNode.children || []
-        currentNode.children.push(newNode)
-        currentNode = newNode
-      }
-    }
-  }
-  return root.children
-}
-
-function convertToTreeNEW(arr: string[]): TreeData {
   const root: TreeDataItem = {
     label: '',
-    children: [] as TreeDataItem[],
+    children: [] as TreeData,
     fullPath: ''
   }
   for (let i = 0; i < arr.length; i++) {
@@ -94,7 +58,7 @@ function convertToTreeNEW(arr: string[]): TreeData {
       } else {
         const newNode: TreeDataItem = {
           label: label,
-          children: [] as TreeDataItem[],
+          children: [] as TreeData,
           fullPath: fullPath
         }
         currentNode.children = currentNode.children || []
@@ -103,12 +67,7 @@ function convertToTreeNEW(arr: string[]): TreeData {
       }
     }
   }
-  const newRoot = {
-    label: 'root',
-    children: [root],
-    fullPath: '/'
-  }
-  return newRoot.children
+  return root.children
 }
 
 function selectionChanged(state): void {

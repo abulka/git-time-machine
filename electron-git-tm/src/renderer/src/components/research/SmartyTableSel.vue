@@ -3,8 +3,8 @@
 import { ref, onMounted } from 'vue'
 
 interface User {
-  _id: string;
-  name: string;
+  _id: string
+  name: string
 }
 // interface SelectedItem {
 //   id: number;
@@ -267,8 +267,10 @@ const users = ref([
   }
 ])
 
-// const selectedRows: User[] = ref([])
-const selectedRows = ref([])
+// const selectedRows = ref([])
+// const selectedRows: User[] = ref([]) // wrong
+// const selectedRows<User[]> = ref([]) // wrong
+const selectedRows = ref<User[]>([])
 
 onMounted(() => {
   // console.log('users', users)
@@ -335,7 +337,7 @@ function selectOneOther() {
     <strong>Selected:</strong>
     <div v-if="selectedRows.length === 0">No rows selected</div>
     <ul>
-      <li v-for="selected in selectedRows" :key="selected.id">
+      <li v-for="selected in selectedRows" :key="selected._id">
         {{ selected.name }}
       </li>
     </ul>

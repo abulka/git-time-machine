@@ -1,8 +1,11 @@
+/// <reference types="electron-vite/node" />
 import Handlebars from 'handlebars'
-const fs = require('fs')
+import fs from 'fs'
 import { getFileContents as getFileContent } from './getFileContent'
 import { isBinary } from 'istextorbinary'
 import { fileExtToPrismAlias } from './fileExtToPrismAlias'
+import t1 from '../../resources/templates/template-file-contents-autoload.hbs?asset'
+import t2 from '../../resources/templates/template-file-js.hbs?asset'
 
 export interface Point {
   x: number
@@ -10,13 +13,10 @@ export interface Point {
 }
 
 // const templateSource = fs.readFileSync('src/main/templates/template-file-contents.hbs', 'utf8')
-const templateSource = fs.readFileSync(
-  'src/main/templates/template-file-contents-autoload.hbs',
-  'utf8'
-)
+const templateSource = fs.readFileSync(t1, 'utf8')
 const template = Handlebars.compile(templateSource) // Compile the template
 
-const templateSourceJs = fs.readFileSync('src/main/templates/template-file-js.hbs', 'utf8')
+const templateSourceJs = fs.readFileSync(t2, 'utf8')
 const templateJs = Handlebars.compile(templateSourceJs) // Compile the js template
 
 export function generateHtml(
@@ -98,6 +98,7 @@ export function generateHtml(
 // }
 
 function constructJsFileContents(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   templateJs: Handlebars.TemplateDelegate<any>,
   scrollPosX: number,
   scrollPosY: number,

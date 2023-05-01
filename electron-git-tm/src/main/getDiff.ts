@@ -1,9 +1,10 @@
+/// <reference types="electron-vite/node" />
 import { exec } from 'child_process'
 import util from 'util'
 import { commits } from './getCommits'
 import Handlebars from 'handlebars';
 import fs from 'fs';
-
+import t3 from '../../resources/templates/template-diff.hbs?asset'
 
 function findPreviousCommit(currentCommit: string): string | null {
   for (let i = 0; i < commits.length; i++) {
@@ -20,7 +21,7 @@ function findPreviousCommit(currentCommit: string): string | null {
 }
 
 export async function getDiff(previousCommit: string, currentCommit: string): Promise<string> {
-  const templateSource = fs.readFileSync('src/main/templates/template-diff.hbs', 'utf8')
+  const templateSource = fs.readFileSync(t3, 'utf8')
   const template = Handlebars.compile(templateSource) // Compile the template
 
   // call git to get the diff between the two commits

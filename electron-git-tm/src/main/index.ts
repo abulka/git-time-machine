@@ -7,6 +7,7 @@ import { getBranches } from './getBranches'
 import { getCommitsForBranch } from './getCommits'
 import { getRepoFileTree } from './getFileTree'
 import { generate_html_diff } from './getDiff'
+import { setupMenu } from './menuStuff'
 
 function createWindow(): void {
   // Create the browser window.
@@ -21,10 +22,13 @@ function createWindow(): void {
         }
       : {}),
     webPreferences: {
+      contextIsolation: true,
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
+
+  setupMenu(mainWindow)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -42,6 +46,9 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
+
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -81,10 +88,9 @@ app.on('window-all-closed', () => {
 
 // FUNCTIONALITY BEGINS
 
-
 ipcMain.handle('ping', (_event, name) => {
-  return `Main process handle(): Hello, ${name}! - pong from main`;
-});
+  return `Main process handle(): Hello, ${name}! - pong from main`
+})
 
 ipcMain.on('say', (_event, what) => {
   console.log('Main process on()', what)

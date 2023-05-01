@@ -23,6 +23,12 @@ async function getBranches(): Promise<void> {
   })
 }
 
+// Listen for the 'shouldGetBranches' message from the main process
+// when when cwd changes, and call the 'getBranches' function when received
+window.electronAPI.shouldGetBranches((_event) => {
+  getBranches()
+})
+
 onMounted(() => {
   getBranches()
 })

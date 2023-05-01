@@ -1,4 +1,5 @@
 import { contextBridge } from 'electron'
+import { ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
@@ -11,6 +12,10 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+
+    contextBridge.exposeInMainWorld('electronAPI', {
+      shouldGetBranches: (callback) => ipcRenderer.on('shouldGetBranches', callback)
+    })
   } catch (error) {
     console.error(error)
   }

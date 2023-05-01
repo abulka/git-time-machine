@@ -3,6 +3,10 @@ import util from 'util'
 
 export async function getBranches(): Promise<string[]> {
   // get the list of branches using the git command
+
+  // process.chdir('/Users/andy/Devel/git-time-machine/');
+  // process.chdir('/Users/andy/Devel/pynsource/');
+
   try {
     const execPromisified = util.promisify(exec)
     const git_command = ['git', 'branch']

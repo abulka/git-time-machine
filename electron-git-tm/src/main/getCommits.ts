@@ -11,7 +11,10 @@ export async function getCommitsForBranch(branch): Promise<Commit[]> {
   try {
     // Fetch the commit hashes for the specified branch
     const execPromisified = util.promisify(exec)
-    const options = { cwd: repoDir }
+    const options = { 
+      cwd: repoDir,
+      maxBuffer: 10 * 1024 * 1024 // 10MB instead of 200 KB
+    }
 
     if (branch.includes('(HEAD detached at')) {
       // we are in detached head mode, so get the commit hash from the branch name

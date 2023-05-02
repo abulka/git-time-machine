@@ -27,10 +27,15 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
 
   // call git to get the diff between the two commits
   const execPromisified = util.promisify(exec)
-  const options = { cwd: repoDir }
+  const options = { 
+    cwd: repoDir,
+    maxBuffer: 10 * 1024 * 1024 // 10MB instead of 200 KB
+  }
   const gitCommand = ['git', 'diff', previousCommit, currentCommit]
+  // console.log('gitCommand', gitCommand)
   try {
     const { stdout } = await execPromisified(gitCommand.join(' '), options)
+    // console.log(`stdout ${stdout}`)
 
     const data = {
       diff_body: stdout,
@@ -38,10 +43,17 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
       git_cmd: gitCommand.join(' '),
       js: '' // 'console.log("Hello World from template")'
     }
-  
+
+    // Validate the diff
+    if (data.diff_body.match(/[\x00-\x08\x0E-\x1F]/)) { // eslint-disable-line no-control-regex
+      return 'diff contains binary characters'
+    }
+    if (data.diff_body.length > 100000) {
+      return 'diff too long'
+    }
+
     // Render the template with the data
     const renderedTemplate = template(data)
-
     return renderedTemplate
 
     // let gitOutput = stdout

@@ -28,7 +28,7 @@ export function startupBusinessLogic(mainWindow): void {
 
 function getPrefsPath(): string {
   const preferencesPath = path.join(app.getPath('userData'), 'prefs')
-  console.log(`preferencesPath is ${preferencesPath}`)
+  // console.log(`preferencesPath is ${preferencesPath}`)
 
   // Create the preferences directory if it doesn't exist
   if (!fs.existsSync(preferencesPath)) {
@@ -57,7 +57,7 @@ export function setupMenu(mainWindow): void {
               const preferencesPath = getPrefsPath()
               const prefsPath = path.join(preferencesPath, 'preferences.json')
               fs.writeFileSync(prefsPath, JSON.stringify(preferences))
-              console.log(`${prefsPath} written`)
+              // console.log(`${prefsPath} written`)
             } else {
               console.error('Cwd change failed')
             }

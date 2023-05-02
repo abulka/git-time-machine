@@ -14,8 +14,8 @@ interface BranchOption {
 export const globals = reactive({
   silly: 'global sillyness',
   repoDir: '' as string,
-  loadingMsg: 'LOADING...' as string,
-  selectedBranchOption: { id: 9999, label: 'main', value: 'main' } as BranchOption,
+  loadingMsg: '' as string,
+  selectedBranchOption: { id: 9999, label: '', value: '' } as BranchOption,
   get selectedBranch(): string {
     return this.selectedBranchOption.value
   },

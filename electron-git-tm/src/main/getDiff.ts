@@ -1,10 +1,11 @@
 /// <reference types="electron-vite/node" />
 import { exec } from 'child_process'
 import util from 'util'
-import { commits } from './getCommits'
-import Handlebars from 'handlebars';
+import { commits } from './getCommits' // TODO: import from globalsMain
+import Handlebars from 'handlebars'
 import fs from 'fs';
 import t3 from '../../resources/templates/template-diff.hbs?asset'
+import { repoDir } from './globalsMain'
 
 function findPreviousCommit(currentCommit: string): string | null {
   for (let i = 0; i < commits.length; i++) {
@@ -26,9 +27,10 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
 
   // call git to get the diff between the two commits
   const execPromisified = util.promisify(exec)
+  const options = { cwd: repoDir }
   const gitCommand = ['git', 'diff', previousCommit, currentCommit]
   try {
-    const { stdout } = await execPromisified(gitCommand.join(' '))
+    const { stdout } = await execPromisified(gitCommand.join(' '), options)
 
     const data = {
       diff_body: stdout,

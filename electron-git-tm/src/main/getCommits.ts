@@ -1,15 +1,17 @@
 import { exec } from 'child_process'
 import util from 'util'
 import { Commit } from '../shared/Commit'
+import { repoDir } from './globalsMain'
 
 // return array of Commits
 
-export let commits: Commit[] = []
+export let commits: Commit[] = [] // TODO move to globalsMain.ts
 
 export async function getCommitsForBranch(branch): Promise<Commit[]> {
   try {
     // Fetch the commit hashes for the specified branch
     const execPromisified = util.promisify(exec)
+    const options = { cwd: repoDir }
 
     if (branch.includes('(HEAD detached at')) {
       // we are in detached head mode, so get the commit hash from the branch name
@@ -17,7 +19,7 @@ export async function getCommitsForBranch(branch): Promise<Commit[]> {
     }
 
     const command = `git log ${branch} --format=%H///%cd///%an///%s`
-    const commitInfo = (await execPromisified(command)).stdout.split('\n')
+    const commitInfo = (await execPromisified(command, options)).stdout.split('\n')
 
     const _commits: Commit[] = []
     let id = 0

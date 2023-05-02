@@ -1,3 +1,4 @@
+import { setRepoDir } from './globalsMain'
 const dialog = require('electron').dialog
 
 export async function changeCwd(): Promise<{ success: boolean }> {
@@ -11,7 +12,8 @@ export async function changeCwd(): Promise<{ success: boolean }> {
       const selectedDirectory = result.filePaths[0]
 
       // Change the current working directory to the selected directory
-      process.chdir(selectedDirectory)
+      // process.chdir(selectedDirectory)
+      setRepoDir(selectedDirectory)
 
       return { success: true }
     } else {

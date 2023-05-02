@@ -7,7 +7,8 @@ import { getBranches } from './getBranches'
 import { getCommitsForBranch } from './getCommits'
 import { getRepoFileTree } from './getFileTree'
 import { generate_html_diff } from './getDiff'
-import { setupMenu } from './menuStuff'
+import { setupMenu, startupBusinessLogic } from './menuStuff'
+
 
 function createWindow(): void {
   // Create the browser window.
@@ -32,6 +33,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    startupBusinessLogic(mainWindow)
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

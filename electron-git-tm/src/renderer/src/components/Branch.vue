@@ -25,12 +25,16 @@ async function getBranches(): Promise<void> {
 
 // Listen for the 'shouldGetBranches' message from the main process
 // when when cwd changes, and call the 'getBranches' function when received
-window.electronAPI.shouldGetBranches((_event) => {
+window.electronAPI.shouldGetBranches((_event, repoDir: string) => {
+  globals.repoDir = repoDir
+  document.title = `Git Time Machine - ${globals.repoDir}`
   getBranches()
 })
 
 onMounted(() => {
-  getBranches()
+  // I used to call getBranches() here, but it's better to wait for the main process to
+  // send the 'shouldGetBranches' message.
+  // getBranches()
 })
 </script>
 

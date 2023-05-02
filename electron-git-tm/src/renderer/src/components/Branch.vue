@@ -28,6 +28,7 @@ async function getBranches(): Promise<void> {
 window.electronAPI.shouldGetBranches((_event, repoDir: string) => {
   globals.repoDir = repoDir
   document.title = `Git Time Machine - ${globals.repoDir}`
+  globals.loadingMsg = `LOADING ${globals.repoDir}...`
   getBranches()
 })
 
@@ -48,5 +49,6 @@ onMounted(() => {
       dark
       @update:model-value="branchChanged"
     />
+    <div class="ml-auto" style="text-align: right">{{ globals.loadingMsg }}</div>
   </div>
 </template>

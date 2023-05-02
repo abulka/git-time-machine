@@ -9,11 +9,10 @@ import { getRepoFileTree } from './getFileTree'
 import { generate_html_diff } from './getDiff'
 import { setupMenu, startupBusinessLogic } from './menuStuff'
 
-
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
+    width: 1200,
     height: 670,
     show: false,
     autoHideMenuBar: true,

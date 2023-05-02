@@ -20,6 +20,7 @@ watch(
 async function getDiff(sha): Promise<void> {
   const diffHtml: string = await window.electron.ipcRenderer.invoke('generate-diff', sha)
   myiframe.value.srcdoc = diffHtml
+  globals.loadingMsg = ''
 }
 </script>
 

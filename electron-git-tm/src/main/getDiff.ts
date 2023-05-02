@@ -44,15 +44,13 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
       js: '' // 'console.log("Hello World from template")'
     }
 
-    // Validate the diff
     if (data.diff_body.match(/[\x00-\x08\x0E-\x1F]/)) { // eslint-disable-line no-control-regex
-      return 'diff contains binary characters'
+      data.diff_body = 'diff contains binary characters!'
     }
     if (data.diff_body.length > 100000) {
-      return 'diff too long'
+      data.diff_body = 'diff too long'
     }
 
-    // Render the template with the data
     const renderedTemplate = template(data)
     return renderedTemplate
 

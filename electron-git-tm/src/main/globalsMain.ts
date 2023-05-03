@@ -1,7 +1,11 @@
+import { savePreferences } from './getPrefsPath'
+
 export let repoDir = '/Users/andy/Devel/pynsource/'
 
 export function setRepoDir(dir): void {
   repoDir = dir
+  preferences.repoDir = repoDir
+  savePreferences(preferences)
 }
 
 export let preferences = {

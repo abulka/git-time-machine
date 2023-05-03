@@ -1,7 +1,5 @@
-import fs from 'fs'
-import path from 'path'
-import { setRepoDir, repoDir, preferences, setPreferences } from './globalsMain'
-import { getPrefsPath } from './getPrefsPath'
+import { setRepoDir, repoDir } from './globalsMain'
+import { loadPreferences } from './getPrefsPath'
 const dialog = require('electron').dialog
 
 export async function changeCwd(mainWindow): Promise<{ success: boolean }> {
@@ -10,26 +8,17 @@ export async function changeCwd(mainWindow): Promise<{ success: boolean }> {
     const result = await dialog.showOpenDialog({
       properties: ['openDirectory']
     })
+    if (result.canceled) return { success: false }
 
-    if (!result.canceled) {
-      const selectedDirectory = result.filePaths[0]
+    // Set the repo directory for the main process, used by all git calls
+    const selectedDirectory = result.filePaths[0]
+    setRepoDir(selectedDirectory)
 
-      setRepoDir(selectedDirectory)
+    // Notify the renderer process that the directory has changed
+    const { webContents } = mainWindow
+    webContents.send('shouldGetBranches', repoDir)
 
-      const { webContents } = mainWindow
-      webContents.send('shouldGetBranches', repoDir) // invoke-async-function - or not async?
-
-      // save preferences
-      preferences.repoDir = repoDir
-      const preferencesPath = getPrefsPath()
-      const prefsPath = path.join(preferencesPath, 'preferences.json')
-      fs.writeFileSync(prefsPath, JSON.stringify(preferences))
-      // console.log(`${prefsPath} written`)
-
-      return { success: true }
-    } else {
-      return { success: false }
-    }
+    return { success: true }
   } catch (error) {
     console.error(error)
     return { success: false }
@@ -37,22 +26,14 @@ export async function changeCwd(mainWindow): Promise<{ success: boolean }> {
 }
 
 export function startupBusinessLogic(mainWindow): void {
-  const { webContents } = mainWindow
-
-  // read preferences from file
-  const preferencesPath = getPrefsPath()
-  const prefsPath = path.join(preferencesPath, 'preferences.json')
-  let _preferences = {}
-  try {
-    _preferences = JSON.parse(fs.readFileSync(prefsPath, 'utf8'))
-    console.log('preferences', _preferences)
-    setPreferences(_preferences)
-  } catch (err) {
-    console.error('Error parsing preferences.json', prefsPath)
-  }
+  loadPreferences()
 
   if (repoDir === '') {
     console.log(`${repoDir} is empty, not bothering to get branches`)
+    return
   }
-  webContents.send('shouldGetBranches', repoDir) // invoke-async-function - or not async?
+
+  // Notify the renderer process of initial repo directory
+  const { webContents } = mainWindow
+  webContents.send('shouldGetBranches', repoDir)
 }

@@ -1,14 +1,45 @@
-import fs from 'fs';
-import path from 'path';
-import { app } from 'electron';
+import fs from 'fs'
+import path from 'path'
+import { app } from 'electron'
+import { setPreferences } from './globalsMain'
 
-export function getPrefsPath(): string {
-  const preferencesPath = path.join(app.getPath('userData'), 'prefs');
-  // console.log(`preferencesPath is ${preferencesPath}`)
+// Store preferences in the user data directory 'prefs'
+// e.g. /Users/andy/Library/Application Support/git-time-machine/prefs
+
+const PREFS_DIR = 'prefs'
+const PREFS_JSON = 'preferences.json'
+
+function getPrefsDir(): string {
+  const dir = path.join(app.getPath('userData'), PREFS_DIR)
+
   // Create the preferences directory if it doesn't exist
-  if (!fs.existsSync(preferencesPath)) {
-    fs.mkdirSync(preferencesPath);
-    console.log(`${preferencesPath} created`);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir)
+    console.log(`${dir} created`)
   }
-  return preferencesPath;
+  return dir
+}
+
+export function getPreferencesPath(): string {
+  const prefsDir = getPrefsDir()
+  const prefsPath = path.join(prefsDir, PREFS_JSON)
+  return prefsPath
+}
+
+export function savePreferences(preferences): void {
+  const preferencesPath = getPreferencesPath()
+  fs.writeFileSync(preferencesPath, JSON.stringify(preferences))
+  // console.log(`${prefsPath} written`)
+}
+
+export function loadPreferences(): void {
+  const preferencesPath = getPreferencesPath()
+  let _preferences = {}
+  try {
+    _preferences = JSON.parse(fs.readFileSync(preferencesPath, 'utf8'))
+    console.log('preferences', _preferences)
+    setPreferences(_preferences)
+  } catch (err) {
+    console.error('Error parsing preferences.json', preferencesPath)
+  }
 }

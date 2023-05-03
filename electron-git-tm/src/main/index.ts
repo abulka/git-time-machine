@@ -9,6 +9,7 @@ import { getRepoFileTree } from './getFileTree'
 import { generate_html_diff } from './getDiff'
 import { setupMenu } from './menuStuff'
 import { startupBusinessLogic } from './changeRepo'
+import { changeCwd } from './changeRepo'
 
 function createWindow(): void {
   // Create the browser window.
@@ -51,6 +52,14 @@ function createWindow(): void {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
+
+  // Functionality begins (requires access to mainWindow)
+  
+  ipcMain.handle('change-repo', async (_event) => {
+    const result = await changeCwd(mainWindow)
+    return result.success
+  })
+  
 }
 
 // This method will be called when Electron has finished

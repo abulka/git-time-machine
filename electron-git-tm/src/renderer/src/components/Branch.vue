@@ -37,6 +37,10 @@ onMounted(() => {
   // send the 'shouldGetBranches' message.
   // getBranches()
 })
+
+function changeRepo(_event): void {
+  window.electron.ipcRenderer.invoke('change-repo')
+}
 </script>
 
 <template>
@@ -48,6 +52,16 @@ onMounted(() => {
       :options="globals.branches"
       dark
       @update:model-value="branchChanged"
+    />
+    <!-- button to change repo -->
+    <q-btn
+      flat
+      dense
+      round
+      icon="folder"
+      class="q-ml-md"
+      title="Select a different repo"
+      @click="changeRepo"
     />
     <div class="ml-auto" style="text-align: right">{{ globals.loadingMsg }}</div>
   </div>

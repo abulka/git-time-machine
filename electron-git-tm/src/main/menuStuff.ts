@@ -7,7 +7,7 @@ export function setupMenu(mainWindow): void {
       label: 'File',
       submenu: [
         {
-          label: 'Change Directory',
+          label: 'Change Repository Directory',
           accelerator: 'CmdOrCtrl+O',
           click: async (): Promise<void> => {
             const result = await changeCwd(mainWindow)

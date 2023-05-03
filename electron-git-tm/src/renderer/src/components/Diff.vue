@@ -6,8 +6,13 @@ import { Commit } from '../../../shared/Commit'
 const myiframe = ref()
 
 watch(
-  () => globals.selectedCommitRows,
+  [
+    (): Commit[] => globals.selectedCommitRows,
+    (): string => globals.repoDir,
+    (): boolean => globals.repoRefreshNeeded
+  ],
   async () => {
+    console.log(`getting diff...`)
     const commit: Commit = globals.selectedCommitRows[0]
     if (!commit) {
       return
@@ -21,6 +26,10 @@ async function getDiff(sha): Promise<void> {
   const diffHtml: string = await window.electron.ipcRenderer.invoke('generate-diff', sha)
   myiframe.value.srcdoc = diffHtml
   globals.loadingMsg = ''
+  globals.repoRefreshNeeded = false
+  console.log(
+    `getDiff: globals.loadingMsg ${globals.loadingMsg} globals.repoRefreshNeeded ${globals.repoRefreshNeeded}`
+  )
 }
 </script>
 

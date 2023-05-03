@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import Commits from './Commits.vue'
 import TimeFileTree from './FileTree.vue'
 import Branch from './Branch.vue'
-import Diff from './CommitDiff.vue'
+import Diff from './Diff.vue'
 
 const splitterModel = ref(30)
 const splitterModelDiffs = ref(55)

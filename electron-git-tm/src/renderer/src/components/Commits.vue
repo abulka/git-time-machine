@@ -8,11 +8,15 @@ import { globals } from '@renderer/globals'
 // the value to watch, and a callback function that is called when the value
 // changes.
 watch(
-  () => globals.selectedBranch,
+  [
+    (): string => globals.selectedBranch,
+    (): string => globals.repoDir,
+    (): boolean => globals.repoRefreshNeeded
+  ],
   async () => {
+    console.log(`getting commits...`)
     await getCommits()
-  }
-)
+})
 
 async function getCommits(): Promise<void> {
   const branch = globals.selectedBranch
@@ -153,6 +157,19 @@ function stateChanged(state) {
       <button @click="getCommits">Get Commits</button>
     </div> -->
 
+    <strong>Selected:</strong>
+    {{ globals.selectedCommitRows }}
+    <div v-if="globals.selectedCommitRows.length === 0">No rows selected</div>
+    <div v-else-if="globals.selectedCommitRows.length == 1 && globals.selectedCommitRows[0] == undefined">Weird case TODO: fix</div>
+    <div v-else>
+      <ul>
+        <li v-for="selected in globals.selectedCommitRows" :key="selected.sha">
+          {{ selected.sha }}
+          {{ selected.id }}
+        </li>
+      </ul>
+    </div>
+
     <VTable
       ref="commitsTable"
       :data="globals.commitsData"
@@ -181,14 +198,6 @@ function stateChanged(state) {
       </template>
     </VTable>
 
-    <strong>Selected:</strong>
-    <div v-if="globals.selectedCommitRows.length === 0">No rows selected</div>
-    <ul>
-      <li v-for="selected in globals.selectedCommitRows" :key="selected.sha">
-        {{ selected.sha }}
-        {{ selected.id }}
-      </li>
-    </ul>
   </div>
 </template>
 

@@ -7,7 +7,8 @@ import { getBranches } from './getBranches'
 import { getCommitsForBranch } from './getCommits'
 import { getRepoFileTree } from './getFileTree'
 import { generate_html_diff } from './getDiff'
-import { setupMenu, startupBusinessLogic } from './menuStuff'
+import { setupMenu } from './menuStuff'
+import { startupBusinessLogic } from './changeDir'
 
 function createWindow(): void {
   // Create the browser window.

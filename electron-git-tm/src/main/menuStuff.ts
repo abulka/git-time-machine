@@ -1,5 +1,5 @@
 import { Menu, MenuItemConstructorOptions } from 'electron'
-import { changeCwd } from './changeDir'
+import { changeCwd } from './changeRepo'
 
 export function setupMenu(mainWindow): void {
   const menuTemplate: MenuItemConstructorOptions[] = [

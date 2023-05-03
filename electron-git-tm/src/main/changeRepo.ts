@@ -1,5 +1,5 @@
 import { setRepoDir, repoDir } from './globalsMain'
-import { loadPreferences } from './getPrefsPath'
+import { loadPreferences, savePreferences } from './preferences'
 const dialog = require('electron').dialog
 
 export async function changeCwd(mainWindow): Promise<{ success: boolean }> {
@@ -13,6 +13,7 @@ export async function changeCwd(mainWindow): Promise<{ success: boolean }> {
     // Set the repo directory for the main process, used by all git calls
     const selectedDirectory = result.filePaths[0]
     setRepoDir(selectedDirectory)
+    savePreferences()
 
     // Notify the renderer process that the directory has changed
     const { webContents } = mainWindow

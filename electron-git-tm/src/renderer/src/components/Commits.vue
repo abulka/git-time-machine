@@ -2,11 +2,12 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Commit } from '../../../shared/Commit'
+import { getCommits } from '@renderer/business'
 import { globals } from '@renderer/globals'
 
 // The watch function in Vue takes two main parameters: a function that returns
-// the value to watch, and a callback function that is called when the value
-// changes.
+// the value to watch, and a callback function that is called when any of the values
+// change. A change in any of the values will trigger the callback function.
 watch(
   [
     (): string => globals.selectedBranch,
@@ -16,39 +17,14 @@ watch(
   async () => {
     console.log(`getting commits...`)
     await getCommits()
-})
 
-async function getCommits(): Promise<void> {
-  const branch = globals.selectedBranch
-  const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
-  const commitsFormatted: Commit[] = commits.map((commit, index) => {
-    const _commit: Commit = {
-      id: index,
-      sha: shortenSha(commit.sha),
-      comment: commit.comment,
-      date: shortenDateString(commit.date),
-      author: commit.author
-    }
-    return _commit
-  })
-  globals.commitsData = commitsFormatted
-
-  // select the latest commit row
-  const toSelect = [globals.commitsData[0]]
-
-  commitsTable.value.selectRows(toSelect)
-}
+    // select the latest commit row
+    const toSelect = [globals.commitsData[0]]
+    commitsTable.value.selectRows(toSelect)
+  }
+)
 
 const commitsTable = ref()
-
-function shortenDateString(dateString) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString()
-}
-
-function shortenSha(sha) {
-  return sha.substring(0, 7)
-}
 
 onMounted(() => {
   document.addEventListener('keydown', handleKeyboardInput)

@@ -6,8 +6,6 @@ function changeRepo(_event): void {
   window.electron.ipcRenderer.invoke('change-repo')
 }
 function refreshRepo(_event): void {
-  globals.repoRefreshNeeded = true
-  globals.loadingMsg = `LOADING ${globals.repoDir}...`
   getBranches()
 }
 </script>

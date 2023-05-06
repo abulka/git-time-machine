@@ -36,16 +36,22 @@ Scenarios
 
 - Initial boot of app
     - main process sends `repoChanged` to renderer process 
-    - BUSINESS-LOGIC: repoChanged calls `getBranches`
+    - BUSINESS-LOGIC: repoChanged 
+        - clears selected branch and selected commit
+        - sets `globals.repoDir`
+        - calls `getBranches()`
     - BUSINESS-LOGIC: getBranches populates `globals.branches`
+        - sets selectedBranchOption and thus selectedBranch to branch with '*' in it
     - Commits.vue watches `globals.selectedBranch` and calls `getCommits`
     - BUSINESS-LOGIC: getCommits populates `globals.commitsData`
     - BUSINESS-LOGIC: watches `globals.selectedCommit` and calls `getDiff`
     - BUSINESS-LOGIC: getDiff populates `globals.diffHtml` which in turn causes `Diff.vue` to render
 
-Questions: how is selectedBranch set?  Via selectedBranchOption
+Questions: 
+
+- How is selectedBranch set?  Via selectedBranchOption
 which is set by the user selecting a branch from the dropdown.
 When switching repos, selectedBranchOption is set to the current
 branch (marked with * in git). When nothing is selected, the value of the Quasar q-select selected model is `undefined`.
 
-How is selectedCommit set?
+- How is selectedCommit set?  Via selectedCommitRows which is set by the user clicking on a commit in the table.  When nothing is selected, the value of the Quasar q-table selected model is `[]`.

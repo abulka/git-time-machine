@@ -5,21 +5,24 @@ import { watch } from 'vue'
 
 // Repo
 
-window.electronAPI.repoChanged((_event, repoDir: string) => {
-  // Listen for the 'repoChanged' message from the main process
-  // when when cwd changes, and call the 'getBranches' function when received
+window.electronAPI.repoChanged(async (_event, repoDir: string) => {
+  console.log(`${repoDir} repoChanged}!!!`)
   globals.repoRefreshNeeded = true
   globals.repoDir = repoDir
   globals.selectedCommitRows = []
   globals.selectedBranchOption = undefined // type BranchOption
   document.title = `Git Time Machine - ${globals.repoDirName}`
   globals.loadingMsg = `LOADING ${globals.repoDir}...`
-  getBranches()
+  await getBranches()
+  console.log('getBranches() completed')
+  // TODO should we call getCommits() here? rather than 
+  // watching for selectedBranchOption to change?
 })
 
 // Branches
 
 export async function getBranches(): Promise<void> {
+  console.log('getBranches()...')
   globals.repoRefreshNeeded = true
   globals.loadingMsg = `LOADING ${globals.repoDir}...`
 
@@ -36,6 +39,7 @@ export async function getBranches(): Promise<void> {
       const branchOption: BranchOption = { id: index, label: branchLabel, value: branch }
       globals.selectedBranchOption = branchOption
     }
+    // else globals.selectedBranchOption remains undefined
     return {
       id: index,
       label: branchLabel,

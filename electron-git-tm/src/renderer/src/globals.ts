@@ -26,7 +26,7 @@ export const globals = reactive({
   commitsData: [] as Commit[], // this is the array of commits
   selectedCommitRows: [] as Commit[],
   lastCommit: '' as string, // cache this so when user deselects commit table we still have it
-  get commit(): string {
+  get selectedCommit(): string {
     let result = this.lastCommit
     if (this.selectedCommitRows.length == 0 && this.lastCommit) return result
     this.lastCommit = result = this.selectedCommitRows[0]?.sha // returns undefined if nothing selected
@@ -45,6 +45,8 @@ export const globals = reactive({
   },
   treeData: [] as TreeData, // Ref<TreeData> = ref<TreeData>([]),
   expanded: [] as string[], // = ref<string[]>([]), // e.g. ['src', 'main']
+  // DIFFVIEW
+  diffHtml: '' as string,
   // FILEVIEW
   scroll_is_for_path: '',
   scrollPos: 0 as number,

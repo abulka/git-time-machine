@@ -1,6 +1,7 @@
 import { globals } from '@renderer/globals'
 import { BranchOption } from './types/BranchOption'
 import { Commit } from '../../shared/Commit'
+import { watch } from 'vue'
 
 // Repo
 
@@ -67,4 +68,25 @@ export async function getCommits(): Promise<void> {
     return _commit
   })
   globals.commitsData = commitsFormatted
+}
+
+// Diff
+
+watch([(): string => globals.selectedCommit], async () => {
+  if (globals.selectedCommit == undefined) return
+  getDiff()
+})
+
+// Need to get diffs when globals.selectedCommitRows changes
+
+export async function getDiff(): Promise<void> {
+  console.log('getting diff...', globals.selectedCommit)
+  const commit: Commit = globals.selectedCommitRows[0]
+  if (!commit) {
+    return
+  }
+  const sha = commit.sha
+  globals.diffHtml = await window.electron.ipcRenderer.invoke('generate-diff', sha)
+  globals.loadingMsg = ''
+  globals.repoRefreshNeeded = false
 }

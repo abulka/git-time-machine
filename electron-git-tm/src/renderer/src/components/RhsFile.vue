@@ -12,7 +12,7 @@ interface Point {
 
 watch(
   // Watch for changes to both commit and selectedTreePath
-  [(): string => globals.commit, (): string => globals.selectedTreePath],
+  [(): string => globals.selectedCommit, (): string => globals.selectedTreePath],
   () => {
     generateHtml()
   }
@@ -26,7 +26,7 @@ function generateHtml(): void {
   const scrollTo: Point = { x: globals.scrollPosX, y: globals.scrollPos }
 
   window.electron.ipcRenderer
-    .invoke('generate-html', globals.commit, globals.selectedTreePath, scrollTo, globals.lineTo)
+    .invoke('generate-html', globals.selectedCommit, globals.selectedTreePath, scrollTo, globals.lineTo)
     .then((htmlStr) => {
       // Do something with the generated HTML string
       if (myiframe.value.srcdoc === htmlStr) return
@@ -73,7 +73,7 @@ window.addEventListener('message', (event) => {
 
 <template>
   <div class="q-pa-md">
-    {{ globals.commit }}
+    {{ globals.selectedCommit }}
     {{ globals.selectedTreePath }}
     {{ globals.scrollPos }}
     {{ globals.scrollPosX }}

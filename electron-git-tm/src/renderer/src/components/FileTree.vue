@@ -13,25 +13,6 @@ watch(
     (): boolean => globals.repoRefreshNeeded
   ],
 
-  // async () => {
-  //   console.log('getting file tree...')
-  //   const commit: Commit = globals.selectedCommitRows[0]
-  //   if (!commit) {
-  //     return
-  //   }
-  //   const sha = commit.sha
-  //   await getFiles(sha)
-  // }
-
-  // If you have a watch function with an array of dependencies, it will trigger
-  // whenever any of the dependencies change. In your case, if all four of the
-  // dependencies change at the same time, the watch function will trigger four
-  // times. To reduce the number of triggers, you can debounce the watch
-  // function using the lodash.debounce function. This will delay the execution
-  // of the function until the dependencies have stabilized, meaning that there
-  // have been no changes for a certain amount of time. This can reduce the
-  // number of triggers and improve the performance of your application.
-
   debounce(async () => {
     console.log('getting file tree...')
     const commit: Commit = globals.selectedCommitRows[0]
@@ -45,7 +26,6 @@ watch(
 
 async function getFiles(sha): Promise<void> {
   const files: string[] = await window.electron.ipcRenderer.invoke('get-files', sha)
-  // console.log('files', files)
   globals.treeData = convertToTree(files)
 }
 
@@ -86,10 +66,9 @@ function convertToTree(arr: string[]): TreeData {
 }
 
 function selectionChanged(state): void {
-  // If file path has changed, scroll_pos will be wrong and needs to be reset to 0
-  console.log('selectionChanged', state)
-  const path = state.substring(1) // remove leading /
+  const path = state.substring(1) // remove leading '/'
   if (globals.scroll_is_for_path !== path) {
+    // If file path has changed, reset scroll_pos to 0
     globals.scrollPos = 0
     globals.scrollPosX = 0
   }

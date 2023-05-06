@@ -2,17 +2,6 @@
 import { globals } from '@renderer/globals'
 import { getBranches } from '@renderer/business'
 
-// Listen for the 'repoChanged' message from the main process
-// when when cwd changes, and call the 'getBranches' function when received
-window.electronAPI.repoChanged((_event, repoDir: string) => {
-  globals.repoRefreshNeeded = true
-  globals.repoDir = repoDir
-  globals.selectedCommitRows = []
-  document.title = `Git Time Machine - ${globals.repoDirName}`
-  globals.loadingMsg = `LOADING ${globals.repoDir}...`
-  getBranches()
-})
-
 function changeRepo(_event): void {
   window.electron.ipcRenderer.invoke('change-repo')
 }

@@ -1,11 +1,6 @@
 import { reactive } from 'vue'
 import { Commit } from '../../shared/Commit'
-
-interface BranchOption {
-  id: number
-  label: string
-  value: string
-}
+import { BranchOption } from './types/BranchOption'
 
 // Identifiers imported from other modules cannot be reassigned.
 // so we wrap in a object and export that object instead - CAN change the innards of the object!

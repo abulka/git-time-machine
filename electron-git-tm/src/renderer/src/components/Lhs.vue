@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import Commits from './Commits.vue'
 import TimeFileTree from './FileTree.vue'
+import Repo from './Repo.vue'
 import Branch from './Branch.vue'
 import Diff from './Diff.vue'
 
@@ -10,6 +11,7 @@ const splitterModelDiffs = ref(55)
 </script>
 
 <template>
+  <Repo />
   <Branch />
   <q-splitter v-model="splitterModel" horizontal style="height: 100vh">
     <template #before>

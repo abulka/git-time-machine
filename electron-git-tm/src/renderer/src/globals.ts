@@ -1,6 +1,7 @@
 import { reactive } from 'vue'
 import { Commit } from '../../shared/Commit'
 import { BranchOption } from './types/BranchOption'
+import { TreeData } from './types/TreeData'
 
 // Identifiers imported from other modules cannot be reassigned.
 // so we wrap in a object and export that object instead - CAN change the innards of the object!
@@ -42,6 +43,9 @@ export const globals = reactive({
     }
     return this.selectedTreeNode.replace(/^\//, '')
   },
+  treeData: [] as TreeData, // Ref<TreeData> = ref<TreeData>([]),
+  expanded: [] as string[], // = ref<string[]>([]), // e.g. ['src', 'main']
+  // FILEVIEW
   scroll_is_for_path: '',
   scrollPos: 0 as number,
   scrollPosX: 0 as number,

@@ -1,21 +1,9 @@
 <script setup lang="ts">
-import { ref, Ref, watch } from 'vue'
+import { watch } from 'vue'
 import { globals } from '@renderer/globals'
 import { Commit } from '../../../shared/Commit'
+import { TreeData, TreeDataItem } from '../types/TreeData'
 import { debounce } from 'lodash'
-
-interface TreeDataItem {
-  label: string
-  icon?: string
-  children: TreeDataItem[]
-  fullPath: string
-}
-
-type TreeData = TreeDataItem[]
-
-// const treeData: TreeData = ref([])
-const treeData: Ref<TreeData> = ref<TreeData>([])
-const expanded = ref(['src', 'main'])
 
 watch(
   [
@@ -52,13 +40,13 @@ watch(
     }
     const sha = commit.sha
     await getFiles(sha)
-  }, 500) // Adjust the delay time as needed  
+  }, 500) // Adjust the delay time as needed
 )
 
 async function getFiles(sha): Promise<void> {
   const files: string[] = await window.electron.ipcRenderer.invoke('get-files', sha)
   // console.log('files', files)
-  treeData.value = convertToTree(files)
+  globals.treeData = convertToTree(files)
 }
 
 function convertToTree(arr: string[]): TreeData {
@@ -111,19 +99,10 @@ function selectionChanged(state): void {
 
 <template>
   <div class="q-pa-md">
-    <!-- {{ globals.selectedTreeNode }}
-    {{ expanded }}
-    <br />
-    <q-btn label="Collapse" @click="expanded = []" />
-    <q-btn label="Expand" @click="expanded = ['Relax Hotel']" />
-    <q-btn label="Expand2" @click="expanded = ['Relax Hotel', 'Room amenities']" />
-    <q-btn label="select Room view" @click="selected = 'Room view'" />
-    <q-btn label="select TV" @click="selected = 'TV'" />
-    <q-btn label="Change a node" @click="treeData[0].children[1].label = 'FRED'" /> -->
     <q-tree
       v-model:selected="globals.selectedTreeNode"
-      v-model:expanded="expanded"
-      :nodes="treeData"
+      v-model:expanded="globals.expanded"
+      :nodes="globals.treeData"
       node-key="fullPath"
       selected-color="primary"
       default-expand-all

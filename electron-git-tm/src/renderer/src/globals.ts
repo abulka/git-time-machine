@@ -13,17 +13,20 @@ interface BranchOption {
 // TIP: reactive variables are never 'undefined', as vue will set them to a special proxy object
 export const globals = reactive({
   silly: 'global sillyness',
+  // REPO
   repoDir: '' as string,
   get repoDirName(): string {
     return this.repoDir.split('/').pop() || ''
   },
   repoRefreshNeeded: false as boolean,
   loadingMsg: '' as string,
+  // BRANCHES
   selectedBranchOption: { id: 9999, label: '', value: '' } as BranchOption,
   get selectedBranch(): string {
     return this.selectedBranchOption.value
   },
   branches: [] as string[],
+  // COMMITS
   commitsData: [] as Commit[], // this is the array of commits
   selectedCommitRows: [] as Commit[],
   lastCommit: '' as string, // cache this so when user deselects commit table we still have it
@@ -36,6 +39,7 @@ export const globals = reactive({
   get lencommit(): number {
     return this.selectedCommitRows.length
   },
+  // TREEVIEW
   selectedTreeNode: '',
   get selectedTreePath(): string {
     if (!this.selectedTreeNode) {

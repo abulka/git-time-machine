@@ -126,7 +126,12 @@ function stateChanged(state) {
   //   'commit',
   //   globals.commit
   // )
+
+  // Avoid bug where undefined is selected
+  if (state.selectedRows.length === 1 && state.selectedRows[0] == undefined) return
+
   globals.selectedCommitRows = state.selectedRows
+
   // if (state.selectedRows.length != 0)
   //   console.log('state.selectedRows.length != 0')
 
@@ -160,7 +165,6 @@ function stateChanged(state) {
     <strong>Selected:</strong>
     {{ globals.selectedCommitRows }}
     <div v-if="globals.selectedCommitRows.length === 0">No rows selected</div>
-    <div v-else-if="globals.selectedCommitRows.length == 1 && globals.selectedCommitRows[0] == undefined">Weird case TODO: fix</div>
     <div v-else>
       <ul>
         <li v-for="selected in globals.selectedCommitRows" :key="selected.sha">

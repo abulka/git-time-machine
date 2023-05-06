@@ -15,8 +15,9 @@ window.electronAPI.repoChanged(async (_event, repoDir: string) => {
   globals.loadingMsg = `LOADING ${globals.repoDir}...`
   await getBranches()
   console.log('getBranches() completed')
-  // TODO should we call getCommits() here? rather than 
-  // watching for selectedBranchOption to change?
+  await getCommits()
+  console.log('getCommits() completed')
+
 })
 
 // Branches
@@ -60,6 +61,7 @@ function shortenSha(sha): string {
 }
 
 export async function getCommits(): Promise<void> {
+  console.log(`getting commits...`)
   const branch = globals.selectedBranch
   const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
   const commitsFormatted: Commit[] = commits.map((commit, index) => {

@@ -2,24 +2,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Commit } from '../../../shared/Commit'
-import { getCommits } from '@renderer/business'
 import { globals } from '@renderer/globals'
 
-watch(
-  [
-    (): string => globals.selectedBranch,
-    (): string => globals.repoDir,
-    (): boolean => globals.repoRefreshNeeded
-  ],
-  async () => {
-    console.log(`getting commits...`)
-    await getCommits()
-
-    // select the latest commit row
-    const toSelect = [globals.commitsData[0]]
-    commitsTable.value.selectRows(toSelect)
-  }
-)
+watch([(): Commit[] => globals.commitsData], () => {
+  // select the 'top-most' commit in the table
+  const toSelect = [globals.commitsData[0]]
+  commitsTable.value.selectRows(toSelect)
+})
 
 const commitsTable = ref()
 
@@ -85,7 +74,6 @@ function stateChanged(state) {
         </VTr>
       </template>
     </VTable>
-
   </div>
 </template>
 

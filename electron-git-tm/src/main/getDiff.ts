@@ -45,7 +45,7 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
     }
 
     if (data.diff_body.match(/[\x00-\x08\x0E-\x1F]/)) { // eslint-disable-line no-control-regex
-      data.diff_body = 'diff contains binary characters!'
+      data.diff_body = 'binary characters detected - cannot display diff.'
     }
     if (data.diff_body.length > 100000) {
       data.diff_body = 'diff too long'

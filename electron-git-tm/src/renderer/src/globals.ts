@@ -14,7 +14,6 @@ export const globals = reactive({
   get repoDirName(): string {
     return this.repoDir.split('/').pop() || ''
   },
-  repoRefreshNeeded: false as boolean,
   loadingMsg: '' as string,
   // BRANCHES
   selectedBranchOption: { id: 9999, label: '', value: '' } as BranchOption | undefined,

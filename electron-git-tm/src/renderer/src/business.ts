@@ -7,8 +7,11 @@ import { watch } from 'vue'
 
 window.electronAPI.repoChanged(async (_event, repoDir: string) => {
   console.log(`${repoDir} repoChanged}!!!`)
-  globals.repoRefreshNeeded = true
   globals.repoDir = repoDir
+  await refreshRepo()
+})
+
+export async function refreshRepo(): Promise<void> {
   globals.selectedCommitRows = []
   globals.selectedBranchOption = undefined // type BranchOption
   document.title = `Git Time Machine - ${globals.repoDirName}`
@@ -17,16 +20,14 @@ window.electronAPI.repoChanged(async (_event, repoDir: string) => {
   console.log('getBranches() completed')
   await getCommits()
   console.log('getCommits() completed')
-
-})
+  // don't await getDiff() here, as it will be called by the watcher below
+  globals.loadingMsg = ''
+}
 
 // Branches
 
 export async function getBranches(): Promise<void> {
   console.log('getBranches()...')
-  globals.repoRefreshNeeded = true
-  globals.loadingMsg = `LOADING ${globals.repoDir}...`
-
   const _branches = await window.electron.ipcRenderer.invoke('get-branches')
 
   if (_branches.length === 0) {
@@ -84,8 +85,6 @@ watch([(): string => globals.selectedCommit], async () => {
   getDiff()
 })
 
-// Need to get diffs when globals.selectedCommitRows changes
-
 export async function getDiff(): Promise<void> {
   console.log('getting diff...', globals.selectedCommit)
   const commit: Commit = globals.selectedCommitRows[0]
@@ -94,6 +93,4 @@ export async function getDiff(): Promise<void> {
   }
   const sha = commit.sha
   globals.diffHtml = await window.electron.ipcRenderer.invoke('generate-diff', sha)
-  globals.loadingMsg = ''
-  globals.repoRefreshNeeded = false
 }

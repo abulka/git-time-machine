@@ -10,7 +10,6 @@ watch(
     (): Commit[] => globals.selectedCommitRows,
     (): string => globals.selectedBranch,
     (): string => globals.repoDir,
-    (): boolean => globals.repoRefreshNeeded
   ],
 
   debounce(async () => {

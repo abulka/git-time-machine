@@ -11,6 +11,7 @@ window.electronAPI.repoChanged((_event, repoDir: string) => {
   globals.repoRefreshNeeded = true
   globals.repoDir = repoDir
   globals.selectedCommitRows = []
+  globals.selectedBranchOption = { id: 9999, label: '', value: '' }
   document.title = `Git Time Machine - ${globals.repoDirName}`
   globals.loadingMsg = `LOADING ${globals.repoDir}...`
   getBranches()

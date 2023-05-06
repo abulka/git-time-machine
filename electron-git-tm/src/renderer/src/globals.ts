@@ -19,6 +19,9 @@ export const globals = reactive({
   // BRANCHES
   selectedBranchOption: { id: 9999, label: '', value: '' } as BranchOption,
   get selectedBranch(): string {
+    if (!this.selectedBranchOption) {
+      return ''
+    }
     return this.selectedBranchOption.value
   },
   branches: [] as string[],

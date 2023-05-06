@@ -17,7 +17,7 @@ export const globals = reactive({
   repoRefreshNeeded: false as boolean,
   loadingMsg: '' as string,
   // BRANCHES
-  selectedBranchOption: { id: 9999, label: '', value: '' } as BranchOption,
+  selectedBranchOption: { id: 9999, label: '', value: '' } as BranchOption | undefined,
   get selectedBranch(): string {
     if (!this.selectedBranchOption) {
       return ''

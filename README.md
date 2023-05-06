@@ -46,6 +46,6 @@ Scenarios
 Questions: how is selectedBranch set?  Via selectedBranchOption
 which is set by the user selecting a branch from the dropdown.
 When switching repos, selectedBranchOption is set to the current
-branch (marked with * in git).
+branch (marked with * in git). When nothing is selected, the value of the Quasar q-select selected model is `undefined`.
 
 How is selectedCommit set?

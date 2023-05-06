@@ -2,9 +2,9 @@
 import { globals } from '@renderer/globals'
 import { getBranches } from '@renderer/business'
 
-// Listen for the 'shouldGetBranches' message from the main process
+// Listen for the 'repoChanged' message from the main process
 // when when cwd changes, and call the 'getBranches' function when received
-window.electronAPI.shouldGetBranches((_event, repoDir: string) => {
+window.electronAPI.repoChanged((_event, repoDir: string) => {
   globals.repoRefreshNeeded = true
   globals.repoDir = repoDir
   globals.selectedCommitRows = []

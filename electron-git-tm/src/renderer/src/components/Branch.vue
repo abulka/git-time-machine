@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { globals } from '@renderer/globals'
 
 function branchChanged(value): void {
   console.log('branchChanged', value) // just a notification, does nothing
 }
-
-onMounted(() => {
-  // I used to call getBranches() here, but it's better to wait for the main process to
-  // send the 'shouldGetBranches' message.
-  // getBranches()
-})
 </script>
 
 <template>

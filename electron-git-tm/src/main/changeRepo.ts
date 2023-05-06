@@ -17,7 +17,7 @@ export async function changeCwd(mainWindow): Promise<{ success: boolean }> {
 
     // Notify the renderer process that the directory has changed
     const { webContents } = mainWindow
-    webContents.send('shouldGetBranches', repoDir)
+    webContents.send('repoChanged', repoDir)
 
     return { success: true }
   } catch (error) {
@@ -36,5 +36,5 @@ export function startupBusinessLogic(mainWindow): void {
 
   // Notify the renderer process of initial repo directory
   const { webContents } = mainWindow
-  webContents.send('shouldGetBranches', repoDir)
+  webContents.send('repoChanged', repoDir)
 }

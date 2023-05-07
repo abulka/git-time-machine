@@ -31,7 +31,12 @@ function _refreshRepo(_event): void {
       title="Refresh repo"
       @click="_refreshRepo"
     />
-    <div class="ml-auto" style="text-align: right">{{ globals.repoDirName }}</div>
-    <div class="ml-auto" style="text-align: right">{{ globals.loadingMsg }}</div>
+    <div class="ml-auto" style="text-align: center">
+      {{ globals.repoDirName }}
+    </div>
+    <div class="d-flex ml-auto" style="width: 20px; height: 20px;">
+      <q-spinner v-if="globals.isLoading" color="primary" size="20px" />
+    </div>
+    <div class="ml-auto text-red" style="text-align: right">{{ globals.warningMsg }}</div>
   </div>
 </template>

@@ -14,13 +14,15 @@ export async function refreshRepo(): Promise<void> {
   globals.selectedCommitRows = []
   globals.selectedBranchOption = undefined // type BranchOption
   document.title = `Git Time Machine - ${globals.repoDirName}`
-  globals.loadingMsg = `LOADING ${globals.repoDir}...`
+  globals.isLoading = true
   await getBranches()
   if (debug.event_flow) console.log('getBranches() completed')
   await getCommits()
   if (debug.event_flow) console.log('getCommits() completed')
-  // don't await getDiff() here, as it will be called by the watcher below
-  globals.loadingMsg = ''
+  // Both treeview and diffview are watching various globals and asyncronously update themselves
+  setTimeout(() => {
+    globals.isLoading = false
+  }, 1000)
 }
 
 // Branches
@@ -30,9 +32,9 @@ export async function getBranches(): Promise<void> {
   const _branches = await window.electron.ipcRenderer.invoke('get-branches')
 
   if (_branches.length === 0) {
-    globals.loadingMsg = 'Not a Repo dir'
+    globals.warningMsg = 'Not a Repo dir'
     return
-  }
+  } else globals.warningMsg = ''
   globals.branches = _branches.map((branch, index) => {
     const branchLabel = branch
     if (branch.startsWith('* ')) {

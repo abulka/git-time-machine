@@ -13,7 +13,8 @@ export const globals = reactive({
   get repoDirName(): string {
     return this.repoDir.split('/').pop() || ''
   },
-  loadingMsg: '' as string,
+  isLoading: false as boolean,
+  warningMsg: '' as string,
   // BRANCHES
   branches: [] as string[],
   selectedBranchOption: { id: 9999, label: '', value: '' } as BranchOption | undefined,

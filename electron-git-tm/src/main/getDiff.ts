@@ -5,6 +5,7 @@ import { commits } from './getCommits' // TODO: import from globalsMain
 import Handlebars from 'handlebars'
 import fs from 'fs';
 import t3 from '../../resources/templates/template-diff.hbs?asset'
+import t4 from '../../resources/templates/template-diff-js.hbs?asset'
 import { repoDir } from './globalsMain'
 
 function findPreviousCommit(currentCommit: string): string | null {
@@ -25,6 +26,10 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
   const templateSource = fs.readFileSync(t3, 'utf8')
   const template = Handlebars.compile(templateSource) // Compile the template
 
+  const templateSourceJs = fs.readFileSync(t4, 'utf8')
+  const templateJs = Handlebars.compile(templateSourceJs) // Compile the js template
+  const jsFileContents = templateJs({}) // no data needed for js template
+
   // call git to get the diff between the two commits
   const execPromisified = util.promisify(exec)
   const options = { 
@@ -41,7 +46,7 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
       diff_body: stdout,
       toc_links: '',
       git_cmd: gitCommand.join(' '),
-      js: '' // 'console.log("Hello World from template")'
+      js: jsFileContents // 'console.log("Hello World from template")'
     }
 
     if (data.diff_body.match(/[\x00-\x08\x0E-\x1F]/)) { // eslint-disable-line no-control-regex

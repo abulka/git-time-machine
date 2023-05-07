@@ -1,0 +1,5 @@
+window.parent.postMessage('!!!! This is a message body from template-diff');
+
+function jumpTo(filePath, lineNum) {
+    window.parent.postMessage({ command: 'jump_to_file', filePath: filePath, lineNum: lineNum })
+}

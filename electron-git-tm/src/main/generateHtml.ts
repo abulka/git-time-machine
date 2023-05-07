@@ -37,11 +37,11 @@ export function generateHtml(
 
   const lang = fileExtToPrismAlias(path)
 
-  // highlight.js auto-detection is not working for some files so help it by using the file extension to set the language-* if possible
+  // highlight.js auto-detection is not working for some files so help it by
+  // using the file extension to set the language-* if possible
   const lang_override = lang != '' ? `lang-${lang}` : ''
 
   const jsFileTemplate = constructJsFileContents(templateJs, scrollPosX, scrollPosY, lineTo)
-  // console.log(`${path} jsFileTemplate: ${jsFileTemplate}`)
 
   // Define the data to be used in the template
   const data = {
@@ -58,44 +58,6 @@ export function generateHtml(
   const renderedTemplate = template(data)
   return renderedTemplate
 }
-
-// const generateHtml = (path, sourceFileContents, scrollTo = null, lineTo = null) => {
-//   const pathExtension = path.substring(path.lastIndexOf('.'))
-//   const langMap = {
-//     '.html': 'html',
-//     '.css': 'css',
-//     '.js': 'javascript',
-//     '.py': 'python',
-//     '.java': 'java',
-//     '.md': 'markdown'
-//     // Add more mappings for other file types as needed
-//   }
-//   const lang = langMap[pathExtension] || 'auto'
-
-//   const scrollPosX = scrollTo?.x || 0
-//   const scrollPosY = scrollTo?.y || 0
-
-//   const jsFileTemplate = environment.getTemplate('template.jinja-js')
-//   const jsFileContents = jsFileTemplate.render({
-//     scroll_to: scrollTo,
-//     scroll_to_x: scrollPosX,
-//     line_to: lineTo
-//   })
-
-//   const template = environment.getTemplate('template.html')
-//   const htmlStr = template.render({
-//     lang,
-//     source_file_contents: sourceFileContents,
-//     js_file_contents: jsFileContents
-//   })
-
-//   if (htmlDebug) {
-//     const fs = require('fs')
-//     fs.writeFileSync('junk-content.html', htmlStr)
-//   }
-
-// //   return htmlStr
-// }
 
 function constructJsFileContents(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

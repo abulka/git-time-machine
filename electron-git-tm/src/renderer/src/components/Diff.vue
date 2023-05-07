@@ -20,6 +20,18 @@ async function getDiff(): Promise<void> {
   const diffHtml: string = await window.electron.ipcRenderer.invoke('generate-diff', sha)
   myiframe.value.srcdoc = diffHtml
 }
+
+// In the outer HTML of your app's render process
+window.addEventListener('message', (event) => {
+  // if (event.data === 'hello from iframe') {
+  //   console.log('Received message from iframe:', event.data)
+  // }
+  // else
+    console.log('Received message from iframe:', event.data)
+
+  // if (event.data.scrollPos) globals.scrollPos = event.data.scrollPos
+  // if (event.data.scrollPosX) globals.scrollPosX = event.data.scrollPosX
+})
 </script>
 
 <template>

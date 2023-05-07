@@ -1,5 +1,18 @@
-window.parent.postMessage('!!!! This is a message body from template-diff');
-
 function jumpTo(filePath, lineNum) {
-    window.parent.postMessage({ command: 'jump_to_file', filePath: filePath, lineNum: lineNum })
+  const cmd = { 
+    command: 'jump_to_file', 
+    filePath: filePath, 
+    lineNum: lineNum 
+  }
+  window.parent.postMessage(cmd)
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  let theDiff = `{{{diff_body}}}`;
+  var diffHtml = Diff2Html.html(theDiff, {
+    drawFileList: true,
+    matching: 'lines',
+    outputFormat: 'side-by-side',
+  });
+  document.getElementById('destination-elem-id').innerHTML = diffHtml;
+});    

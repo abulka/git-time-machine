@@ -22,13 +22,14 @@ function findPreviousCommit(currentCommit: string): string | null {
   return null
 }
 
+// export async generate_html_diff(self):
+
 export async function getDiff(previousCommit: string, currentCommit: string): Promise<string> {
   const templateSource = fs.readFileSync(t3, 'utf8')
   const template = Handlebars.compile(templateSource) // Compile the template
 
   const templateSourceJs = fs.readFileSync(t4, 'utf8')
   const templateJs = Handlebars.compile(templateSourceJs) // Compile the js template
-  const jsFileContents = templateJs({}) // no data needed for js template
 
   // call git to get the diff between the two commits
   const execPromisified = util.promisify(exec)
@@ -42,11 +43,25 @@ export async function getDiff(previousCommit: string, currentCommit: string): Pr
     const { stdout } = await execPromisified(gitCommand.join(' '), options)
     // console.log(`stdout ${stdout}`)
 
+    // const diffJson = Diff2Html.getJsonFromDiff(stdout)
+    // const diffHtml = Diff2Html.getPrettyHtml(diffJson, { inputFormat: 'json', showFiles: true, matching: 'lines' });
+
+
+    // TODO: IMPLEMENT THIS
+    // hyperlinks = self.extract_hyperlinks(diff_body)
+    // diff_body = self.inject_hyperlinks(diff_body, hyperlinks)
+
+    // toc_template = environment.get_template("links-diff.html")
+    // toc_links = toc_template.render(hyperlinks=hyperlinks, add_filename_to_link=add_filename_to_link)
+
+    // uses Diff2Html https://morioh.com/p/a8623fc10324
+    const jsFileContents = templateJs({ diff_body: stdout })
+
     const data = {
       diff_body: stdout,
       toc_links: '',
       git_cmd: gitCommand.join(' '),
-      js: jsFileContents // 'console.log("Hello World from template")'
+      js: jsFileContents
     }
 
     if (data.diff_body.match(/[\x00-\x08\x0E-\x1F]/)) { // eslint-disable-line no-control-regex

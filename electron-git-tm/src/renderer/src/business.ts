@@ -1,11 +1,11 @@
-import { globals } from '@renderer/globals'
+import { globals, debug } from '@renderer/globals'
 import { BranchOption } from './types/BranchOption'
 import { Commit } from '../../shared/Commit'
 
 // Repo
 
 window.electronAPI.repoChanged(async (_event, repoDir: string) => {
-  console.log(`${repoDir} repoChanged}!!!`)
+  if (debug.event_flow) console.log(`${repoDir} repoChanged}!!!`)
   globals.repoDir = repoDir
   await refreshRepo()
 })
@@ -16,9 +16,9 @@ export async function refreshRepo(): Promise<void> {
   document.title = `Git Time Machine - ${globals.repoDirName}`
   globals.loadingMsg = `LOADING ${globals.repoDir}...`
   await getBranches()
-  console.log('getBranches() completed')
+  if (debug.event_flow) console.log('getBranches() completed')
   await getCommits()
-  console.log('getCommits() completed')
+  if (debug.event_flow) console.log('getCommits() completed')
   // don't await getDiff() here, as it will be called by the watcher below
   globals.loadingMsg = ''
 }
@@ -26,7 +26,7 @@ export async function refreshRepo(): Promise<void> {
 // Branches
 
 export async function getBranches(): Promise<void> {
-  console.log('getBranches()...')
+  if (debug.event_flow) console.log('getBranches()...')
   const _branches = await window.electron.ipcRenderer.invoke('get-branches')
 
   if (_branches.length === 0) {
@@ -61,7 +61,7 @@ function shortenSha(sha): string {
 }
 
 export async function getCommits(): Promise<void> {
-  console.log(`getting commits...`)
+  if (debug.event_flow) console.log(`getting commits...`)
   const branch = globals.selectedBranch
   const _commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
   const commitsFormatted: Commit[] = _commits.map((commit, index) => {

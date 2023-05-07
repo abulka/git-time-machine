@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { globals } from '@renderer/globals'
+import { globals, debug } from '@renderer/globals'
 import { Commit } from '../../../shared/Commit'
 
 const myiframe = ref()
@@ -11,7 +11,7 @@ watch([(): string => globals.selectedCommit], async () => {
 })
 
 async function getDiff(): Promise<void> {
-  console.log('getting diff...', globals.selectedCommit)
+  if (debug.event_flow) console.log('getting diff...', globals.selectedCommit)
   const commit: Commit = globals.selectedCommitRows[0]
   if (!commit) {
     return

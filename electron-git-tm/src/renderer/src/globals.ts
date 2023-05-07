@@ -3,6 +3,10 @@ import { Commit } from '../../shared/Commit'
 import { BranchOption } from './types/BranchOption'
 import { TreeData } from './types/TreeData'
 
+export const debug = {
+  event_flow: false
+}
+
 export const globals = reactive({
   // REPO
   repoDir: '' as string,
@@ -39,8 +43,7 @@ export const globals = reactive({
     }
     return this.selectedTreeNode.replace(/^\//, '')
   },
-  // DIFFVIEW
-  // nothing for now
+  // DIFFVIEW - nothing for now
   // FILEVIEW
   scroll_is_for_path: '',
   scrollPos: 0 as number,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import { globals } from '@renderer/globals'
+import { globals, debug } from '@renderer/globals'
 import { Commit } from '../../../shared/Commit'
 import { TreeData, TreeDataItem } from '../types/TreeData'
 
@@ -14,7 +14,7 @@ watch([(): string => globals.selectedCommit], async () => {
 })
 
 async function getFiles(sha): Promise<void> {
-  console.log('getting file tree...')
+  if (debug.event_flow) console.log('getting file tree...')
   const files: string[] = await window.electron.ipcRenderer.invoke('get-files', sha)
   globals.treeData = convertToTree(files)
 }

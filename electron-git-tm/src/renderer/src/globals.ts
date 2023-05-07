@@ -29,9 +29,6 @@ export const globals = reactive({
     this.lastCommit = result = this.selectedCommitRows[0]?.sha // returns undefined if nothing selected
     return result
   },
-  get lencommit(): number {
-    return this.selectedCommitRows.length
-  },
   // TREEVIEW
   treeData: [] as TreeData, // Ref<TreeData> = ref<TreeData>([]),
   expanded: [] as string[], // = ref<string[]>([]), // e.g. ['src', 'main']
@@ -43,7 +40,7 @@ export const globals = reactive({
     return this.selectedTreeNode.replace(/^\//, '')
   },
   // DIFFVIEW
-  diffHtml: '' as string,
+  // nothing for now
   // FILEVIEW
   scroll_is_for_path: '',
   scrollPos: 0 as number,

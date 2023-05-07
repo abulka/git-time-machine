@@ -15,16 +15,16 @@ Scenarios
         - calls `getCommits()`
             - populates `globals.commits`
     - Commits.vue 
-        - table models `globals.commits`
         - 👁️ watches `globals.commits` and selects the 'top-most' commit in the table
-        - does not model selected commit, this is done by the user clicking on a commit in the table and the event setting `globals.selectedCommitRows` manually
+        - table models `globals.commits`
+        - does not model selected commit, this is done by manually via the user clicking on a commit in the table and our event setting `globals.selectedCommitRows` 
     - FileTree.vue
         - tree models `globals.selectedTreeNode`
         - 👁️ watches `globals.selectedCommit` and calls `getFiles`
             - which populates `globals.treeData`
-    - BUSINESS-LOGIC: 👁️ watches `globals.selectedCommit` and calls `getDiff` which
-        - populates `globals.diffHtml` which in turn causes `Diff.vue` to render
-        - TODO: could move diff logic back into `Diff.vue` and have it watch `globals.selectedCommit` directly
+    - Diff.vue: 
+        - 👁️ watches `globals.selectedCommit` and calls `getDiff` which
+        -   populates `globals.diffHtml` which in turn causes `Diff.vue` to render
 
 Questions: 
 

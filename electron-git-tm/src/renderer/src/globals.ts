@@ -3,12 +3,7 @@ import { Commit } from '../../shared/Commit'
 import { BranchOption } from './types/BranchOption'
 import { TreeData } from './types/TreeData'
 
-// Identifiers imported from other modules cannot be reassigned.
-// so we wrap in a object and export that object instead - CAN change the innards of the object!
-// We also make this reactive so that it plays nice with vue.
-// TIP: reactive variables are never 'undefined', as vue will set them to a special proxy object
 export const globals = reactive({
-  silly: 'global sillyness',
   // REPO
   repoDir: '' as string,
   get repoDirName(): string {
@@ -16,6 +11,7 @@ export const globals = reactive({
   },
   loadingMsg: '' as string,
   // BRANCHES
+  branches: [] as string[],
   selectedBranchOption: { id: 9999, label: '', value: '' } as BranchOption | undefined,
   get selectedBranch(): string {
     if (!this.selectedBranchOption) {
@@ -23,9 +19,8 @@ export const globals = reactive({
     }
     return this.selectedBranchOption.value
   },
-  branches: [] as string[],
   // COMMITS
-  commitsData: [] as Commit[], // this is the array of commits
+  commits: [] as Commit[], // this is the array of commits
   selectedCommitRows: [] as Commit[],
   lastCommit: '' as string, // cache this so when user deselects commit table we still have it
   get selectedCommit(): string {
@@ -38,6 +33,8 @@ export const globals = reactive({
     return this.selectedCommitRows.length
   },
   // TREEVIEW
+  treeData: [] as TreeData, // Ref<TreeData> = ref<TreeData>([]),
+  expanded: [] as string[], // = ref<string[]>([]), // e.g. ['src', 'main']
   selectedTreeNode: '',
   get selectedTreePath(): string {
     if (!this.selectedTreeNode) {
@@ -45,8 +42,6 @@ export const globals = reactive({
     }
     return this.selectedTreeNode.replace(/^\//, '')
   },
-  treeData: [] as TreeData, // Ref<TreeData> = ref<TreeData>([]),
-  expanded: [] as string[], // = ref<string[]>([]), // e.g. ['src', 'main']
   // DIFFVIEW
   diffHtml: '' as string,
   // FILEVIEW

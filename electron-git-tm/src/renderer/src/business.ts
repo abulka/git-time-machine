@@ -64,8 +64,8 @@ function shortenSha(sha): string {
 export async function getCommits(): Promise<void> {
   console.log(`getting commits...`)
   const branch = globals.selectedBranch
-  const commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
-  const commitsFormatted: Commit[] = commits.map((commit, index) => {
+  const _commits = await window.electron.ipcRenderer.invoke('get-commits', branch)
+  const commitsFormatted: Commit[] = _commits.map((commit, index) => {
     const _commit: Commit = {
       id: index,
       sha: shortenSha(commit.sha),
@@ -75,7 +75,7 @@ export async function getCommits(): Promise<void> {
     }
     return _commit
   })
-  globals.commitsData = commitsFormatted
+  globals.commits = commitsFormatted
 }
 
 // Diff

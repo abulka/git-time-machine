@@ -4,9 +4,9 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Commit } from '../../../shared/Commit'
 import { globals } from '@renderer/globals'
 
-watch([(): Commit[] => globals.commitsData], () => {
+watch([(): Commit[] => globals.commits], () => {
   // select the 'top-most' commit in the table
-  const toSelect = [globals.commitsData[0]]
+  const toSelect = [globals.commits[0]]
   commitsTable.value.selectRows(toSelect)
 })
 
@@ -20,21 +20,21 @@ onUnmounted(() => {
 })
 
 function handleKeyboardInput(event) {
-  const commitsData = globals.commitsData
+  const commits = globals.commits
   const selectedCommitRows = globals.selectedCommitRows
 
   if (event.key === 'ArrowDown') {
     const currId = selectedCommitRows.length ? selectedCommitRows[0].id : -1
     const nextId = currId + 1
-    if (nextId < commitsData.length) {
-      const toSelect: Commit[] = [commitsData[nextId]]
+    if (nextId < commits.length) {
+      const toSelect: Commit[] = [commits[nextId]]
       commitsTable.value.selectRows(toSelect)
     }
   } else if (event.key === 'ArrowUp') {
     const currId = selectedCommitRows.length ? selectedCommitRows[0].id : 1
     const prevId = currId - 1
     if (prevId >= 0) {
-      const toSelect: Commit[] = [commitsData[prevId]]
+      const toSelect: Commit[] = [commits[prevId]]
       commitsTable.value.selectRows(toSelect)
     }
   }
@@ -54,7 +54,7 @@ function stateChanged(state) {
   <div>
     <VTable
       ref="commitsTable"
-      :data="globals.commitsData"
+      :data="globals.commits"
       selectionMode="single"
       selectedClass="selected-row"
       @stateChanged="stateChanged"

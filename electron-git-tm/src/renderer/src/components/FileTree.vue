@@ -3,27 +3,18 @@ import { watch } from 'vue'
 import { globals } from '@renderer/globals'
 import { Commit } from '../../../shared/Commit'
 import { TreeData, TreeDataItem } from '../types/TreeData'
-import { debounce } from 'lodash'
 
-watch(
-  [
-    (): Commit[] => globals.selectedCommitRows,
-    (): string => globals.selectedBranch,
-    (): string => globals.repoDir,
-  ],
-
-  debounce(async () => {
-    console.log('getting file tree...')
-    const commit: Commit = globals.selectedCommitRows[0]
-    if (!commit) {
-      return
-    }
-    const sha = commit.sha
-    await getFiles(sha)
-  }, 500) // Adjust the delay time as needed
-)
+watch([(): string => globals.selectedCommit], async () => {
+  const commit: Commit = globals.selectedCommitRows[0]
+  if (!commit) {
+    return
+  }
+  const sha = commit.sha
+  getFiles(sha)
+})
 
 async function getFiles(sha): Promise<void> {
+  console.log('getting file tree...')
   const files: string[] = await window.electron.ipcRenderer.invoke('get-files', sha)
   globals.treeData = convertToTree(files)
 }

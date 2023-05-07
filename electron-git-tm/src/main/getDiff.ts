@@ -8,12 +8,6 @@ import t3 from '../../resources/templates/template-diff.hbs?asset'
 import t4 from '../../resources/templates/template-diff-js.hbs?asset'
 import { repoDir } from './globalsMain'
 
-const templateSource = fs.readFileSync(t3, 'utf8')
-const template = Handlebars.compile(templateSource) // Compile the template
-
-const templateSourceJs = fs.readFileSync(t4, 'utf8')
-const templateJs = Handlebars.compile(templateSourceJs) // Compile the js template
-
 function _findPreviousCommit(currentCommit: string): string | null {
   for (let i = 0; i < commits.length; i++) {
     if (commits[i].sha.startsWith(currentCommit)) {
@@ -46,20 +40,29 @@ async function _getDiff(previousCommit: string, currentCommit: string): Promise<
 }
 
 function _renderHtml(stdout, gitCommand): string {
-  // uses Diff2Html https://morioh.com/p/a8623fc10324
+  // uses Diff2Html https://morioh.com/p/a8623fc10324 to convert git diff to html
+  let msg = ''
+
+  const templateSource = fs.readFileSync(t3, 'utf8')
+  const template = Handlebars.compile(templateSource) // Compile the template
+
+  const templateSourceJs = fs.readFileSync(t4, 'utf8')
+  const templateJs = Handlebars.compile(templateSourceJs) // Compile the js template
+
+  if (stdout.match(/[\x00-\x08\x0E-\x1F]/)) { // eslint-disable-line no-control-regex
+    msg = 'binary characters detected - cannot display diff.'
+    stdout = ''
+  }
+
   const jsFileContents = templateJs({ diff_body: stdout })
 
   const data = {
-    diff_body: stdout,
+    msg: msg,
+    diff_body: '', //stdout,
     toc_links: '',
     git_cmd: gitCommand.join(' '),
     js: jsFileContents
   }
-
-  if (data.diff_body.match(/[\x00-\x08\x0E-\x1F]/)) { // eslint-disable-line no-control-regex
-    data.diff_body = 'binary characters detected - cannot display diff.'
-  }
-
   const renderedTemplate = template(data)
   return renderedTemplate
 }

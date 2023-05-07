@@ -1,4 +1,5 @@
 function jumpTo(filePath, lineNum) {
+  console.log('would jump to ' + filePath)
   const cmd = { 
     command: 'jump_to_file', 
     filePath: filePath, 
@@ -14,5 +15,23 @@ document.addEventListener('DOMContentLoaded', () => {
     matching: 'lines',
     outputFormat: 'side-by-side',
   });
-  document.getElementById('destination-elem-id').innerHTML = diffHtml;
-});    
+
+  if (theDiff)
+    document.getElementById('destination-elem-id').innerHTML = diffHtml;
+  
+  convertHtmlLinksToHyperlinks();
+});
+
+function convertHtmlLinksToHyperlinks() {
+  const links = document.querySelectorAll('a.d2h-file-name');
+
+  links.forEach(link => {
+    const filePath = link.textContent.trim(); // Get the file path from the link's text content
+    link.href = '#'; // Clear the href attribute
+    link.addEventListener('click', e => {
+      e.preventDefault(); // Prevent the default click behavior
+      jumpTo(filePath); // Call the jumpTo function with the file path as an argument
+    });
+  });
+
+}

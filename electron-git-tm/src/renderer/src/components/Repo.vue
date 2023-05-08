@@ -8,11 +8,15 @@ function changeRepo(_event): void {
 function _refreshRepo(_event): void {
   refreshRepo()
 }
+function toggleRepo(_event): void {
+  window.electron.ipcRenderer.invoke('toggle-repo')
+}
 </script>
 
 <template>
   <div class="flex items-center">
     <div class="inline mr-6">Select a repo:</div>
+    <q-btn flat dense round icon="code" class="q-ml-md" title="Toggle through repos" @click="toggleRepo" />
     <q-btn
       flat
       dense

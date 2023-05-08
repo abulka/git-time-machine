@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { globals } from '@renderer/globals'
 
-function branchChanged(value): void {
-  console.log('branchChanged', value) // just a notification, does nothing
+function branchChanged(_value): void {
+  // console.log('branchChanged', _value) // just a notification, does nothing
 }
 </script>
 

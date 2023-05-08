@@ -33,6 +33,8 @@ export async function getBranches(): Promise<void> {
 
   if (_branches.length === 0) {
     globals.warningMsg = 'Not a Repo dir'
+    // globals.treeData = []
+    // globals.expanded = []
     return
   } else globals.warningMsg = ''
   globals.branches = _branches.map((branch, index) => {

@@ -26,6 +26,28 @@ export async function changeCwd(mainWindow): Promise<{ success: boolean }> {
   }
 }
 
+export async function toggleRepo(mainWindow): Promise<{ success: boolean }> {
+  // Quick way of toggling through various repos for testing
+  switch (repoDir) {
+    case '/Users/andy/Devel/pynsource':
+      setRepoDir('/Users/andy/Devel/alsm')
+      break
+    case '/Users/andy/Devel/alsm':
+      setRepoDir('/Users/andy/Devel/dalai-llama')
+      break
+    case '/Users/andy/Devel/dalai-llama':
+      setRepoDir('/Users/andy/Devel/pynsource')
+      break
+    default:
+      setRepoDir('/Users/andy/Devel/pynsource')
+      break
+  }
+  // Notify the renderer process that the directory has changed
+  const { webContents } = mainWindow
+  webContents.send('repoChanged', repoDir)
+  return { success: true }
+}
+
 export function startupBusinessLogic(mainWindow): void {
   loadPreferences()
 

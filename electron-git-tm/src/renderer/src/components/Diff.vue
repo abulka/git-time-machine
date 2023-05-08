@@ -35,5 +35,11 @@ window.addEventListener('message', (event) => {
 </script>
 
 <template>
-  <iframe ref="myiframe" width="100%" height="100%" frameborder="0"></iframe>
+  <iframe
+    v-if="true || globals.treeData.length > 0"
+    ref="myiframe"
+    width="100%"
+    height="100%"
+    frameborder="0"
+  ></iframe>
 </template>

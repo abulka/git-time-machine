@@ -9,7 +9,7 @@ import { getRepoFileTree } from './getFileTree'
 import { generate_html_diff } from './getDiff'
 import { setupMenu } from './menuStuff'
 import { startupBusinessLogic } from './changeRepo'
-import { changeCwd } from './changeRepo'
+import { changeCwd, toggleRepo } from './changeRepo'
 
 function createWindow(): void {
   // Create the browser window.
@@ -57,6 +57,10 @@ function createWindow(): void {
   
   ipcMain.handle('change-repo', async (_event) => {
     const result = await changeCwd(mainWindow)
+    return result.success
+  })
+  ipcMain.handle('toggle-repo', async (_event) => {
+    const result = await toggleRepo(mainWindow)
     return result.success
   })
   

@@ -36,7 +36,7 @@ window.addEventListener('message', (event) => {
 
 <template>
   <iframe
-    v-if="true || globals.treeData.length > 0"
+    v-if="globals.commits.length > 0"
     ref="myiframe"
     width="100%"
     height="100%"

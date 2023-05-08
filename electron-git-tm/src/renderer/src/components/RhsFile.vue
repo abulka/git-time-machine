@@ -75,10 +75,10 @@ window.addEventListener('message', (event) => {
   <div class="q-pa-md">
     {{ globals.selectedCommit }}
     {{ globals.selectedTreePath }}
-    {{ globals.scrollPos }}
-    {{ globals.scrollPosX }}
-    SEL: {{ globals.selectedTreeNode }}
-    EXPANDED: {{ globals.expanded }}
+    <!-- {{ globals.scrollPos }}
+    {{ globals.scrollPosX }} -->
+    <!-- SEL: {{ globals.selectedTreeNode }}
+    EXPANDED: {{ globals.expanded }} -->
     <!-- <q-btn label="Generate HTML" @click="generateHtml" /> -->
     <iframe ref="myiframe" style="height: 100vh" class="w-full"></iframe>
   </div>

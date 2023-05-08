@@ -30,9 +30,12 @@ window.addEventListener('message', (event) => {
   if (event.data.command == 'jump_to_file') {
     // console.log(`jump_to_file ${event.data.filePath}:${event.data.lineNum}`)
     globals.selectedTreeNode = '/' + event.data.filePath
-    // When select treeview should ensure it expands to that part of the tree by adding the parent path to globals.expanded
-    // globals.expanded = []
     ensurePathIsExpanded('/' + event.data.filePath)
+    // Scroll selectedTreeNode into view
+    const el = document.querySelector('.q-tree__node--selected')
+    if (el) {
+      el.scrollIntoView()
+    }
 
   }
 })

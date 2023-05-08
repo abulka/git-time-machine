@@ -23,8 +23,17 @@ async function getDiff(): Promise<void> {
 
 // In the outer HTML of your app's render process
 window.addEventListener('message', (event) => {
-  console.log('Received message from iframe:', event.data)
-
+  if (event.data == undefined) {
+    console.log('Received message from iframe:', event.data)
+    return
+  }
+  if (event.data.command == 'jump_to_file') {
+    console.log(`jump_to_file ${event.data.filePath}:${event.data.lineNum}`)
+    // Load the file contents into the content view and jump to the specified line
+    // contents = get_file_contents(current_commit, filePath)
+    // Tell the treeview to select the item
+    // pub.sendMessage('select_treeview_item', path=filePath)
+  }
   // TODO: IMPLEMENT THIS
 
   // # print("Script message received (Diff Panel)", event.GetString())

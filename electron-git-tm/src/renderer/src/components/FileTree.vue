@@ -1,24 +1,11 @@
 <script setup lang="ts">
 import { watch } from 'vue'
 import { globals, debug } from '@renderer/globals'
-import { Commit } from '../../../shared/Commit'
 import { TreeData, TreeDataItem } from '../types/TreeData'
 
 watch([(): string => globals.selectedCommit], async () => {
-  const commit: Commit = globals.selectedCommitRows[0]
-  if (!commit) {
-    return
-  }
-  const sha = commit.sha
-  getFiles(sha)
-  // TODO: SWITCH TO THIS CODE BUT MAKE SURE IT WORKS BECAUSE 
-  // IT'S NOT WORKING RIGHT NOW the if condition is never true
-  // if (globals.selectedCommit == undefined && globals.lastCommit == undefined) {
-  //   globals.treeData = []
-  //   globals.expanded = []
-  //   return
-  // }
-  // getFiles(globals.selectedCommit)
+  if (!globals.selectedCommit) return
+  getFiles(globals.selectedCommit)
 })
 
 async function getFiles(sha): Promise<void> {

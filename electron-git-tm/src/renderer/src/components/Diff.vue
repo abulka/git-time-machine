@@ -24,38 +24,13 @@ async function getDiff(): Promise<void> {
 // In the outer HTML of your app's render process
 window.addEventListener('message', (event) => {
   if (event.data == undefined) {
-    console.log('Received message from iframe:', event.data)
+    console.log('Unknown message received from diff iframe:', event.data)
     return
   }
   if (event.data.command == 'jump_to_file') {
-    console.log(`jump_to_file ${event.data.filePath}:${event.data.lineNum}`)
-    // Load the file contents into the content view and jump to the specified line
-    // contents = get_file_contents(current_commit, filePath)
-    // Tell the treeview to select the item
-    // pub.sendMessage('select_treeview_item', path=filePath)
+    // console.log(`jump_to_file ${event.data.filePath}:${event.data.lineNum}`)
+    globals.selectedTreeNode = '/' + event.data.filePath
   }
-  // TODO: IMPLEMENT THIS
-
-  // # print("Script message received (Diff Panel)", event.GetString())
-  // if event.GetString()[0] == '{':
-  //     command_obj = json.loads(event.GetString())
-  //     if command_obj['command'] == 'jump_to_file':
-  //         filePath = command_obj['filePath']
-  //         lineNum = command_obj['lineNum']
-  //         # print("Jump to file command received", filePath, lineNum)
-
-  //         # Load the file contents into the content view and jump to the specified line
-  //         contents = get_file_contents(current_commit, filePath)
-
-  //         if event_debug:
-  //             print('\n⚡️file_selected (DiffPanel, jump_to_file)')
-  //         pub.sendMessage('file_selected', path=filePath, contents=contents, line_to=lineNum)
-
-  //         # Tell the treeview to select the item
-  //         if event_debug:
-  //             print('\n⚡️select_treeview_item (DiffPanel, jump_to_file)')
-  //         pub.sendMessage('select_treeview_item', path=filePath)
-
 })
 </script>
 

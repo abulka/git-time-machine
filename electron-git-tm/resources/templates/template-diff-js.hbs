@@ -9,20 +9,10 @@ function jumpTo(filePath, lineNum) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  let theDiff = `{{{diff_body}}}`;
-  var diffHtml = Diff2Html.html(theDiff, {
-    drawFileList: true,
-    matching: 'lines',
-    outputFormat: 'side-by-side',
-  });
-
-  if (theDiff)
-    document.getElementById('destination-elem-id').innerHTML = diffHtml;
-  
-  convertHtmlLinksToHyperlinks();
+  convertFileLinksToJumpTo();
 });
 
-function convertHtmlLinksToHyperlinks() {
+function convertFileLinksToJumpTo() {
   const links = document.querySelectorAll('a.d2h-file-name');
 
   links.forEach(link => {

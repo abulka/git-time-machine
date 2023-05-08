@@ -7,6 +7,7 @@ import fs from 'fs'
 import t3 from '../../resources/templates/template-diff.hbs?asset'
 import t4 from '../../resources/templates/template-diff-js.hbs?asset'
 import { repoDir } from './globalsMain'
+import { parse, html } from 'Diff2Html'
 
 function _findPreviousCommit(currentCommit: string): string | null {
   for (let i = 0; i < commits.length; i++) {
@@ -53,12 +54,15 @@ function _renderHtml(stdout, gitCommand): string {
     msg = 'binary characters detected - cannot display diff.'
     stdout = ''
   }
+  // const diffAsObj = parse(stdout, { drawFileList: true })
+  // const prettyHtml = html(diffAsObj, { outputFormat: 'side-by-side' })
+  const prettyHtml = html(stdout, { outputFormat: 'side-by-side', drawFileList: true })
 
-  const jsFileContents = templateJs({ diff_body: stdout })
+  const jsFileContents = templateJs({})
 
   const data = {
     msg: msg,
-    diff_body: '', //stdout,
+    diff_body: prettyHtml, //stdout,
     toc_links: '',
     git_cmd: gitCommand.join(' '),
     js: jsFileContents

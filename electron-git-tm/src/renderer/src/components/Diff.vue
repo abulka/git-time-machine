@@ -34,7 +34,10 @@ window.addEventListener('message', (event) => {
     // Scroll selectedTreeNode into view
     const el = document.querySelector('.q-tree__node--selected')
     if (el) {
-      el.scrollIntoView()
+      // timer is needed to wait for the DOM to update first, before scrolling
+      setTimeout(() => {
+        el.scrollIntoView()
+      }, 500)
     }
 
   }

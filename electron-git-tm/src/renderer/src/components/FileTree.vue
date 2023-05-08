@@ -11,6 +11,14 @@ watch([(): string => globals.selectedCommit], async () => {
   }
   const sha = commit.sha
   getFiles(sha)
+  // TODO: SWITCH TO THIS CODE BUT MAKE SURE IT WORKS BECAUSE 
+  // IT'S NOT WORKING RIGHT NOW the if condition is never true
+  // if (globals.selectedCommit == undefined && globals.lastCommit == undefined) {
+  //   globals.treeData = []
+  //   globals.expanded = []
+  //   return
+  // }
+  // getFiles(globals.selectedCommit)
 })
 
 async function getFiles(sha): Promise<void> {

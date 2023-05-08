@@ -30,8 +30,26 @@ window.addEventListener('message', (event) => {
   if (event.data.command == 'jump_to_file') {
     // console.log(`jump_to_file ${event.data.filePath}:${event.data.lineNum}`)
     globals.selectedTreeNode = '/' + event.data.filePath
+    // When select treeview should ensure it expands to that part of the tree by adding the parent path to globals.expanded
+    // globals.expanded = []
+    ensurePathIsExpanded('/' + event.data.filePath)
+
   }
 })
+function ensurePathIsExpanded(filePath): void {
+  const pathComponents = filePath.split('/')
+  const parentNodes: string[] = []
+
+  for (let i = 1; i < pathComponents.length - 1; i++) {
+    const parentPath = '/' + pathComponents.slice(1, i+1).join('/')
+    if (!globals.expanded.includes(parentPath)) {
+      parentNodes.push(parentPath)
+    }
+  }
+  // console.log(`${filePath} parentNodes: ${parentNodes}`)
+  globals.expanded = globals.expanded.concat(parentNodes)
+}
+
 </script>
 
 <template>
